@@ -1,21 +1,31 @@
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class BlocA extends Bloc<CounterEvent, int>{
-  BlocA() : super(0){
-    on<IncrementEvent>((event, emit) => emit(event.value + this.state));
+class BlocA extends Bloc<CounterEvent, CounterState>{
+  BlocA() : super(CounterInitial()){
+    on<CounterIncrement>((event, emit) => emit(CounterLoadInProgress()));
   }
 }
 
 ///Events
+///BlocSubject + Noun (optional) + Verb (event)
 abstract class CounterEvent {}
 
-class SetStateEvent extends CounterEvent {
+class CounterReset extends CounterEvent {
   final int newState;
-  SetStateEvent(this.newState);
+  CounterReset(this.newState);
 }
 
-class IncrementEvent extends CounterEvent {
+class CounterIncrement extends CounterEvent {
   final int value;
-  IncrementEvent(this.value);
+  CounterIncrement(this.value);
 }
+
+///State
+///BlocSubject + Verb (action) + State
+///BlocSubject + State
+abstract class CounterState {}
+class CounterInitial extends CounterState {}
+class CounterLoadInProgress extends CounterState {}
+class CounterLoadSuccess extends CounterState {}
