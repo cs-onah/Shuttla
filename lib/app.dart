@@ -9,8 +9,6 @@ import 'package:shuttla/ui/themes/app_theme_light.dart';
 import 'constants/route_names.dart';
 
 class Shuttla extends StatelessWidget {
-  const Shuttla();
-
   @override
   Widget build(BuildContext context) {
     return MultiProvider(

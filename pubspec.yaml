@@ -14,9 +14,9 @@ dependencies:
   #remote data transfer
   dio: ^3.0.10
   #stacked services
-  get: ^4.1.4
+  get: 4.0.0
   #dependency injection
-  get_it: ^4.0.4
+  get_it: ^7.0.0
   #localization
   intl: ^0.16.1
   #state management
