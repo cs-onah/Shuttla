@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "569028400149",
+    "project_id": "shuttla",
+    "storage_bucket": "shuttla.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:569028400149:android:7509901b1ac4077265ea1c",
+        "android_client_info": {
+          "package_name": "com.example.shuttla"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "569028400149-tpk92nhcmgetquvubksto9j4eetk3si4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.shuttla",
+            "certificate_hash": "708d66a212ed7ffa26a1818f12da2608568003c0"
+          }
+        },
+        {
+          "client_id": "569028400149-1q0q5uslodsqu65gql5mtr41qomvvsks.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqllQphJiVoJDgI1Bs4a14wIw0ZlyHvFE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "569028400149-1q0q5uslodsqu65gql5mtr41qomvvsks.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
