@@ -12,30 +12,30 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.2
   #remote data transfer
-  dio: ^3.0.10
+  dio: any
   #stacked services
   get: 4.0.0
   #dependency injection
   get_it: ^7.0.0
   #localization
-  intl: ^0.16.1
+  intl: ^0.17.0
   #state management
   provider: ^5.0.0
   equatable: ^2.0.0
   shared_preferences:
   ##Geolocation
-  flutter_google_places: ^0.2.6
-  geocoding: ^1.0.5
-  geolocator: ^6.0.0+4
-  google_maps_flutter: ^1.0.0
-  google_maps_webservice: ^0.0.18
+  flutter_google_places: any
+  geocoding: any
+  geolocator: any
+  google_maps_flutter: any
+  google_maps_webservice: any
   flutter_bloc: ^7.1.0
 
   # Firebase services
-  firebase_core: any
+  firebase_core: 1.0.0
   firebase_messaging: any
   firebase_storage: any
-  firebase_auth: any
+  firebase_auth: 1.0.0
 
 
 dev_dependencies:

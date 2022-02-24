@@ -6,7 +6,13 @@ class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center()
+      backgroundColor: Color(0xffD3FFFF),
+      body: Center(
+        child: SizedBox(
+          height: 200,
+        child: Image.asset("images/logo_gif.gif"),
+        ),
+      )
     );
   }
 }
