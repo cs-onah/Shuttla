@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shuttla/ui/screens/login_screen.dart';
 import 'package:shuttla/ui/screens/splash_screen.dart';
 
 class RouteNames {
@@ -7,12 +8,14 @@ class RouteNames {
   /// static const String splashScreen = '/splashScreen';
 
   static const String splashScreen = 'splashScreen';
+  static const String loginScreen = 'loginScreen';
 
 
   static Map<String, Widget Function(BuildContext)> routes = {
     ///Named routes to be added here in this format
     ///RouteNames.splashScreen: (context) => SplashScreen(),
     splashScreen: (context) => SplashScreen(),
+    loginScreen: (context) => LoginScreen(),
   };
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -20,7 +23,8 @@ class RouteNames {
       // Add your screen here as well as the transition you want
       case splashScreen:
         return MaterialPageRoute(builder: (context) => SplashScreen());
-        break;
+      case loginScreen:
+        return MaterialPageRoute(builder: (context) => LoginScreen());
 
       //Default Route is error route
       default:
