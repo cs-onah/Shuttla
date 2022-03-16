@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shuttla/ui/screens/login_screen.dart';
+import 'package:shuttla/ui/screens/select_user_screen.dart';
 import 'package:shuttla/ui/screens/splash_screen.dart';
 
 class RouteNames {
@@ -9,6 +10,7 @@ class RouteNames {
 
   static const String splashScreen = 'splashScreen';
   static const String loginScreen = 'loginScreen';
+  static const String userSelectScreen = 'userSelectScreen';
 
 
   static Map<String, Widget Function(BuildContext)> routes = {
@@ -16,6 +18,7 @@ class RouteNames {
     ///RouteNames.splashScreen: (context) => SplashScreen(),
     splashScreen: (context) => SplashScreen(),
     loginScreen: (context) => LoginScreen(),
+    userSelectScreen: (context) => UserSelectScreen(),
   };
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -25,11 +28,14 @@ class RouteNames {
         return MaterialPageRoute(builder: (context) => SplashScreen());
       case loginScreen:
         return MaterialPageRoute(builder: (context) => LoginScreen());
+      case userSelectScreen:
+        return MaterialPageRoute(builder: (context) => UserSelectScreen());
 
       //Default Route is error route
       default:
         return CupertinoPageRoute(
-            builder: (context) => errorView(settings.name));
+            builder: (context) => errorView(settings.name),
+        );
     }
   }
 

@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:shuttla/constants/route_names.dart';
 import 'package:shuttla/ui/size_config/size_config.dart';
+import 'package:shuttla/ui/widgets/custom_button.dart';
+import 'package:shuttla/ui/widgets/custom_textfield.dart';
 
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xffF5E9F9),
       body: ListView(
         padding: EdgeInsets.symmetric(
             horizontal: SizeConfig.widthOf(6),
             vertical: 20,
         ),
         children: [
-          const Gap(20),
+          Gap(SizeConfig.heightOf(20)),
           Text(
               'Log in.',
               style: TextStyle(
@@ -30,37 +34,27 @@ class LoginScreen extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
+          const Gap(60),
+          Text("Email", style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+          const Gap(10),
+          BoxTextField(hintText: "abc@xyz.com"),
           const Gap(30),
-          Text("E-mail", style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
-          TextFormField(
-            decoration: InputDecoration(
-              border: OutlineInputBorder(
-                borderSide: BorderSide.none,
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-              ),
-              fillColor: Colors.white,
-              filled: true,
-              isDense: true,
-            ),
-          ),
+          Text("Password", style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+          const Gap(10),
+          BoxTextField(obscureText: true, hintText: "••••••••",),
           Gap(50),
-          TextButton(
-            style: TextButton.styleFrom(
-              backgroundColor: Colors.black,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-              ),
-            ),
-              onPressed: (){},
-              child: Text("Login",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                ),
-              ),
-          )
-
+          BoxButton.purple(text: "Login"),
+          Gap(30),
+          Row(
+            children: [
+              Text("Don't have an account?"),
+              TextButton(
+                  onPressed: ()=>Navigator.pushNamed(context, RouteNames.userSelectScreen),
+                  child: Text("Create one", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),)
+              )
+            ],
+          ),
+          Gap(30),
         ],
       )
     );

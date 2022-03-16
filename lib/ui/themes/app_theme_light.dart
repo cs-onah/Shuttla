@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 ThemeData appThemeLight = ThemeData(
   brightness: Brightness.light,
   backgroundColor: Color(0xffF7F9FC),
-  scaffoldBackgroundColor: Color(0xffFAF6FE),
+  scaffoldBackgroundColor: Color(0xffF5E9F9),
   hintColor: Color(0xff888888),
   primaryColor: Color(0xffCF87FD),
   primaryColorLight: Color(0xffffffff),
   accentColor: Color(0xffF86F50),
-  primaryColorDark: Color(0xff000000),
+  primaryColorDark: Color(0xff7B439F),
   // splashColor: Color(0xff994B74),
   textTheme: TextTheme().apply(
     bodyColor: Color(0xff454F5B),

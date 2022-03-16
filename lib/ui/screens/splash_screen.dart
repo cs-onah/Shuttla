@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shuttla/constants/route_names.dart';
 import 'package:shuttla/ui/screens/passenger_home_screen.dart';
+import 'package:shuttla/ui/size_config/size_config.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen();
@@ -15,6 +16,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     Future.delayed(Duration(seconds: 3), (){
+      SizeConfig().init(context);
       Navigator.pushReplacementNamed(context, RouteNames.loginScreen);
     });
   }
