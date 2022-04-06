@@ -22,6 +22,11 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<!--Permissions section -->
+    <key>NSCameraUsageDescription</key>
+    <string>This allows us to be able to pick images (photos) from your gallery / camera to use for your profile picture.</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>This allows us to use your location to provide services.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

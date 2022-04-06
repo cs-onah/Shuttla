@@ -43,7 +43,12 @@ class LoginScreen extends StatelessWidget {
           const Gap(10),
           BoxTextField(obscureText: true, hintText: "••••••••",),
           Gap(50),
-          BoxButton.purple(text: "Login"),
+          BoxButton.purple(
+              text: "Login",
+            onPressed: (){
+                Navigator.pushNamed(context, RouteNames.passengerHomeScreen);
+            },
+          ),
           Gap(30),
           Row(
             children: [
