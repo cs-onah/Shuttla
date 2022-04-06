@@ -31,6 +31,11 @@ class _UserSelectScreenState extends State<UserSelectScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        leading: BackButton(onPressed: ()=> Navigator.pop(context)),
+        backgroundColor: Colors.transparent,
+      ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: SizeConfig.widthOf(20)),
         child: Column(

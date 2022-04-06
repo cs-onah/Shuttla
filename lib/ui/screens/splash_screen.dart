@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:shuttla/constants/route_names.dart';
-import 'package:shuttla/ui/screens/passenger_home_screen.dart';
+import 'package:shuttla/ui/screens/passenger/passenger_home_screen.dart';
 import 'package:shuttla/ui/size_config/size_config.dart';
 
 class SplashScreen extends StatefulWidget {
