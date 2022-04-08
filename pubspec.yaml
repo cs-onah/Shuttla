@@ -26,7 +26,7 @@ dependencies:
   ##Geolocation
   flutter_google_places: any
   geocoding: any
-  geolocator: any
+  geolocator: 7.3.0
   google_maps_flutter: any
   google_maps_webservice: any
   flutter_bloc: ^7.1.0

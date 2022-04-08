@@ -7,4 +7,5 @@ void main() {
   //Register services
   setupLocator();
   runApp(Shuttla());
+
 }
