@@ -7,8 +7,19 @@ import 'package:shuttla/ui/size_config/size_config.dart';
 import 'package:shuttla/ui/widgets/busstop_tile.dart';
 import 'package:shuttla/ui/widgets/custom_button.dart';
 
-class PassengerHomeScreen extends StatelessWidget {
+class PassengerHomeScreen extends StatefulWidget {
   const PassengerHomeScreen({Key? key}) : super(key: key);
+  @override
+  State<PassengerHomeScreen> createState() => _PassengerHomeScreenState();
+}
+
+class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    BlocProvider.of<PassengerHomeBloc>(context, listen: false)
+        .add(PassengerFetchAllStationsEvent());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +39,8 @@ class PassengerHomeScreen extends StatelessWidget {
               circles: {},
               polylines: {},
             ),
+
+            //BottomSheet section
             BlocBuilder<PassengerHomeBloc, PassengerHomeState>(
                 builder: (context, state) {
               if (state is PassengerWaitingState)
