@@ -3,6 +3,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shuttla/ui/screens/passenger/station_detail_screen.dart';
 import 'package:shuttla/ui/size_config/size_config.dart';
 import 'package:shuttla/ui/widgets/busstop_tile.dart';
+import 'package:shuttla/ui/widgets/custom_button.dart';
 
 class PassengerHomeScreen extends StatelessWidget {
   const PassengerHomeScreen({Key? key}) : super(key: key);
@@ -18,6 +19,65 @@ class PassengerHomeScreen extends StatelessWidget {
               width: double.infinity,
               color: Colors.grey,
             ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(12)),
+                ),
+                padding: EdgeInsets.all(16),
+                margin: EdgeInsets.all(22),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            'SEET head Station',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 40),
+                        Icon(Icons.bus_alert, size: 30, color: Theme.of(context).accentColor)
+                      ],
+                    ),
+                    SizedBox(height: 10),
+                    Divider(),
+                    SizedBox(height: 10),
+                    Text(
+                        'You are waiting with 5 other passengers.',
+                        style: TextStyle(
+                            fontSize: 14,
+                        ),
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      'Driver is approaching.',
+                      style: TextStyle(
+                        fontSize: 14,
+                      ),
+                    ),
+
+                    SizedBox(height: 20),
+                    SizedBox(
+                      width: double.infinity,
+                      child: BoxButton(
+                        text: "LEAVE",
+                        backgroundColor: Colors.red,
+                        onPressed: (){},
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            if(false)
             DraggableScrollableSheet(
               snap: true,
               initialChildSize: 0.5,
