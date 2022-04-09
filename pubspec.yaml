@@ -22,20 +22,20 @@ dependencies:
   #state management
   provider: ^5.0.0
   equatable: ^2.0.0
-  shared_preferences:
+  shared_preferences: 2.0.7
   ##Geolocation
-  flutter_google_places: any
-  geocoding: any
+  flutter_google_places: 0.2.8
+  geocoding: 2.0.2
   geolocator: 7.3.0
-  google_maps_flutter: any
-  google_maps_webservice: any
+  google_maps_flutter: 2.0.9
+  google_maps_webservice: 0.0.19
   flutter_bloc: ^7.1.0
   gap: ^2.0.0
 
   # Firebase services
   firebase_core: 1.0.0
-  firebase_messaging: any
-  firebase_storage: any
+  firebase_messaging: 9.0.0
+  firebase_storage: 8.0.0
   firebase_auth: 1.0.0
 
 
