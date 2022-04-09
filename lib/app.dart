@@ -18,7 +18,7 @@ class Shuttla extends StatelessWidget {
         child: MultiBlocProvider(
           providers: AppProviders.blocProviders,
           child: MaterialApp(
-            debugShowCheckedModeBanner: kDebugMode,
+            debugShowCheckedModeBanner: false,
             title: 'Shuttla',
             theme: appThemeLight,
             routes: RouteNames.routes,

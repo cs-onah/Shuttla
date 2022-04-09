@@ -19,9 +19,9 @@ class BusstopTile extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if(isSelected)
-            Icon(Icons.check_circle, color: Theme.of(context).primaryColor, size: 30,)
+            Icon(Icons.check_circle, color: Colors.green, size: 30,)
           else
-            Icon(Icons.circle_outlined, color: Theme.of(context).primaryColor, size: 30,),
+            Icon(Icons.circle_outlined, color: Colors.green, size: 30,),
           SizedBox(width: 15),
           Expanded(
             child: Column(

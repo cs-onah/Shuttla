@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shuttla/core/blocs/passenger_home_bloc.dart';
-import 'package:shuttla/ui/screens/passenger/station_detail_screen.dart';
+import 'package:shuttla/ui/screens/passenger/select_busstop_fragment.dart';
 import 'package:shuttla/ui/size_config/size_config.dart';
-import 'package:shuttla/ui/widgets/busstop_tile.dart';
 import 'package:shuttla/ui/widgets/custom_button.dart';
-import 'package:shuttla/ui/widgets/dragging_widget.dart';
 
 class PassengerHomeScreen extends StatefulWidget {
   const PassengerHomeScreen({Key? key}) : super(key: key);
@@ -42,15 +40,32 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
             ),
 
             //Header
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 20, horizontal: SizeConfig.widthOf(6)),
-              child: Row(
-                children: [
-                  Spacer(),
-                  CircleAvatar(child: Icon(Icons.menu, size: 40),
-                    radius: 25,
-                  ),
-                ],
+            Align(
+              alignment: Alignment.topCenter,
+              child: Container(
+                margin: EdgeInsets.symmetric(vertical: 20, horizontal: SizeConfig.widthOf(5)),
+                padding: EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(.7),
+                  borderRadius: BorderRadius.all(Radius.circular(100)),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CircleAvatar(
+                      foregroundImage: AssetImage("images/Avatar-4.png"),
+                      radius: 25,
+                    ),
+                    SizedBox(width: 10),
+                    Text(
+                        'Hi Ebuka 👋',
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                        ),
+                    ),
+                  ],
+                ),
               ),
             ),
 
@@ -67,82 +82,7 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
                   initialChildSize: 0.3,
                   maxChildSize: 0.8,
                   minChildSize: 0.15,
-                  builder: (context, controller) => Card(
-                    elevation: 30,
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(12)),
-                    ),
-                    child: ListView(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: SizeConfig.widthOf(6),
-                        vertical: 10,
-                      ),
-                      shrinkWrap: true,
-                      controller: controller,
-                      children: [
-                        DragHandle(),
-                        SizedBox(height: 10),
-                        // if (controller.position.maxScrollExtent == controller.offset) Icon(Icons.close),
-                        Text(
-                          'Select Busstop',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(height: 5),
-                        Text(
-                          'Select where you want to be picked from.',
-                          style: TextStyle(
-                            fontSize: 14,
-                          ),
-                        ),
-                        SizedBox(height: 30),
-                        for (int i = 0; i < 4; i++)
-                          BusstopTile(isSelected: i == 0),
-
-                        SizedBox(height: 20),
-                        TextButton(
-                          style: TextButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(12)),
-                            ),
-                            backgroundColor:
-                                Theme.of(context).primaryColorDark,
-                          ),
-                          onPressed: () {
-                            context.read<PassengerHomeBloc>().add(
-                              PassengerFetchStationDetailEvent("stationId", "stationName")
-                            );
-                            showModalBottomSheet(
-                                context: context,
-                                useRootNavigator: true,
-                                isScrollControlled: true,
-                                enableDrag: true,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(12)),
-                                ),
-                                builder: (context) {
-                                  return StationDetailScreen("SEET Head", "1");
-                                });
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              "Continue",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
+                  builder: (context, controller) => SelectBusstopFragment(controller),
                 );
             })
           ],
