@@ -6,6 +6,7 @@ import 'package:shuttla/ui/screens/passenger/station_detail_screen.dart';
 import 'package:shuttla/ui/size_config/size_config.dart';
 import 'package:shuttla/ui/widgets/busstop_tile.dart';
 import 'package:shuttla/ui/widgets/custom_button.dart';
+import 'package:shuttla/ui/widgets/dragging_widget.dart';
 
 class PassengerHomeScreen extends StatefulWidget {
   const PassengerHomeScreen({Key? key}) : super(key: key);
@@ -40,6 +41,19 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
               polylines: {},
             ),
 
+            //Header
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 20, horizontal: SizeConfig.widthOf(6)),
+              child: Row(
+                children: [
+                  Spacer(),
+                  CircleAvatar(child: Icon(Icons.menu, size: 40),
+                    radius: 25,
+                  ),
+                ],
+              ),
+            ),
+
             //BottomSheet section
             BlocBuilder<PassengerHomeBloc, PassengerHomeState>(
                 builder: (context, state) {
@@ -62,24 +76,12 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
                     child: ListView(
                       padding: EdgeInsets.symmetric(
                         horizontal: SizeConfig.widthOf(6),
-                        vertical: 20,
+                        vertical: 10,
                       ),
                       shrinkWrap: true,
                       controller: controller,
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              height: 10,
-                              width: 60,
-                              decoration: BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(20)),
-                                  color: Colors.grey[300]),
-                            ),
-                          ],
-                        ),
+                        DragHandle(),
                         SizedBox(height: 10),
                         // if (controller.position.maxScrollExtent == controller.offset) Icon(Icons.close),
                         Text(
