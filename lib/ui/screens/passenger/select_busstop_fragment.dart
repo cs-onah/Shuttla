@@ -35,7 +35,7 @@ class _SelectBusstopFragmentState extends State<SelectBusstopFragment> {
           SizedBox(height: 10),
           // if (controller.position.maxScrollExtent == controller.offset) Icon(Icons.close),
           Text(
-            'Select Busstop',
+            'Select Station',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -48,7 +48,20 @@ class _SelectBusstopFragmentState extends State<SelectBusstopFragment> {
               fontSize: 14,
             ),
           ),
-          SizedBox(height: 30),
+          SizedBox(height: 10),
+          TextFormField(
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.grey[200],
+              hintText: "Which station",
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+                borderSide: BorderSide.none,
+              ),
+              prefixIcon: Icon(Icons.search)
+            ),
+          ),
+          SizedBox(height: 10),
           for (int i = 0; i < 4; i++)
             BusstopTile(isSelected: i == 0),
 
