@@ -41,12 +41,12 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
 
             //Header
             Align(
-              alignment: Alignment.topCenter,
+              alignment: Alignment.topLeft,
               child: Container(
                 margin: EdgeInsets.symmetric(vertical: 20, horizontal: SizeConfig.widthOf(5)),
-                padding: EdgeInsets.all(10),
+                padding: EdgeInsets.all(6),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(.7),
+                  color: Colors.white,
                   borderRadius: BorderRadius.all(Radius.circular(100)),
                 ),
                 child: Row(
@@ -81,7 +81,7 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
                 return DraggableScrollableSheet(
                   initialChildSize: 0.3,
                   maxChildSize: 0.8,
-                  minChildSize: 0.15,
+                  minChildSize: 0.3,
                   builder: (context, controller) => SelectBusstopFragment(controller),
                 );
             })
