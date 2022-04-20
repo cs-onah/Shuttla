@@ -7,16 +7,18 @@ import 'package:shuttla/constants/providers.dart';
 import 'package:shuttla/ui/themes/app_theme_light.dart';
 
 import 'constants/route_names.dart';
+import 'core/blocs/bloc_observer.dart';
 
 class Shuttla extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    Bloc.observer = SimpleBlocObserver();
     return MultiProvider(
         providers: AppProviders.providers,
         child: MultiBlocProvider(
           providers: AppProviders.blocProviders,
           child: MaterialApp(
-            debugShowCheckedModeBanner: kDebugMode,
+            debugShowCheckedModeBanner: false,
             title: 'Shuttla',
             theme: appThemeLight,
             routes: RouteNames.routes,

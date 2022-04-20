@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:shuttla/core/blocs/passenger_home_bloc.dart';
 import 'package:shuttla/ui/size_config/size_config.dart';
 import 'package:shuttla/ui/widgets/custom_button.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class StationDetailScreen extends StatelessWidget {
-  const StationDetailScreen({Key? key}) : super(key: key);
+  final String stationName, stationId;
+
+  const StationDetailScreen(this.stationName, this.stationId);
 
   @override
   Widget build(BuildContext context) {
+    final bloc = BlocProvider.of<PassengerHomeBloc>(context);
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(12)),
@@ -68,7 +73,14 @@ class StationDetailScreen extends StatelessWidget {
             DriverStatusTile("none"),
             Divider(),
             SizedBox(height: 40),
-            BoxButton.purple(text: "JOIN WAIT",)
+            BoxButton.purple(text: "JOIN WAIT",
+              onPressed: (){
+                bloc.add(
+                  PassengerJoinStationEvent(stationId, stationName),
+                );
+                Navigator.pop(context);
+              },
+            )
 
 
           ],

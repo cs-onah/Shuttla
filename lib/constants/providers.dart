@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:shuttla/core/blocs/blocA.dart';
+import 'package:shuttla/core/blocs/passenger_home_bloc.dart';
 import 'package:shuttla/core/viewmodels/providerA.dart';
 
 
@@ -18,6 +19,7 @@ class AppProviders {
   static final blocProviders = <BlocProvider>[
     //format for registering providers:
     BlocProvider<BlocA>(create: (BuildContext context) => BlocA()),
+    BlocProvider<PassengerHomeBloc>(create: (context) => PassengerHomeBloc())
 
   ];
 }

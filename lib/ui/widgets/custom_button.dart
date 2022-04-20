@@ -6,20 +6,26 @@ class BoxButton extends StatelessWidget {
   final Color? textColor;
   final double? textSize;
   final VoidCallback? onPressed;
+  final double borderRadius;
   const BoxButton({
     this.text,
     this.backgroundColor,
     this.textColor,
     this.textSize,
     this.onPressed,
+    this.borderRadius = 12,
   });
 
   const BoxButton.black({this.text, this.textSize, this.onPressed})
       : backgroundColor = Colors.black,
-        textColor = Colors.white;
+        textColor = Colors.white,
+        borderRadius = 12;
+  const BoxButton.rounded({this.text, this.textSize, this.onPressed, this.backgroundColor, this.textColor})
+      : borderRadius = 100;
   const BoxButton.purple({this.text, this.textSize, this.onPressed})
       : backgroundColor = const Color(0xff7B439F),
-        textColor = Colors.white;
+        textColor = Colors.white,
+        borderRadius = 12;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +33,7 @@ class BoxButton extends StatelessWidget {
       style: TextButton.styleFrom(
         backgroundColor: backgroundColor ?? Colors.black,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12)),
+          borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
         ),
       ),
       onPressed: onPressed,
