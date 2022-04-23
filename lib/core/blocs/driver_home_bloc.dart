@@ -18,7 +18,7 @@ class DriverHomeBloc extends Bloc<DriverHomeEvent, DriverHomeState>{
           (event, emit)=> emit(DriverPickupState()),
     );
     on<DriverCompleteEvent>(
-          (event, emit)=> emit(DriverIdleState()),
+          (event, emit)=> emit(DriverIdleState(completedSession: true)),
     );
   }
 }
@@ -53,7 +53,8 @@ class DriverCompleteEvent extends DriverHomeEvent{
 abstract class DriverHomeState{}
 class DriverIdleState extends DriverHomeState{
   final List? stations;
-  DriverIdleState([this.stations]);
+  final bool completedSession;
+  DriverIdleState({this.completedSession = false, this.stations});
 }
 class DriverStationDetailState extends DriverHomeState{
   final dynamic station;

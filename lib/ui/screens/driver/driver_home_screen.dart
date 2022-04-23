@@ -17,35 +17,58 @@ class DriverHomeScreen extends StatefulWidget {
 }
 
 class _DriverHomeScreenState extends State<DriverHomeScreen> {
+  late GoogleMapController mapController;
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: BlocListener<DriverHomeBloc, DriverHomeState>(
-        listener: (ctx, state){
+        listener: (ctx, state) {
           print(state);
-          if(state is DriverEnrouteState)
-            showBottomSheet(context: ctx,
-                backgroundColor: Colors.transparent,
-                builder: (ctx)=> DriverEnrouteFragment(),
-            );
-          if(state is DriverPickupState)
-            showBottomSheet(context: ctx,
+          if (state is DriverEnrouteState)
+            showBottomSheet(
+              context: ctx,
               backgroundColor: Colors.transparent,
-              builder: (ctx)=> DriverCompleteFragment(),
+              builder: (ctx) => DriverEnrouteFragment(),
+            );
+          if (state is DriverPickupState)
+            showBottomSheet(
+              context: ctx,
+              backgroundColor: Colors.transparent,
+              builder: (ctx) => DriverCompleteFragment(),
+            );
+          if (state is DriverIdleState && state.completedSession)
+            showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: Text("Success"),
+                  content: Text("Successfully completed session"),
+                  actions: [
+                    BoxButton.rounded(
+                      text: "Okay",
+                      backgroundColor: Theme.of(context).primaryColorDark,
+                      onPressed: () => Navigator.pop(context),
+                    )
+                  ],
+                );
+              },
             );
         },
         child: SafeArea(
           child: Stack(
             children: [
               GoogleMap(
-                initialCameraPosition:
-                    CameraPosition(target: LatLng(5.377232, 7.000225), zoom: 16),
+                initialCameraPosition: CameraPosition(
+                    target: LatLng(5.377232, 7.000225), zoom: 16),
                 myLocationButtonEnabled: false,
                 compassEnabled: false,
                 zoomControlsEnabled: false,
                 tiltGesturesEnabled: false,
                 mapType: MapType.normal,
-                onMapCreated: (GoogleMapController controller) {},
+                onMapCreated: (GoogleMapController controller) {
+                  this.mapController = controller;
+                },
                 markers: {},
                 circles: {},
                 polylines: {},
@@ -98,8 +121,8 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     );
   }
 
-   _seeStations(BuildContext context) {
-     showBottomSheet(
+  _seeStations(BuildContext context) {
+    showBottomSheet(
         context: context,
         backgroundColor: Colors.transparent,
         builder: (context) {
@@ -114,10 +137,12 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                 description: "Select which station you'd like to pickup from.",
                 itemSelectAction: (a) {
                   Navigator.pop(context);
-                  showBottomSheet(context: context,
-                      backgroundColor: Colors.transparent,
-                      builder: (context)=> SelectedStationFragment(),
+                  showBottomSheet(
+                    context: context,
+                    backgroundColor: Colors.transparent,
+                    builder: (context) => SelectedStationFragment(),
                   );
+                  mapController.animateCamera(CameraUpdate.newLatLng(LatLng(5.377242, 7.000225)));
                 },
               );
             },
