@@ -23,14 +23,14 @@ class BoxButton extends StatefulWidget {
       : backgroundColor = Colors.black,
         textColor = Colors.white,
         borderRadius = 12;
-  const BoxButton.rounded(
-      {this.text,
-      this.textSize,
-      this.onPressed,
-      this.backgroundColor,
-      this.textColor,
-      this.onPressedWithNotifier})
-      : borderRadius = 100;
+  const BoxButton.rounded({
+    this.text,
+    this.textSize,
+    this.onPressed,
+    this.backgroundColor,
+    this.textColor,
+    this.onPressedWithNotifier,
+  }) : borderRadius = 100;
   const BoxButton.purple(
       {this.text, this.textSize, this.onPressed, this.onPressedWithNotifier})
       : backgroundColor = const Color(0xff7B439F),
@@ -94,8 +94,8 @@ class _BoxButtonState extends State<BoxButton> {
         ),
       ),
       onPressed: () {
-        if (notifierCallback != null) notifierCallback();
         if (widget.onPressed != null) widget.onPressed!();
+        if (notifierCallback != null) notifierCallback();
       },
       child: Padding(
         padding: const EdgeInsets.all(8.0),

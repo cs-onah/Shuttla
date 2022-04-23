@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shuttla/core/blocs/passenger_home_bloc.dart';
-import 'package:shuttla/ui/screens/passenger/station_detail_screen.dart';
+import 'package:shuttla/ui/screens/shared/station_detail_screen.dart';
 import 'package:shuttla/ui/size_config/size_config.dart';
 import 'package:shuttla/ui/widgets/busstop_tile.dart';
 import 'package:shuttla/ui/widgets/dragging_widget.dart';
@@ -64,25 +64,6 @@ class _SelectStationFragmentState extends State<SelectStationFragment> {
           for (int i = 0; i < 4; i++)
             BusstopTile(onClicked: widget.itemSelectAction),
           SizedBox(height: 20),
-          // TextButton(
-          //   style: TextButton.styleFrom(
-          //     shape: RoundedRectangleBorder(
-          //       borderRadius: BorderRadius.all(Radius.circular(12)),
-          //     ),
-          //     backgroundColor: Theme.of(context).primaryColorDark,
-          //   ),
-          //   onPressed: () {},
-          //   child: Padding(
-          //     padding: const EdgeInsets.all(8.0),
-          //     child: Text(
-          //       "Continue",
-          //       style: TextStyle(
-          //           color: Colors.white,
-          //           fontSize: 16,
-          //           fontWeight: FontWeight.bold),
-          //     ),
-          //   ),
-          // )
         ],
       ),
     );

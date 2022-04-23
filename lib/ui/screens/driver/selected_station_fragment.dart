@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shuttla/constants/user_type_enum.dart';
-import 'package:shuttla/ui/screens/passenger/station_detail_screen.dart';
+import 'package:shuttla/ui/screens/shared/station_detail_screen.dart';
 import 'package:shuttla/ui/size_config/size_config.dart';
 import 'package:shuttla/ui/widgets/custom_button.dart';
 

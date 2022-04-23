@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:shuttla/core/blocs/driver_home_bloc.dart';
 import 'package:shuttla/ui/screens/driver/selected_station_fragment.dart';
 import 'package:shuttla/ui/screens/shared/select_busstop_fragment.dart';
 import 'package:shuttla/ui/size_config/size_config.dart';
@@ -16,64 +18,77 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Stack(
-          children: [
-            GoogleMap(
-              initialCameraPosition:
-                  CameraPosition(target: LatLng(5.377232, 7.000225), zoom: 16),
-              myLocationButtonEnabled: false,
-              compassEnabled: false,
-              zoomControlsEnabled: false,
-              tiltGesturesEnabled: false,
-              mapType: MapType.normal,
-              onMapCreated: (GoogleMapController controller) {},
-              markers: {},
-              circles: {},
-              polylines: {},
-            ),
-            Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                      color: Colors.grey.shade300,
-                      offset: Offset(0, 0),
-                      spreadRadius: 3,
-                      blurRadius: 3)
-                ],
-              ),
-              padding: EdgeInsets.all(2),
-              margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              child: IconButton(
-                onPressed: () {},
-                icon: Icon(Icons.menu),
-                color: Colors.black,
-                iconSize: 30,
-              ),
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
+      body: BlocListener<DriverHomeBloc, DriverHomeState>(
+        listener: (ctx, state){
+          print(state);
+          if(state is DriverEnrouteState)
+            showBottomSheet(context: ctx, builder: (ctx)=> Card(
               child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                child: Builder(builder: (context) {
-                  return SizedBox(
-                    width: double.infinity,
-                    child: BoxButton.rounded(
-                      text: "See Stations",
-                      onPressed: () => _seeStations(context),
-                      // onPressedWithNotifier: (valueNotifier) async{
-                      //   valueNotifier.value = true;
-                      //   await Future.delayed(Duration(seconds: 3));
-                      //   valueNotifier.value = false;
-                      // },
-                    ),
-                  );
-                }),
+                height: 200,
+                width: double.infinity,
+                color: Colors.amber,
               ),
-            ),
-          ],
+            ));
+        },
+        child: SafeArea(
+          child: Stack(
+            children: [
+              GoogleMap(
+                initialCameraPosition:
+                    CameraPosition(target: LatLng(5.377232, 7.000225), zoom: 16),
+                myLocationButtonEnabled: false,
+                compassEnabled: false,
+                zoomControlsEnabled: false,
+                tiltGesturesEnabled: false,
+                mapType: MapType.normal,
+                onMapCreated: (GoogleMapController controller) {},
+                markers: {},
+                circles: {},
+                polylines: {},
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.grey.shade300,
+                        offset: Offset(0, 0),
+                        spreadRadius: 3,
+                        blurRadius: 3)
+                  ],
+                ),
+                padding: EdgeInsets.all(2),
+                margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                child: IconButton(
+                  onPressed: () {},
+                  icon: Icon(Icons.menu),
+                  color: Colors.black,
+                  iconSize: 30,
+                ),
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  child: Builder(builder: (context) {
+                    return SizedBox(
+                      width: double.infinity,
+                      child: BoxButton.rounded(
+                        text: "See Stations",
+                        onPressed: () => _seeStations(context),
+                        // onPressedWithNotifier: (valueNotifier) async{
+                        //   valueNotifier.value = true;
+                        //   await Future.delayed(Duration(seconds: 3));
+                        //   valueNotifier.value = false;
+                        // },
+                      ),
+                    );
+                  }),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

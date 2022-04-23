@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shuttla/constants/user_type_enum.dart';
+import 'package:shuttla/core/blocs/driver_home_bloc.dart';
 import 'package:shuttla/core/blocs/passenger_home_bloc.dart';
 import 'package:shuttla/ui/size_config/size_config.dart';
 import 'package:shuttla/ui/widgets/custom_button.dart';
@@ -15,7 +16,6 @@ class StationDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bloc = BlocProvider.of<PassengerHomeBloc>(context);
     return Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(12)),
@@ -85,10 +85,10 @@ class StationDetailScreen extends StatelessWidget {
               builder: (context) {
                 switch (userRole) {
                   case UserType.DRIVER:
-                    return _driverActionWidget();
+                    return _driverActionWidget(context);
                   case UserType.PASSENGER:
                   default:
-                    return _passengerActionWidget(bloc, context);
+                    return _passengerActionWidget(context);
                 }
               },
             )
@@ -98,12 +98,11 @@ class StationDetailScreen extends StatelessWidget {
     );
   }
 
-  BoxButton _passengerActionWidget(
-      PassengerHomeBloc bloc, BuildContext context) {
+  BoxButton _passengerActionWidget(BuildContext context) {
     return BoxButton.purple(
       text: "JOIN WAIT",
       onPressed: () {
-        bloc.add(
+        context.read<PassengerHomeBloc>().add(
           PassengerJoinStationEvent(stationId, stationName),
         );
         Navigator.pop(context);
@@ -111,10 +110,15 @@ class StationDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget _driverActionWidget() {
+  Widget _driverActionWidget(BuildContext context) {
     return BoxButton.purple(
       text: "SELECT STATION",
-      onPressed: () {},
+      onPressed: () {
+        context.read<DriverHomeBloc>().add(
+          DriverEnrouteEvent("stationId", "stationName"),
+        );
+        Navigator.pop(context);
+      },
     );
   }
 }
