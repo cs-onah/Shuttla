@@ -24,7 +24,6 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     return Scaffold(
       body: BlocListener<DriverHomeBloc, DriverHomeState>(
         listener: (ctx, state) {
-          print(state);
           if (state is DriverEnrouteState)
             showBottomSheet(
               context: ctx,
