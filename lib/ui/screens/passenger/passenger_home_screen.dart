@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shuttla/core/blocs/passenger_home_bloc.dart';
-import 'package:shuttla/ui/screens/passenger/select_busstop_fragment.dart';
+import 'package:shuttla/ui/screens/shared/select_busstop_fragment.dart';
+import 'package:shuttla/ui/screens/passenger/station_detail_screen.dart';
 import 'package:shuttla/ui/size_config/size_config.dart';
 import 'package:shuttla/ui/widgets/custom_button.dart';
 
@@ -82,7 +83,28 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
                   initialChildSize: 0.3,
                   maxChildSize: 0.8,
                   minChildSize: 0.3,
-                  builder: (context, controller) => SelectBusstopFragment(controller),
+                  builder: (context, controller) => SelectBusstopFragment(
+                      controller,
+                    title: "Select Station",
+                    description: "Select where you want to be picked from.",
+                    itemSelectAction: (a) {
+                      context.read<PassengerHomeBloc>().add(
+                          PassengerFetchStationDetailEvent(
+                              "stationId", "stationName"));
+                      showModalBottomSheet(
+                          context: context,
+                          useRootNavigator: true,
+                          isScrollControlled: true,
+                          enableDrag: true,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(12)),
+                          ),
+                          builder: (context) {
+                            return StationDetailScreen("SEET Head", "1");
+                          },
+                      );
+                    },
+                  ),
                 );
             })
           ],

@@ -8,13 +8,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SelectBusstopFragment extends StatefulWidget {
   final ScrollController controller;
-  const SelectBusstopFragment(this.controller);
+  final String? title, description;
+  final Function(dynamic)? itemSelectAction;
+  const SelectBusstopFragment(this.controller,
+      {this.title, this.description, this.itemSelectAction});
   @override
   State<SelectBusstopFragment> createState() => _SelectBusstopFragmentState();
 }
 
 class _SelectBusstopFragmentState extends State<SelectBusstopFragment> {
-
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -35,7 +37,7 @@ class _SelectBusstopFragmentState extends State<SelectBusstopFragment> {
           SizedBox(height: 10),
           // if (controller.position.maxScrollExtent == controller.offset) Icon(Icons.close),
           Text(
-            'Select Station',
+            '${widget.title ?? "Select Station"}',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -43,7 +45,7 @@ class _SelectBusstopFragmentState extends State<SelectBusstopFragment> {
           ),
           SizedBox(height: 5),
           Text(
-            'Select where you want to be picked from.',
+            '${widget.description ?? ""}',
             style: TextStyle(
               fontSize: 14,
             ),
@@ -51,47 +53,30 @@ class _SelectBusstopFragmentState extends State<SelectBusstopFragment> {
           SizedBox(height: 10),
           TextFormField(
             decoration: InputDecoration(
-              filled: true,
-              fillColor: Colors.grey[200],
-              hintText: "Which station",
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(12)),
-                borderSide: BorderSide.none,
-              ),
-              prefixIcon: Icon(Icons.search)
-            ),
+                filled: true,
+                fillColor: Colors.grey[200],
+                hintText: "Which station",
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(12)),
+                  borderSide: BorderSide.none,
+                ),
+                prefixIcon: Icon(Icons.search)),
           ),
           SizedBox(height: 10),
           for (int i = 0; i < 4; i++)
-            BusstopTile(isSelected: i == 0),
+            BusstopTile(
+              onClicked: widget.itemSelectAction,
+            ),
 
           SizedBox(height: 20),
           TextButton(
             style: TextButton.styleFrom(
               shape: RoundedRectangleBorder(
-                borderRadius:
-                BorderRadius.all(Radius.circular(12)),
+                borderRadius: BorderRadius.all(Radius.circular(12)),
               ),
-              backgroundColor:
-              Theme.of(context).primaryColorDark,
+              backgroundColor: Theme.of(context).primaryColorDark,
             ),
-            onPressed: () {
-              context.read<PassengerHomeBloc>().add(
-                  PassengerFetchStationDetailEvent("stationId", "stationName")
-              );
-              showModalBottomSheet(
-                  context: context,
-                  useRootNavigator: true,
-                  isScrollControlled: true,
-                  enableDrag: true,
-                  shape: RoundedRectangleBorder(
-                    borderRadius:
-                    BorderRadius.all(Radius.circular(12)),
-                  ),
-                  builder: (context) {
-                    return StationDetailScreen("SEET Head", "1");
-                  });
-            },
+            onPressed: () {},
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
