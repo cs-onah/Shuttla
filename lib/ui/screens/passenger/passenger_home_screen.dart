@@ -83,7 +83,7 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
                   initialChildSize: 0.3,
                   maxChildSize: 0.8,
                   minChildSize: 0.3,
-                  builder: (context, controller) => SelectBusstopFragment(
+                  builder: (context, controller) => SelectStationFragment(
                       controller,
                     title: "Select Station",
                     description: "Select where you want to be picked from.",

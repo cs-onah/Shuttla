@@ -84,7 +84,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
             maxChildSize: 0.8,
             minChildSize: 0.3,
             builder: (context, controller) {
-              return SelectBusstopFragment(
+              return SelectStationFragment(
                 controller,
                 title: "Select Station",
                 description: "Select where you want to be picked from.",

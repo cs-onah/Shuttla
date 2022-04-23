@@ -6,17 +6,17 @@ import 'package:shuttla/ui/widgets/busstop_tile.dart';
 import 'package:shuttla/ui/widgets/dragging_widget.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class SelectBusstopFragment extends StatefulWidget {
+class SelectStationFragment extends StatefulWidget {
   final ScrollController controller;
   final String? title, description;
   final Function(dynamic)? itemSelectAction;
-  const SelectBusstopFragment(this.controller,
+  const SelectStationFragment(this.controller,
       {this.title, this.description, this.itemSelectAction});
   @override
-  State<SelectBusstopFragment> createState() => _SelectBusstopFragmentState();
+  State<SelectStationFragment> createState() => _SelectStationFragmentState();
 }
 
-class _SelectBusstopFragmentState extends State<SelectBusstopFragment> {
+class _SelectStationFragmentState extends State<SelectStationFragment> {
   @override
   Widget build(BuildContext context) {
     return Card(
