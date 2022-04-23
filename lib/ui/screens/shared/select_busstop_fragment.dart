@@ -69,25 +69,25 @@ class _SelectStationFragmentState extends State<SelectStationFragment> {
             ),
 
           SizedBox(height: 20),
-          TextButton(
-            style: TextButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(12)),
-              ),
-              backgroundColor: Theme.of(context).primaryColorDark,
-            ),
-            onPressed: () {},
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                "Continue",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold),
-              ),
-            ),
-          )
+          // TextButton(
+          //   style: TextButton.styleFrom(
+          //     shape: RoundedRectangleBorder(
+          //       borderRadius: BorderRadius.all(Radius.circular(12)),
+          //     ),
+          //     backgroundColor: Theme.of(context).primaryColorDark,
+          //   ),
+          //   onPressed: () {},
+          //   child: Padding(
+          //     padding: const EdgeInsets.all(8.0),
+          //     child: Text(
+          //       "Continue",
+          //       style: TextStyle(
+          //           color: Colors.white,
+          //           fontSize: 16,
+          //           fontWeight: FontWeight.bold),
+          //     ),
+          //   ),
+          // )
         ],
       ),
     );

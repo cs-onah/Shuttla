@@ -76,12 +76,11 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
    _seeStations(BuildContext context) {
      showBottomSheet(
         context: context,
-        // isScrollControlled: true,
         backgroundColor: Colors.transparent,
         builder: (context) {
           return DraggableScrollableSheet(
             initialChildSize: 0.3,
-            maxChildSize: 0.8,
+            maxChildSize: 0.6,
             minChildSize: 0.3,
             builder: (context, controller) {
               return SelectStationFragment(
