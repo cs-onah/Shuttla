@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:shuttla/ui/screens/driver/selected_station_fragment.dart';
 import 'package:shuttla/ui/screens/shared/select_busstop_fragment.dart';
 import 'package:shuttla/ui/size_config/size_config.dart';
 import 'package:shuttla/ui/widgets/busstop_tile.dart';
@@ -86,8 +87,13 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
               return SelectStationFragment(
                 controller,
                 title: "Select Station",
-                description: "Select where you want to be picked from.",
-                itemSelectAction: (a) {},
+                description: "Select which station you'd like to pickup from.",
+                itemSelectAction: (a) {
+                  Navigator.pop(context);
+                  showBottomSheet(context: context,
+                      backgroundColor: Colors.transparent,
+                      builder: (context)=> SelectedStationFragment());
+                },
               );
             },
           );

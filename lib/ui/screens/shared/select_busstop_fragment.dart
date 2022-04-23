@@ -46,9 +46,7 @@ class _SelectStationFragmentState extends State<SelectStationFragment> {
           SizedBox(height: 5),
           Text(
             '${widget.description ?? ""}',
-            style: TextStyle(
-              fontSize: 14,
-            ),
+            style: TextStyle(fontSize: 14),
           ),
           SizedBox(height: 10),
           TextFormField(
@@ -64,10 +62,7 @@ class _SelectStationFragmentState extends State<SelectStationFragment> {
           ),
           SizedBox(height: 10),
           for (int i = 0; i < 4; i++)
-            BusstopTile(
-              onClicked: widget.itemSelectAction,
-            ),
-
+            BusstopTile(onClicked: widget.itemSelectAction),
           SizedBox(height: 20),
           // TextButton(
           //   style: TextButton.styleFrom(
