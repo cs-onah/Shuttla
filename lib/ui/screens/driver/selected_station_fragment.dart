@@ -74,11 +74,18 @@ class SelectedStationFragment extends StatelessWidget {
                     width: 140,
                     child: BoxButton.rounded(
                       text: "Continue",
-                      backgroundColor: Colors.green,
+                      backgroundColor: Theme.of(context).primaryColorDark,
                       onPressed: () {
                         Navigator.pop(context);
-                        Navigator.push(context,
-                          MaterialPageRoute(builder: (context)=> StationDetailScreen("stationName", "stationId", userRole: UserType.DRIVER,))
+                        showModalBottomSheet(
+                          context: context,
+                          useRootNavigator: true,
+                          isScrollControlled: true,
+                          enableDrag: true,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(12)),
+                          ),
+                          builder: (context) => StationDetailScreen("SEET Head", "1", userRole: UserType.DRIVER,),
                         );
                       },
                     ),
