@@ -63,6 +63,11 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                     child: BoxButton.rounded(
                       text: "See Stations",
                       onPressed: () => _seeStations(context),
+                      // onPressedWithNotifier: (valueNotifier) async{
+                      //   valueNotifier.value = true;
+                      //   await Future.delayed(Duration(seconds: 3));
+                      //   valueNotifier.value = false;
+                      // },
                     ),
                   );
                 }),
