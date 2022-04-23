@@ -1,7 +1,7 @@
 enum UserType {DRIVER, PASSENGER, ADMIN}
 
 extension UserExtension on UserType{
-  String getString(){
+  String get getString {
     switch(this){
       case UserType.ADMIN:
         return "admin";

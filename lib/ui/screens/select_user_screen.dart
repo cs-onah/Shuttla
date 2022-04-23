@@ -1,25 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:shuttla/constants/user_type_enum.dart';
 import 'package:shuttla/ui/screens/register_screen.dart';
 import 'package:shuttla/ui/size_config/size_config.dart';
 import 'package:shuttla/ui/widgets/custom_button.dart';
-
-enum UserType {DRIVER, PASSENGER, ADMIN}
-
-extension Features on UserType{
-  String? getText(){
-    switch(this){
-      case UserType.ADMIN:
-        return "Admin";
-      case UserType.DRIVER:
-        return "Driver";
-      case UserType.PASSENGER:
-        return "Passenger";
-      default:
-        return null;
-    }
-  }
-}
 
 class UserSelectScreen extends StatefulWidget {
   const UserSelectScreen();
