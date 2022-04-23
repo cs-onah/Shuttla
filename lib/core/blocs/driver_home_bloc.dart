@@ -2,9 +2,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DriverHomeBloc extends Bloc<DriverHomeEvent, DriverHomeState>{
   DriverHomeBloc() : super(DriverIdleState()){
-    on<DriverFetchStationDetailEvent>(
-          (event, emit)=> emit(DriverIdleState()),
-    );
+    // on<DriverFetchStationDetailEvent>(
+    //       (event, emit)=> emit(DriverIdleState()),
+    // );
     on<DriverFetchStationDetailEvent>(
           (event, emit)=> emit(DriverStationDetailState()),
     );

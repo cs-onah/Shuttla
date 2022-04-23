@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:shuttla/constants/route_names.dart';
+import 'package:shuttla/constants/user_type_enum.dart';
+import 'package:shuttla/ui/screens/select_user_screen.dart';
 import 'package:shuttla/ui/size_config/size_config.dart';
 import 'package:shuttla/ui/widgets/custom_button.dart';
 import 'package:shuttla/ui/widgets/custom_textfield.dart';
@@ -46,11 +48,11 @@ class LoginScreen extends StatelessWidget {
           BoxButton.purple(
               text: "Login",
             onPressed: (){
-                String role = "driver";
+                UserType role = UserType.DRIVER;
 
-                if(role == "driver")
+                if(role == UserType.DRIVER)
                   Navigator.pushNamed(context, RouteNames.driverHomeScreen);
-                else if(role == "passenger")
+                else if(role == UserType.PASSENGER)
                   Navigator.pushNamed(context, RouteNames.passengerHomeScreen);
                 else
                   Navigator.pushNamed(context, RouteNames.passengerHomeScreen);

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:shuttla/constants/route_names.dart';
+import 'package:shuttla/constants/user_type_enum.dart';
 import 'package:shuttla/ui/screens/select_user_screen.dart';
 import 'package:shuttla/ui/size_config/size_config.dart';
 import 'package:shuttla/ui/widgets/custom_button.dart';
@@ -41,7 +42,7 @@ class RegisterScreen extends StatelessWidget {
                   ),
                   const Gap(10),
                   Text(
-                    'Create ${type!.getText()} Account!',
+                    'Create ${type!.getString} Account!',
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
