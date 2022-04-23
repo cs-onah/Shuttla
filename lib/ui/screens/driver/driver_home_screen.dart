@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shuttla/core/blocs/driver_home_bloc.dart';
+import 'package:shuttla/ui/screens/driver/driver_complete_fragment.dart';
+import 'package:shuttla/ui/screens/driver/driver_enroute_fragment.dart';
 import 'package:shuttla/ui/screens/driver/selected_station_fragment.dart';
 import 'package:shuttla/ui/screens/shared/select_busstop_fragment.dart';
 import 'package:shuttla/ui/size_config/size_config.dart';
@@ -22,13 +24,15 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
         listener: (ctx, state){
           print(state);
           if(state is DriverEnrouteState)
-            showBottomSheet(context: ctx, builder: (ctx)=> Card(
-              child: Container(
-                height: 200,
-                width: double.infinity,
-                color: Colors.amber,
-              ),
-            ));
+            showBottomSheet(context: ctx,
+                backgroundColor: Colors.transparent,
+                builder: (ctx)=> DriverEnrouteFragment(),
+            );
+          if(state is DriverPickupState)
+            showBottomSheet(context: ctx,
+              backgroundColor: Colors.transparent,
+              builder: (ctx)=> DriverCompleteFragment(),
+            );
         },
         child: SafeArea(
           child: Stack(
@@ -112,7 +116,8 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                   Navigator.pop(context);
                   showBottomSheet(context: context,
                       backgroundColor: Colors.transparent,
-                      builder: (context)=> SelectedStationFragment());
+                      builder: (context)=> SelectedStationFragment(),
+                  );
                 },
               );
             },

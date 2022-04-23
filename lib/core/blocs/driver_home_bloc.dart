@@ -2,9 +2,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DriverHomeBloc extends Bloc<DriverHomeEvent, DriverHomeState>{
   DriverHomeBloc() : super(DriverIdleState()){
-    // on<DriverFetchStationDetailEvent>(
-    //       (event, emit)=> emit(DriverIdleState()),
-    // );
+    on<DriverFetchAllStationsEvent>(
+          (event, emit)=> emit(DriverIdleState()),
+    );
     on<DriverFetchStationDetailEvent>(
           (event, emit)=> emit(DriverStationDetailState()),
     );
@@ -15,6 +15,9 @@ class DriverHomeBloc extends Bloc<DriverHomeEvent, DriverHomeState>{
           (event, emit)=> emit(DriverIdleState()),
     );
     on<DriverPickupEvent>(
+          (event, emit)=> emit(DriverPickupState()),
+    );
+    on<DriverCompleteEvent>(
           (event, emit)=> emit(DriverIdleState()),
     );
   }
@@ -40,6 +43,10 @@ class DriverPickupEvent extends DriverHomeEvent{
   final String stationId, stationName;
   DriverPickupEvent(this.stationId, this.stationName);
 }
+class DriverCompleteEvent extends DriverHomeEvent{
+  final String stationId, stationName;
+  DriverCompleteEvent(this.stationId, this.stationName);
+}
 
 
 //states
@@ -51,6 +58,9 @@ class DriverIdleState extends DriverHomeState{
 class DriverStationDetailState extends DriverHomeState{
   final dynamic station;
   DriverStationDetailState([this.station]);
+}
+class DriverPickupState extends DriverHomeState{
+  DriverPickupState();
 }
 class DriverEnrouteState extends DriverHomeState{
   DriverEnrouteState();
