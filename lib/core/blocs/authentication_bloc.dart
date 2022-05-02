@@ -7,7 +7,7 @@ class AuthenticationBloc
   late AuthService authService;
   AuthenticationBloc([AuthService? _auth])
       : authService = _auth ?? AuthService(), super(AuthIdleState()) {
-    on<AuthPassengerLogin>((event, emit) async {
+    on<AuthPassengerRegister>((event, emit) async {
       emit(AuthAuthenticatingState());
       try {
         AppUser data = await authService.registerPassenger(
@@ -21,7 +21,7 @@ class AuthenticationBloc
       }
     });
 
-    on<AuthDriverLogin>((event, emit) async {
+    on<AuthDriverRegister>((event, emit) async {
       emit(AuthAuthenticatingState());
       try {
         AppUser data = await authService.registerDriver(
@@ -39,6 +39,19 @@ class AuthenticationBloc
       }
     });
 
+    on<AuthLoginEvent>((event, emit) async {
+      emit(AuthAuthenticatingState());
+      try {
+        AppUser data = await authService.loginUser(
+          event.email,
+          event.password,
+        );
+        return emit(AuthAuthenticatedState(data));
+      } catch (error) {
+        return emit(AuthErrorState(error));
+      }
+    });
+
     on<AuthUserLogout>((event, emit) async {
       authService.logOut();
       return emit(AuthIdleState());
@@ -49,14 +62,18 @@ class AuthenticationBloc
 ///Authentication events
 abstract class AuthenticationEvent {}
 class AuthUserLogout extends AuthenticationEvent {}
-class AuthPassengerLogin extends AuthenticationEvent {
+class AuthPassengerRegister extends AuthenticationEvent {
   final String nickName, email, password;
-  AuthPassengerLogin(this.nickName, this.email, this.password);
+  AuthPassengerRegister(this.nickName, this.email, this.password);
 }
-class AuthDriverLogin extends AuthenticationEvent {
+class AuthLoginEvent extends AuthenticationEvent{
+  final String email, password;
+  AuthLoginEvent(this.email, this.password);
+}
+class AuthDriverRegister extends AuthenticationEvent {
   final String nickName, email, password;
   final String plateNumber, carManufacturer, carModel, carColor;
-  AuthDriverLogin({
+  AuthDriverRegister({
     required this.nickName,
     required this.email,
     required this.password,

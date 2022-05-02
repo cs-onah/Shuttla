@@ -22,6 +22,16 @@ class AuthService {
 
   registerAdmin(String nickName, String email, String password) {}
 
+  Future<AppUser> loginUser(String email, String password) async{
+    UserCredential cred = await _auth.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+    DocumentSnapshot snapshot = await _users.doc(cred.user!.uid).get();
+    AppUser user = AppUser.fromMap(snapshot.data()!);
+    return user;
+  }
+
   Future<AppUser> registerPassenger(String nickName, String email, String password) async {
     UserCredential cred = await _auth.createUserWithEmailAndPassword(
       email: email,
@@ -36,7 +46,8 @@ class AuthService {
         userType: UserType.PASSENGER.getString,
       ),
     );
-    await _users.add(newUser.toMap());
+    print(cred.user?.uid);
+    await _users.doc(newUser.userData.userId).set(newUser.toMap());
     return newUser;
   }
 
@@ -69,7 +80,7 @@ class AuthService {
         carColor: carColor,
       ),
     );
-    _users.add(newUser.toMap());
+    _users.doc(newUser.userData.userId).set(newUser.toMap());
     return newUser;
   }
 
