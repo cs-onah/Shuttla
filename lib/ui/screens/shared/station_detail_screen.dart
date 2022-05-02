@@ -40,7 +40,7 @@ class StationDetailScreen extends StatelessWidget {
         ),
         body: ListView(
           padding: EdgeInsets.symmetric(
-              vertical: 30, horizontal: SizeConfig.widthOf(6)),
+              vertical: 20, horizontal: SizeConfig.widthOf(6)),
           children: [
             Row(
               children: [
@@ -101,11 +101,18 @@ class StationDetailScreen extends StatelessWidget {
   BoxButton _passengerActionWidget(BuildContext context) {
     return BoxButton.purple(
       text: "JOIN WAIT",
-      onPressed: () {
-        context.read<PassengerHomeBloc>().add(
-          PassengerJoinStationEvent(stationId, stationName),
-        );
-        Navigator.pop(context);
+      // onPressed: () {
+      //   context.read<PassengerHomeBloc>().add(
+      //     PassengerJoinStationEvent(stationId, stationName),
+      //   );
+      //   Navigator.pop(context);
+      // },
+      onPressedWithNotifier: (valueNotifier) async{
+        valueNotifier.value = true;
+        //Network request
+        await Future.delayed(Duration(seconds: 3));
+
+        valueNotifier.value = false;
       },
     );
   }
@@ -145,7 +152,7 @@ class StationDetailTile extends StatelessWidget {
               ? SizedBox(width: 30)
               : Container(
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(12)),
+                    borderRadius: BorderRadius.all(Radius.circular(60)),
                     color: iconBgColor ?? Colors.black45,
                   ),
                   child: Padding(

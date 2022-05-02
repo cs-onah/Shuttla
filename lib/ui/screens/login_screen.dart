@@ -48,7 +48,7 @@ class LoginScreen extends StatelessWidget {
           BoxButton.purple(
               text: "Login",
             onPressed: (){
-                UserType role = UserType.DRIVER;
+                UserType role = UserType.PASSENGER;
 
                 if(role == UserType.DRIVER)
                   Navigator.pushNamed(context, RouteNames.driverHomeScreen);
