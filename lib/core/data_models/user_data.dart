@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:shuttla/constants/user_type_enum.dart';
+
 class UserData {
   UserData({
     required this.userId,
@@ -14,6 +16,7 @@ class UserData {
   String email;
   String imageResource;
   String userType;
+  UserType? get userTypeEnum => getUserTypeFromString(userType);
 
   UserData copyWith({
     String? nickname,

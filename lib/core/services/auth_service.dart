@@ -22,26 +22,25 @@ class AuthService {
 
   registerAdmin(String nickName, String email, String password) {}
 
-  registerPassenger(String nickName, String email, String password) async {
+  Future<AppUser> registerPassenger(String nickName, String email, String password) async {
     UserCredential cred = await _auth.createUserWithEmailAndPassword(
       email: email,
       password: password,
     );
-
-    _users.add(
-      AppUser(
-        userData: UserData(
-          email: email,
-          imageResource: generateProfileRes,
-          nickname: nickName,
-          userId: cred.user?.uid ?? "",
-          userType: UserType.PASSENGER.getString,
-        ),
-      ).toMap(),
+    final newUser = AppUser(
+      userData: UserData(
+        email: email,
+        imageResource: generateProfileRes,
+        nickname: nickName,
+        userId: cred.user?.uid ?? "",
+        userType: UserType.PASSENGER.getString,
+      ),
     );
+    await _users.add(newUser.toMap());
+    return newUser;
   }
 
-  registerDriver({
+  Future<AppUser> registerDriver({
     required String nickName,
     required String email,
     required String password,
@@ -55,23 +54,28 @@ class AuthService {
       password: password,
     );
 
-    _users.add(
-      AppUser(
-        userData: UserData(
-          email: email,
-          imageResource: generateProfileRes,
-          nickname: nickName,
-          userId: cred.user?.uid ?? "",
-          userType: UserType.PASSENGER.getString,
-        ),
-        driverData: DriverData(
-          plateNumber: plateNumber,
-          carManufacturer: carManufacturer,
-          carModel: carModel,
-          carColor: carColor,
-        ),
-      ).toMap(),
+    final newUser = AppUser(
+      userData: UserData(
+        email: email,
+        imageResource: generateProfileRes,
+        nickname: nickName,
+        userId: cred.user?.uid ?? "",
+        userType: UserType.PASSENGER.getString,
+      ),
+      driverData: DriverData(
+        plateNumber: plateNumber,
+        carManufacturer: carManufacturer,
+        carModel: carModel,
+        carColor: carColor,
+      ),
     );
+    _users.add(newUser.toMap());
+    return newUser;
+  }
+
+  Future<bool> logOut() async{
+    await _auth.signOut();
+    return true;
   }
 
   String get generateProfileRes => (Random().nextInt(5) + 1).toString();
