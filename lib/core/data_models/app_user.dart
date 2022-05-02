@@ -3,6 +3,8 @@
 //     final appUser = appUserFromMap(jsonString);
 
 import 'dart:convert';
+import 'driver_data.dart';
+import 'user_data.dart';
 
 class AppUser {
   AppUser({
@@ -67,101 +69,5 @@ class Admin {
 
   Map<String, dynamic> toMap() => {
     "privileges":  privileges,
-  };
-}
-
-class DriverData {
-  DriverData({
-    required this.plateNumber,
-    required this.carManufacturer,
-    required this.carModel,
-    required this.carColor,
-  });
-
-  String plateNumber;
-  String carManufacturer;
-  String carModel;
-  String carColor;
-
-  DriverData copyWith({
-    String? plateNumber,
-    String? carManufacturer,
-    String? carModel,
-    String? carColor,
-  }) =>
-      DriverData(
-        plateNumber: plateNumber ?? this.plateNumber,
-        carManufacturer: carManufacturer ?? this.carManufacturer,
-        carModel: carModel ?? this.carModel,
-        carColor: carColor ?? this.carColor,
-      );
-
-  factory DriverData.fromJson(String str) => DriverData.fromMap(json.decode(str));
-
-  String toJson() => json.encode(toMap());
-
-  factory DriverData.fromMap(Map<String, dynamic> json) => DriverData(
-    plateNumber: json["plateNumber"] == null ? null : json["plateNumber"],
-    carManufacturer: json["carManufacturer"] == null ? null : json["carManufacturer"],
-    carModel: json["carModel"] == null ? null : json["carModel"],
-    carColor: json["carColor"] == null ? null : json["carColor"],
-  );
-
-  Map<String, dynamic> toMap() => {
-    "plateNumber": plateNumber,
-    "carManufacturer": carManufacturer,
-    "carModel": carModel,
-    "carColor": carColor,
-  };
-}
-
-class UserData {
-  UserData({
-    required this.userId,
-    required this.nickname,
-    required this.email,
-    required this.imageResource,
-    required this.userType,
-  });
-
-  String userId;
-  String nickname;
-  String email;
-  String imageResource;
-  String userType;
-
-  UserData copyWith({
-    String? nickname,
-    String? email,
-    String? userId,
-    String? imageResource,
-    String? userType,
-  }) =>
-      UserData(
-        nickname: nickname ?? this.nickname,
-        email: email ?? this.email,
-        userId: userId ?? this.userId,
-        imageResource: imageResource ?? this.imageResource,
-        userType: userType ?? this.userType,
-      );
-
-  factory UserData.fromJson(String str) => UserData.fromMap(json.decode(str));
-
-  String toJson() => json.encode(toMap());
-
-  factory UserData.fromMap(Map<String, dynamic> json) => UserData(
-    nickname: json["nickname"] == null ? null : json["nickname"],
-    email: json["email"] == null ? null : json["email"],
-    userId: json["userId"] == null ? null : json["userId"],
-    imageResource: json["imageResource"] == null ? null : json["imageResource"],
-    userType: json["userType"] == null ? null : json["userType"],
-  );
-
-  Map<String, dynamic> toMap() => {
-    "nickname": nickname,
-    "email": email,
-    "userId": userId,
-    "imageResource": imageResource,
-    "userType": userType,
   };
 }
