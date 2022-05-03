@@ -4,11 +4,14 @@ import 'package:gap/gap.dart';
 import 'package:shuttla/constants/route_names.dart';
 import 'package:shuttla/constants/user_type_enum.dart';
 import 'package:shuttla/core/blocs/authentication_bloc.dart';
+import 'package:shuttla/core/mixin/validators.dart';
 import 'package:shuttla/ui/size_config/size_config.dart';
 import 'package:shuttla/ui/widgets/custom_button.dart';
 import 'package:shuttla/ui/widgets/custom_textfield.dart';
+import 'package:shuttla/ui/widgets/error_bottom_sheet.dart';
+import 'package:shuttla/ui/widgets/loading_indicator.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatelessWidget with Validators{
   LoginScreen();
 
   final emailC = TextEditingController();
@@ -21,7 +24,20 @@ class LoginScreen extends StatelessWidget {
         backgroundColor: Color(0xffF5E9F9),
         body: BlocListener<AuthenticationBloc, AuthenticationState>(
           listener: (context, state) {
+            if(state is AuthAuthenticatingState){
+              showDialog(context: context, builder: (context)=> LoadingScreen());
+            }
+
+            if (state is AuthErrorState){
+              Navigator.pop(context);
+              showModalBottomSheet(
+                context: context,
+                builder: (context) => ErrorBottomSheet(description: state.error.toString()),
+              );
+            }
+
             if (state is AuthAuthenticatedState) {
+              Navigator.pop(context);
               switch (state.user.userData.userTypeEnum) {
                 case UserType.DRIVER:
                   Navigator.pushNamedAndRemoveUntil(
@@ -63,7 +79,10 @@ class LoginScreen extends StatelessWidget {
                 Text("Email",
                     style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
                 const Gap(10),
-                BoxTextField(hintText: "abc@xyz.com"),
+                BoxTextField(hintText: "abc@xyz.com",
+                  controller: emailC,
+                  validator: (value) => validateEmail(value!),
+                ),
                 const Gap(30),
                 Text("Password",
                     style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
@@ -71,15 +90,16 @@ class LoginScreen extends StatelessWidget {
                 BoxTextField(
                   obscureText: true,
                   hintText: "••••••••",
+                  controller: passwordC,
+                  validator: (value) => validatePassword(value!),
                 ),
                 Gap(50),
                 BoxButton.purple(
                   text: "Login",
                   onPressedWithNotifier: (notifier) {
-                    notifier.value = true;
+                    if(!loginFormKey.currentState!.validate()) return;
                     context.read<AuthenticationBloc>()
                         .add(AuthLoginEvent(emailC.text, passwordC.text));
-                    notifier.value = true;
                     // UserType role = UserType.PASSENGER;
                     // if (role == UserType.DRIVER)
                     //   Navigator.pushNamed(context, RouteNames.driverHomeScreen);

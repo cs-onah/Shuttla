@@ -10,6 +10,7 @@ import 'package:shuttla/ui/size_config/size_config.dart';
 import 'package:shuttla/ui/widgets/custom_button.dart';
 import 'package:shuttla/ui/widgets/custom_textfield.dart';
 import 'package:shuttla/ui/widgets/error_bottom_sheet.dart';
+import 'package:shuttla/ui/widgets/loading_indicator.dart';
 
 class RegisterScreen extends StatelessWidget {
   final UserType? type;
@@ -21,12 +22,20 @@ class RegisterScreen extends StatelessWidget {
     return Scaffold(
       body: BlocListener<AuthenticationBloc, AuthenticationState>(
         listener: (context, state) {
-          if (state is AuthErrorState)
+          if(state is AuthAuthenticatingState){
+            showDialog(context: context, builder: (context)=> LoadingScreen());
+          }
+
+          if (state is AuthErrorState){
+            Navigator.pop(context);
             showModalBottomSheet(
               context: context,
-              builder: (context) => ErrorBottomSheet(description: state.error),
+              builder: (context) => ErrorBottomSheet(description: state.error.toString()),
             );
+          }
+
           if(state is AuthAuthenticatedState){
+            Navigator.pop(context);
             switch(state.user.userData.userTypeEnum){
               case UserType.DRIVER:
                 Navigator.pushNamedAndRemoveUntil(context, RouteNames.driverHomeScreen, (route) => false);
@@ -159,11 +168,8 @@ class PassengerRegistrationFragment extends StatelessWidget with Validators {
               text: "Register",
               onPressedWithNotifier: (notifier) {
                 if (!passengerRegisterFormKey.currentState!.validate()) return;
-                notifier.value = true;
-                final bloc = context.read<AuthenticationBloc>();
-                bloc.add(AuthPassengerRegister(
+                context.read<AuthenticationBloc>().add(AuthPassengerRegister(
                     nickNameC.text, emailC.text, passwordC.text));
-                notifier.value = false;
               },
             ),
           ),
