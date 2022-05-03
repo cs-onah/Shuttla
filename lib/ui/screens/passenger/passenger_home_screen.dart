@@ -56,6 +56,7 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
                 child: FutureBuilder(
                   future: authBloc.currentUser(),
                   builder: (BuildContext context, AsyncSnapshot<AppUser?> snapshot) {
+                    if(!snapshot.hasData) return Container();
                     return Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
