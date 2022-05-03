@@ -2,24 +2,22 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:shuttla/constants/collection_names.dart';
 import 'package:shuttla/constants/user_type_enum.dart';
 import 'package:shuttla/core/data_models/app_user.dart';
 import 'package:shuttla/core/data_models/driver_data.dart';
 import 'package:shuttla/core/data_models/user_data.dart';
+import 'package:shuttla/core/services/session_manager.dart';
 
 class AuthService {
   late FirebaseAuth _auth;
   late FirebaseFirestore _firestore;
-  late CollectionReference _users;
-
-  AppUser? _appuser;
+  late CollectionReference _userCollection;
 
   AuthService({FirebaseAuth? auth, FirebaseFirestore? firestore}) {
     _firestore = firestore ?? FirebaseFirestore.instance;
     _auth = auth ?? FirebaseAuth.instance;
-    _users = _firestore.collection(CollectionName.USERS);
+    _userCollection = _firestore.collection(CollectionName.USERS);
   }
 
   registerAdmin(String nickName, String email, String password) {}
@@ -29,9 +27,10 @@ class AuthService {
       email: email,
       password: password,
     );
-    DocumentSnapshot snapshot = await _users.doc(cred.user!.uid).get();
-    _appuser = AppUser.fromMap(snapshot.data()!);
-    return _appuser;
+    DocumentSnapshot snapshot = await _userCollection.doc(cred.user!.uid).get();
+    AppUser appUser = AppUser.fromMap(snapshot.data()!);
+    SessionManager.setUser(appUser);
+    return appUser;
   }
 
   Future<AppUser?> registerPassenger(String nickName, String email, String password) async {
@@ -39,7 +38,7 @@ class AuthService {
       email: email,
       password: password,
     );
-    _appuser = AppUser(
+    AppUser appUser = AppUser(
       userData: UserData(
         email: email,
         imageResource: _generateProfileRes,
@@ -48,8 +47,9 @@ class AuthService {
         userType: UserType.PASSENGER.getString,
       ),
     );
-    await _users.doc(_appuser!.userData.userId).set(_appuser!.toMap());
-    return _appuser;
+    await _userCollection.doc(appUser.userData.userId).set(appUser.toMap());
+    SessionManager.setUser(appUser);
+    return appUser;
   }
 
   Future<AppUser?> registerDriver({
@@ -66,7 +66,7 @@ class AuthService {
       password: password,
     );
 
-    _appuser = AppUser(
+    AppUser appUser = AppUser(
       userData: UserData(
         email: email,
         imageResource: _generateProfileRes,
@@ -81,24 +81,23 @@ class AuthService {
         carColor: carColor,
       ),
     );
-    _users.doc(_appuser!.userData.userId).set(_appuser!.toMap());
-    return _appuser;
+    _userCollection.doc(appUser.userData.userId).set(appUser.toMap());
+    SessionManager.setUser(appUser);
+    return appUser;
   }
 
   Future<bool> logOut() async{
     await _auth.signOut();
-    _appuser = null;
+    SessionManager.logout();
     return true;
   }
 
   Future<AppUser?> getCurrentUser() async{
-    if(_appuser != null) return _appuser;
-
     String? uid = _auth.currentUser?.uid;
     if(uid != null){
-      DocumentSnapshot snapshot = await _users.doc(uid).get();
-      _appuser = AppUser.fromMap(snapshot.data()!);
-      return _appuser;
+      DocumentSnapshot snapshot = await _userCollection.doc(uid).get();
+      AppUser user = AppUser.fromMap(snapshot.data()!);
+      return user;
     }
   }
 
