@@ -72,7 +72,7 @@ class AuthService {
         imageResource: _generateProfileRes,
         nickname: nickName,
         userId: cred.user?.uid ?? "",
-        userType: UserType.PASSENGER.getString,
+        userType: UserType.DRIVER.getString,
       ),
       driverData: DriverData(
         plateNumber: plateNumber,
@@ -87,8 +87,7 @@ class AuthService {
   }
 
   Future<bool> logOut() async{
-    await _auth.signOut();
-    SessionManager.logout();
+    await SessionManager.logout();
     return true;
   }
 

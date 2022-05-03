@@ -7,7 +7,7 @@ class SessionManager {
   static late FirebaseAuth _firebaseAuth;
   static late FirebaseFirestore _firestore;
   static late CollectionReference _userCollection;
-  SessionManager(){
+  static void init(){
     //Initialize data
     _firebaseAuth = FirebaseAuth.instance;
     _firestore = FirebaseFirestore.instance;
@@ -27,7 +27,10 @@ class SessionManager {
     return _user;
   }
 
-  static void logout()=> _user = null;
+  static Future logout() async {
+    await _firebaseAuth.signOut();
+    _user = null;
+  }
 
 
 }
