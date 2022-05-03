@@ -166,7 +166,7 @@ class PassengerRegistrationFragment extends StatelessWidget with Validators {
             width: double.infinity,
             child: BoxButton.purple(
               text: "Register",
-              onPressedWithNotifier: (notifier) {
+              onPressed: () {
                 if (!passengerRegisterFormKey.currentState!.validate()) return;
                 context.read<AuthenticationBloc>().add(AuthPassengerRegister(
                     nickNameC.text, emailC.text, passwordC.text));

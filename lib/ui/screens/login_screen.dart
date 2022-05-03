@@ -30,6 +30,7 @@ class LoginScreen extends StatelessWidget with Validators{
 
             if (state is AuthErrorState){
               Navigator.pop(context);
+              print(state.error.runtimeType);
               showModalBottomSheet(
                 context: context,
                 builder: (context) => ErrorBottomSheet(description: state.error.toString()),

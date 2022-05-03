@@ -26,9 +26,12 @@ class ErrorBottomSheet extends StatelessWidget {
             const Gap(20),
             Text('$description', style: TextStyle(fontSize: 14)),
             const Gap(20),
-            BoxButton.purple(
-              text: "Dismiss",
-              onPressed: ()=> Navigator.pop(context),
+            SizedBox(
+              width: 100,
+              child: BoxButton.purple(
+                text: "Dismiss",
+                onPressed: ()=> Navigator.pop(context),
+              ),
             ),
           ],
         ),

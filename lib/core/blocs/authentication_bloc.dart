@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shuttla/constants/firebase_errors.dart';
 import 'package:shuttla/core/data_models/app_user.dart';
 import 'package:shuttla/core/services/auth_service.dart';
 
@@ -16,6 +18,8 @@ class AuthenticationBloc
           event.password,
         );
         return emit(AuthAuthenticatedState(data));
+      } on FirebaseAuthException catch (e) {
+        return emit(AuthErrorState(SignUpWithEmailAndPasswordFailure.fromCode(e.code).message));
       } catch (error) {
         return emit(AuthErrorState(error));
       }
@@ -34,6 +38,8 @@ class AuthenticationBloc
           plateNumber: event.plateNumber,
         );
         return emit(AuthAuthenticatedState(data));
+      } on FirebaseAuthException catch (e) {
+        return emit(AuthErrorState(SignUpWithEmailAndPasswordFailure.fromCode(e.code).message));
       } catch (error) {
         return emit(AuthErrorState(error));
       }
@@ -47,6 +53,8 @@ class AuthenticationBloc
           event.password,
         );
         return emit(AuthAuthenticatedState(data));
+      } on FirebaseAuthException catch (e) {
+        return emit(AuthErrorState(LogInWithEmailAndPasswordFailure.fromCode(e.code).message));
       } catch (error) {
         return emit(AuthErrorState(error));
       }
