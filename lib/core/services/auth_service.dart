@@ -14,6 +14,8 @@ class AuthService {
   late FirebaseFirestore _firestore;
   late CollectionReference _users;
 
+  AppUser? _appuser;
+
   AuthService({FirebaseAuth? auth, FirebaseFirestore? firestore}) {
     _firestore = firestore ?? FirebaseFirestore.instance;
     _auth = auth ?? FirebaseAuth.instance;
@@ -22,36 +24,35 @@ class AuthService {
 
   registerAdmin(String nickName, String email, String password) {}
 
-  Future<AppUser> loginUser(String email, String password) async{
+  Future<AppUser?> loginUser(String email, String password) async{
     UserCredential cred = await _auth.signInWithEmailAndPassword(
       email: email,
       password: password,
     );
     DocumentSnapshot snapshot = await _users.doc(cred.user!.uid).get();
-    AppUser user = AppUser.fromMap(snapshot.data()!);
-    return user;
+    _appuser = AppUser.fromMap(snapshot.data()!);
+    return _appuser;
   }
 
-  Future<AppUser> registerPassenger(String nickName, String email, String password) async {
+  Future<AppUser?> registerPassenger(String nickName, String email, String password) async {
     UserCredential cred = await _auth.createUserWithEmailAndPassword(
       email: email,
       password: password,
     );
-    final newUser = AppUser(
+    _appuser = AppUser(
       userData: UserData(
         email: email,
-        imageResource: generateProfileRes,
+        imageResource: _generateProfileRes,
         nickname: nickName,
         userId: cred.user?.uid ?? "",
         userType: UserType.PASSENGER.getString,
       ),
     );
-    print(cred.user?.uid);
-    await _users.doc(newUser.userData.userId).set(newUser.toMap());
-    return newUser;
+    await _users.doc(_appuser!.userData.userId).set(_appuser!.toMap());
+    return _appuser;
   }
 
-  Future<AppUser> registerDriver({
+  Future<AppUser?> registerDriver({
     required String nickName,
     required String email,
     required String password,
@@ -65,10 +66,10 @@ class AuthService {
       password: password,
     );
 
-    final newUser = AppUser(
+    _appuser = AppUser(
       userData: UserData(
         email: email,
-        imageResource: generateProfileRes,
+        imageResource: _generateProfileRes,
         nickname: nickName,
         userId: cred.user?.uid ?? "",
         userType: UserType.PASSENGER.getString,
@@ -80,14 +81,26 @@ class AuthService {
         carColor: carColor,
       ),
     );
-    _users.doc(newUser.userData.userId).set(newUser.toMap());
-    return newUser;
+    _users.doc(_appuser!.userData.userId).set(_appuser!.toMap());
+    return _appuser;
   }
 
   Future<bool> logOut() async{
     await _auth.signOut();
+    _appuser = null;
     return true;
   }
 
-  String get generateProfileRes => (Random().nextInt(5) + 1).toString();
+  Future<AppUser?> getCurrentUser() async{
+    if(_appuser != null) return _appuser;
+
+    String? uid = _auth.currentUser?.uid;
+    if(uid != null){
+      DocumentSnapshot snapshot = await _users.doc(uid).get();
+      _appuser = AppUser.fromMap(snapshot.data()!);
+      return _appuser;
+    }
+  }
+
+  String get _generateProfileRes => (Random().nextInt(5) + 1).toString();
 }

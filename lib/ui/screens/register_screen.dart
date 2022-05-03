@@ -9,8 +9,6 @@ import 'package:shuttla/ui/screens/select_user_screen.dart';
 import 'package:shuttla/ui/size_config/size_config.dart';
 import 'package:shuttla/ui/widgets/custom_button.dart';
 import 'package:shuttla/ui/widgets/custom_textfield.dart';
-import 'package:shuttla/ui/widgets/error_bottom_sheet.dart';
-import 'package:shuttla/ui/widgets/loading_indicator.dart';
 
 class RegisterScreen extends StatelessWidget {
   final UserType? type;
@@ -20,88 +18,60 @@ class RegisterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocListener<AuthenticationBloc, AuthenticationState>(
-        listener: (context, state) {
-          if(state is AuthAuthenticatingState){
-            showDialog(context: context, builder: (context)=> LoadingScreen());
-          }
-
-          if (state is AuthErrorState){
-            Navigator.pop(context);
-            showModalBottomSheet(
-              context: context,
-              builder: (context) => ErrorBottomSheet(description: state.error.toString()),
-            );
-          }
-
-          if(state is AuthAuthenticatedState){
-            Navigator.pop(context);
-            switch(state.user.userData.userTypeEnum){
-              case UserType.DRIVER:
-                Navigator.pushNamedAndRemoveUntil(context, RouteNames.driverHomeScreen, (route) => false);
-                break;
-              case UserType.ADMIN:
-              case UserType.PASSENGER:
-              default:
-                Navigator.pushNamedAndRemoveUntil(context, RouteNames.passengerHomeScreen, (route) => false);
-            }
-          }
-        },
-        child: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: SizeConfig.widthOf(6),
-                  vertical: 20,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        BackButton(onPressed: () => Navigator.pop(context)),
-                      ],
-                    ),
-                    Gap(SizeConfig.heightOf(5)),
-                    Text(
-                      'Register.',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const Gap(10),
-                    Text(
-                      'Create ${type!.getString} Account!',
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const Gap(20),
-                  ],
-                ),
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: SizeConfig.widthOf(6),
+                vertical: 20,
               ),
-              Expanded(
-                child: Builder(
-                  builder: (context) {
-                    switch (type) {
-                      case UserType.PASSENGER:
-                        return PassengerRegistrationFragment();
-                      case UserType.DRIVER:
-                        return DriverRegistrationFragment();
-                      case UserType.ADMIN:
-                        return AdminRegistrationFragment();
-                      default:
-                        return PassengerRegistrationFragment();
-                    }
-                  },
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      BackButton(onPressed: () => Navigator.pop(context)),
+                    ],
+                  ),
+                  Gap(SizeConfig.heightOf(5)),
+                  Text(
+                    'Register.',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const Gap(10),
+                  Text(
+                    'Create ${type!.getString} Account!',
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const Gap(20),
+                ],
               ),
-            ],
-          ),
+            ),
+            Expanded(
+              child: Builder(
+                builder: (context) {
+                  switch (type) {
+                    case UserType.PASSENGER:
+                      return PassengerRegistrationFragment();
+                    case UserType.DRIVER:
+                      return DriverRegistrationFragment();
+                    case UserType.ADMIN:
+                      return AdminRegistrationFragment();
+                    default:
+                      return PassengerRegistrationFragment();
+                  }
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );

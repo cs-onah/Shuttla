@@ -17,6 +17,7 @@ class UserData {
   String imageResource;
   String userType;
   UserType? get userTypeEnum => getUserTypeFromString(userType);
+  String get imageResourcePath => "images/Avatar-$imageResource.png";
 
   UserData copyWith({
     String? nickname,

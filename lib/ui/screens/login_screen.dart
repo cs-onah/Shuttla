@@ -30,7 +30,6 @@ class LoginScreen extends StatelessWidget with Validators{
 
             if (state is AuthErrorState){
               Navigator.pop(context);
-              print(state.error.runtimeType);
               showModalBottomSheet(
                 context: context,
                 builder: (context) => ErrorBottomSheet(description: state.error.toString()),
@@ -39,7 +38,7 @@ class LoginScreen extends StatelessWidget with Validators{
 
             if (state is AuthAuthenticatedState) {
               Navigator.pop(context);
-              switch (state.user.userData.userTypeEnum) {
+              switch (state.user!.userData.userTypeEnum) {
                 case UserType.DRIVER:
                   Navigator.pushNamedAndRemoveUntil(
                       context, RouteNames.driverHomeScreen, (route) => false);

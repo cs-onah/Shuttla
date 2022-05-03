@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:shuttla/core/blocs/authentication_bloc.dart';
 import 'package:shuttla/core/blocs/passenger_home_bloc.dart';
+import 'package:shuttla/core/data_models/app_user.dart';
 import 'package:shuttla/ui/screens/shared/select_busstop_fragment.dart';
 import 'package:shuttla/ui/screens/shared/station_detail_screen.dart';
 import 'package:shuttla/ui/size_config/size_config.dart';
@@ -23,6 +25,7 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final authBloc = context.read<AuthenticationBloc>();
     return SafeArea(
       child: Scaffold(
         body: Stack(
@@ -50,22 +53,27 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
                   color: Colors.white,
                   borderRadius: BorderRadius.all(Radius.circular(100)),
                 ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    CircleAvatar(
-                      foregroundImage: AssetImage("images/Avatar-4.png"),
-                      radius: 25,
-                    ),
-                    SizedBox(width: 10),
-                    Text(
-                        'Hi Ebuka 👋',
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                child: FutureBuilder(
+                  future: authBloc.currentUser(),
+                  builder: (BuildContext context, AsyncSnapshot<AppUser?> snapshot) {
+                    return Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CircleAvatar(
+                          foregroundImage: AssetImage(snapshot.data!.userData.imageResourcePath),
+                          radius: 25,
                         ),
-                    ),
-                  ],
+                        SizedBox(width: 10),
+                        Text(
+                            'Hi ${snapshot.data?.userData.nickname ?? ""} 👋',
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                            ),
+                        ),
+                      ],
+                    );
+                  }
                 ),
               ),
             ),

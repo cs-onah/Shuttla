@@ -7,12 +7,14 @@ import 'package:shuttla/core/services/auth_service.dart';
 class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
   late AuthService authService;
+
   AuthenticationBloc([AuthService? _auth])
       : authService = _auth ?? AuthService(), super(AuthIdleState()) {
+
     on<AuthPassengerRegister>((event, emit) async {
       emit(AuthAuthenticatingState());
       try {
-        AppUser data = await authService.registerPassenger(
+        AppUser? data = await authService.registerPassenger(
           event.nickName,
           event.email,
           event.password,
@@ -28,7 +30,7 @@ class AuthenticationBloc
     on<AuthDriverRegister>((event, emit) async {
       emit(AuthAuthenticatingState());
       try {
-        AppUser data = await authService.registerDriver(
+        AppUser? data = await authService.registerDriver(
           nickName: event.nickName,
           email: event.email,
           password: event.password,
@@ -48,7 +50,7 @@ class AuthenticationBloc
     on<AuthLoginEvent>((event, emit) async {
       emit(AuthAuthenticatingState());
       try {
-        AppUser data = await authService.loginUser(
+        AppUser? data = await authService.loginUser(
           event.email,
           event.password,
         );
@@ -64,6 +66,16 @@ class AuthenticationBloc
       authService.logOut();
       return emit(AuthIdleState());
     });
+  }
+
+  Future<AppUser?> currentUser() async{
+    AppUser? user;
+    try{
+      user = await authService.getCurrentUser();
+    } catch(e){
+      print("$e");
+    }
+    return user;
   }
 }
 
@@ -101,6 +113,6 @@ class AuthErrorState extends AuthenticationState {
   AuthErrorState(this.error);
 }
 class AuthAuthenticatedState extends AuthenticationState {
-  final AppUser user;
+  final AppUser? user;
   AuthAuthenticatedState(this.user);
 }
