@@ -9,7 +9,7 @@ class AuthenticationBloc
   late AuthService authService;
 
   AuthenticationBloc([AuthService? _auth])
-      : authService = _auth ?? AuthService(), super(AuthIdleState()) {
+      : authService = _auth ?? AuthService(), super(AuthLoggedOutState()) {
 
     on<AuthPassengerRegister>((event, emit) async {
       emit(AuthAuthenticatingState());
@@ -64,7 +64,7 @@ class AuthenticationBloc
 
     on<AuthUserLogout>((event, emit) async {
       authService.logOut();
-      return emit(AuthIdleState());
+      return emit(AuthLoggedOutState());
     });
   }
 
@@ -106,7 +106,7 @@ class AuthDriverRegister extends AuthenticationEvent {
 
 ///Authentication states
 abstract class AuthenticationState {}
-class AuthIdleState extends AuthenticationState {}
+class AuthLoggedOutState extends AuthenticationState {}
 class AuthAuthenticatingState extends AuthenticationState {}
 class AuthErrorState extends AuthenticationState {
   final dynamic error;
