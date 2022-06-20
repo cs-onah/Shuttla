@@ -5,7 +5,7 @@ import 'package:shuttla/constants/route_names.dart';
 import 'package:shuttla/constants/user_type_enum.dart';
 import 'package:shuttla/core/blocs/authentication_bloc.dart';
 import 'package:shuttla/core/mixin/validators.dart';
-import 'package:shuttla/ui/screens/select_user_screen.dart';
+import 'package:shuttla/ui/screens/onboarding/select_user_screen.dart';
 import 'package:shuttla/ui/size_config/size_config.dart';
 import 'package:shuttla/ui/widgets/custom_button.dart';
 import 'package:shuttla/ui/widgets/custom_textfield.dart';

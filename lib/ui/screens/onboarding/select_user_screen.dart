@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:shuttla/constants/user_type_enum.dart';
-import 'package:shuttla/ui/screens/register_screen.dart';
+import 'package:shuttla/ui/screens/onboarding/register_screen.dart';
 import 'package:shuttla/ui/size_config/size_config.dart';
 import 'package:shuttla/ui/widgets/custom_button.dart';
 
@@ -17,7 +17,7 @@ class _UserSelectScreenState extends State<UserSelectScreen> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        leading: BackButton(onPressed: ()=> Navigator.pop(context)),
+        leading: BackButton(onPressed: ()=> Navigator.pop(context), color: Colors.black),
         backgroundColor: Colors.transparent,
       ),
       body: Padding(

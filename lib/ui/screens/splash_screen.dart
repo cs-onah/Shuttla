@@ -40,7 +40,6 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void routeUser() async{
-    print("gettng route");
     SessionManager.init();
     AppUser? user = await SessionManager.getUser();
     print(user?.toMap());
@@ -53,7 +52,6 @@ class _SplashScreenState extends State<SplashScreen> {
         case UserType.PASSENGER:
         default:
           Navigator.pushNamedAndRemoveUntil(context, RouteNames.passengerHomeScreen, (route)=> false);
-
       }
     }
     else Navigator.pushNamedAndRemoveUntil(context, RouteNames.loginScreen, (route)=> false);

@@ -6,7 +6,7 @@ import 'package:shuttla/ui/size_config/size_config.dart';
 import 'package:shuttla/ui/widgets/custom_button.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../select_user_screen.dart';
+import '../onboarding/select_user_screen.dart';
 
 class StationDetailScreen extends StatelessWidget {
   final String stationName, stationId;

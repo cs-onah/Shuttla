@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shuttla/ui/screens/driver/driver_home_screen.dart';
-import 'package:shuttla/ui/screens/login_screen.dart';
+import 'package:shuttla/ui/screens/onboarding/login_screen.dart';
 import 'package:shuttla/ui/screens/passenger/passenger_home_screen.dart';
-import 'package:shuttla/ui/screens/select_user_screen.dart';
+import 'package:shuttla/ui/screens/onboarding/select_user_screen.dart';
 import 'package:shuttla/ui/screens/splash_screen.dart';
 
 class RouteNames {
