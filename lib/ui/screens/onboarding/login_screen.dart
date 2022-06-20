@@ -5,6 +5,7 @@ import 'package:shuttla/constants/route_names.dart';
 import 'package:shuttla/constants/user_type_enum.dart';
 import 'package:shuttla/core/blocs/authentication_bloc.dart';
 import 'package:shuttla/core/mixin/validators.dart';
+import 'package:shuttla/ui/screens/shared/router.dart';
 import 'package:shuttla/ui/size_config/size_config.dart';
 import 'package:shuttla/ui/widgets/custom_button.dart';
 import 'package:shuttla/ui/widgets/custom_textfield.dart';
@@ -38,17 +39,7 @@ class LoginScreen extends StatelessWidget with Validators{
 
             if (state is AuthAuthenticatedState) {
               Navigator.pop(context);
-              switch (state.user!.userData.userTypeEnum) {
-                case UserType.DRIVER:
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, RouteNames.driverHomeScreen, (route) => false);
-                  break;
-                case UserType.ADMIN:
-                case UserType.PASSENGER:
-                default:
-                  Navigator.pushNamedAndRemoveUntil(context,
-                      RouteNames.passengerHomeScreen, (route) => false);
-              }
+              routeUserRole(context, state.user);
             }
           },
           child: Form(

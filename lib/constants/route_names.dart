@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shuttla/ui/screens/admin/admin_home_screen.dart';
 import 'package:shuttla/ui/screens/driver/driver_home_screen.dart';
 import 'package:shuttla/ui/screens/onboarding/login_screen.dart';
 import 'package:shuttla/ui/screens/passenger/passenger_home_screen.dart';
@@ -15,6 +16,7 @@ class RouteNames {
   static const String userSelectScreen = 'userSelectScreen';
   static const String passengerHomeScreen = 'passengerHomeScreen';
   static const String driverHomeScreen = 'driverHomeScreen';
+  static const String adminHomeScreen = 'adminHomeScreen';
 
 
   static Map<String, Widget Function(BuildContext)> routes = {
@@ -25,6 +27,7 @@ class RouteNames {
     userSelectScreen: (context) => UserSelectScreen(),
     passengerHomeScreen: (context) => PassengerHomeScreen(),
     driverHomeScreen: (context) => DriverHomeScreen(),
+    adminHomeScreen: (context) => AdminHomeScreen(),
   };
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -40,6 +43,8 @@ class RouteNames {
         return MaterialPageRoute(builder: (context) => PassengerHomeScreen());
       case driverHomeScreen:
         return MaterialPageRoute(builder: (context) => DriverHomeScreen());
+      case adminHomeScreen:
+        return MaterialPageRoute(builder: (context) => AdminHomeScreen());
 
     //Default Route is error route
       default:

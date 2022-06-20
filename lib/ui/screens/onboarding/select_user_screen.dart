@@ -50,15 +50,6 @@ class _UserSelectScreenState extends State<UserSelectScreen> {
                 textSize: 20,
               ),
             ),
-            Gap(10),
-            SizedBox(
-              width: double.infinity,
-              child: BoxButton.purple(
-                onPressed: ()=> navigate(UserType.ADMIN),
-                text: "Admin",
-                textSize: 20,
-              ),
-            ),
           ],
         ),
       )
