@@ -6,6 +6,9 @@ import 'package:shuttla/ui/screens/onboarding/login_screen.dart';
 import 'package:shuttla/ui/screens/passenger/passenger_home_screen.dart';
 import 'package:shuttla/ui/screens/onboarding/select_user_screen.dart';
 import 'package:shuttla/ui/screens/splash_screen.dart';
+import 'package:shuttla/constants/user_type_enum.dart';
+import 'package:shuttla/core/data_models/app_user.dart';
+import 'package:shuttla/core/services/session_manager.dart';
 
 class RouteNames {
   ///Route names used through out the app will be specified as static constants here in this format
@@ -56,5 +59,26 @@ class RouteNames {
 
   static Widget errorView(String? name) {
     return Scaffold(body: Center(child: Text('404 $name View not found')));
+  }
+
+
+  static void routeUserRole(BuildContext context, [AppUser? u]) async{
+    AppUser? user = u ?? await SessionManager.getUser();
+    if(user == null) {
+      Navigator.pushNamedAndRemoveUntil(context, RouteNames.loginScreen, (route) => false);
+      return;
+    }
+
+    switch(user.userData.userTypeEnum){
+      case UserType.DRIVER:
+        Navigator.pushNamedAndRemoveUntil(context, driverHomeScreen, (route)=> false);
+        break;
+      case UserType.ADMIN:
+        Navigator.pushNamedAndRemoveUntil(context, adminHomeScreen, (route)=> false);
+        break;
+      case UserType.PASSENGER:
+      default:
+        Navigator.push(context, MaterialPageRoute(builder: (context)=> errorView("Unknown")));
+    }
   }
 }

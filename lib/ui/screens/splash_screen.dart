@@ -1,14 +1,6 @@
-import 'dart:async';
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shuttla/constants/route_names.dart';
-import 'package:shuttla/constants/user_type_enum.dart';
-import 'package:shuttla/core/data_models/app_user.dart';
-import 'package:shuttla/core/services/auth_service.dart';
 import 'package:shuttla/core/services/session_manager.dart';
-import 'package:shuttla/ui/screens/passenger/passenger_home_screen.dart';
-import 'package:shuttla/ui/screens/shared/router.dart';
 import 'package:shuttla/ui/size_config/size_config.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -42,6 +34,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void routeUser() async{
     SessionManager.init();
-    routeUserRole(context);
+    RouteNames.routeUserRole(context);
   }
 }
