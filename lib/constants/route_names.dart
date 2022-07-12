@@ -64,6 +64,7 @@ class RouteNames {
 
   static void routeUserRole(BuildContext context, [AppUser? u]) async{
     AppUser? user = u ?? await SessionManager.getUser();
+    print(u?.toMap());
     if(user == null) {
       Navigator.pushNamedAndRemoveUntil(context, RouteNames.loginScreen, (route) => false);
       return;

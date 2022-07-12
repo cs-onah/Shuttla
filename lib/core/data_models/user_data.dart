@@ -12,9 +12,9 @@ class UserData {
   });
 
   String userId;
-  String nickname;
+  String? nickname;
   String email;
-  String imageResource;
+  String? imageResource;
   String userType;
   UserType? get userTypeEnum => getUserTypeFromString(userType);
   String get imageResourcePath => "images/Avatar-$imageResource.png";
@@ -42,7 +42,7 @@ class UserData {
     nickname: json["nickname"] == null ? null : json["nickname"],
     email: json["email"] == null ? null : json["email"],
     userId: json["userId"] == null ? null : json["userId"],
-    imageResource: json["imageResource"] == null ? null : json["imageResource"],
+    imageResource: json["imageResource"]?.toString(),
     userType: json["userType"] == null ? null : json["userType"],
   );
 

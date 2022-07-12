@@ -47,10 +47,10 @@ class AppUser {
 
 class Admin {
   Admin({
-    required this.privileges,
+    this.privileges,
   });
 
-  String privileges;
+  String? privileges;
 
   Admin copyWith({
     String? privileges,
@@ -64,7 +64,7 @@ class Admin {
   String toJson() => json.encode(toMap());
 
   factory Admin.fromMap(Map<String, dynamic> json) => Admin(
-    privileges: json["privileges"] == null ? null : json["privileges"],
+    privileges: json["privileges"],
   );
 
   Map<String, dynamic> toMap() => {
