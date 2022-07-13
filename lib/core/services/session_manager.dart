@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shuttla/app.dart';
 import 'package:shuttla/constants/collection_names.dart';
 import 'package:shuttla/core/data_models/app_user.dart';
+import 'package:shuttla/core/utilities/global_events.dart';
 
 class SessionManager {
   static late FirebaseAuth _firebaseAuth;
@@ -29,6 +31,7 @@ class SessionManager {
 
   static Future logout() async {
     await _firebaseAuth.signOut();
+    eventBus.fire(LogOutEvent("Logout button clicked"));
     _user = null;
   }
 

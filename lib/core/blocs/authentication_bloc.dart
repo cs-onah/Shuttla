@@ -4,8 +4,7 @@ import 'package:shuttla/constants/firebase_errors.dart';
 import 'package:shuttla/core/data_models/app_user.dart';
 import 'package:shuttla/core/services/auth_service.dart';
 
-class AuthenticationBloc
-    extends Bloc<AuthenticationEvent, AuthenticationState> {
+class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
   late AuthService authService;
 
   AuthenticationBloc([AuthService? _auth])

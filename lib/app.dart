@@ -1,3 +1,4 @@
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,6 +9,8 @@ import 'package:shuttla/ui/themes/app_theme_light.dart';
 
 import 'constants/route_names.dart';
 import 'core/blocs/bloc_observer.dart';
+
+final eventBus = EventBus();
 
 class Shuttla extends StatelessWidget {
   @override

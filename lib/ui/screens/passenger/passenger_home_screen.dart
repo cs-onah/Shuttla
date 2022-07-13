@@ -27,106 +27,100 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
   @override
   Widget build(BuildContext context) {
     final authBloc = context.read<AuthenticationBloc>();
-    return BlocListener<AuthenticationBloc, AuthenticationState>(
-        listener: (context, state){
-          if(state is AuthLoggedOutState)
-            Navigator.pushNamedAndRemoveUntil(context, RouteNames.loginScreen, (route) => false);
-        },
-      child: SafeArea(
-        child: Scaffold(
-          body: Stack(
-            children: [
-              GoogleMap(
-                initialCameraPosition: CameraPosition(target: LatLng(5.377232, 7.000225), zoom: 16),
-                myLocationButtonEnabled: false,
-                compassEnabled: false,
-                zoomControlsEnabled: false,
-                tiltGesturesEnabled: false,
-                mapType: MapType.normal,
-                onMapCreated: (GoogleMapController controller) {},
-                markers: {},
-                circles: {},
-                polylines: {},
-              ),
+    return SafeArea(
+      child: Scaffold(
+        body: Stack(
+          children: [
+            GoogleMap(
+              initialCameraPosition: CameraPosition(target: LatLng(5.377232, 7.000225), zoom: 16),
+              myLocationButtonEnabled: false,
+              compassEnabled: false,
+              zoomControlsEnabled: false,
+              tiltGesturesEnabled: false,
+              mapType: MapType.normal,
+              onMapCreated: (GoogleMapController controller) {},
+              markers: {},
+              circles: {},
+              polylines: {},
+            ),
 
-              //Header
-              Align(
-                alignment: Alignment.topLeft,
-                child: Container(
-                  margin: EdgeInsets.symmetric(vertical: 20, horizontal: SizeConfig.widthOf(5)),
-                  padding: EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(100)),
-                  ),
-                  child: FutureBuilder(
-                    future: authBloc.currentUser(),
-                    builder: (BuildContext context, AsyncSnapshot<AppUser?> snapshot) {
-                      if(!snapshot.hasData) return Container();
-                      return GestureDetector(
-                        onTap: ()=> authBloc.add(AuthUserLogout()),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            CircleAvatar(
-                              foregroundImage: AssetImage(snapshot.data!.userData.imageResourcePath),
-                              radius: 25,
-                            ),
-                            SizedBox(width: 10),
-                            Text(
-                                'Hi ${snapshot.data?.userData.nickname ?? ""} 👋',
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                ),
-                            ),
-                          ],
-                        ),
-                      );
-                    }
-                  ),
+            //Header
+            Align(
+              alignment: Alignment.topLeft,
+              child: Container(
+                margin: EdgeInsets.symmetric(vertical: 20, horizontal: SizeConfig.widthOf(5)),
+                padding: EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(100)),
+                ),
+                child: FutureBuilder(
+                  future: authBloc.currentUser(),
+                  builder: (BuildContext context, AsyncSnapshot<AppUser?> snapshot) {
+                    if(!snapshot.hasData) return Container();
+                    return GestureDetector(
+                      onTap: ()=> authBloc.add(AuthUserLogout()),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          CircleAvatar(
+                            foregroundImage: AssetImage(snapshot.data!.userData.imageResourcePath),
+                            radius: 25,
+                          ),
+                          SizedBox(width: 10),
+                          Text(
+                              'Hi ${snapshot.data?.userData.nickname ?? ""} 👋',
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                              ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
                 ),
               ),
+            ),
 
-              //BottomSheet section
-              BlocBuilder<PassengerHomeBloc, PassengerHomeState>(
-                  builder: (context, state) {
-                if (state is PassengerWaitingState)
-                  return Align(
-                    alignment: Alignment.bottomCenter,
-                    child: PassengerWaitingWidget(),
-                  );
-                else
-                  return DraggableScrollableSheet(
-                    initialChildSize: 0.3,
-                    maxChildSize: 0.8,
-                    minChildSize: 0.3,
-                    builder: (context, controller) => SelectStationFragment(
-                        controller,
-                      title: "Select Station",
-                      description: "Select where you want to be picked from.",
-                      itemSelectAction: (a) {
-                        context.read<PassengerHomeBloc>().add(
-                            PassengerFetchStationDetailEvent(
-                                "stationId", "stationName"));
-                        showModalBottomSheet(
-                            context: context,
-                            useRootNavigator: true,
-                            isScrollControlled: true,
-                            enableDrag: true,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(12)),
-                            ),
-                            builder: (context) {
-                              return StationDetailScreen("SEET Head", "1");
-                            },
-                        );
-                      },
-                    ),
-                  );
-              })
-            ],
-          ),
+            //BottomSheet section
+            BlocBuilder<PassengerHomeBloc, PassengerHomeState>(
+                builder: (context, state) {
+              if (state is PassengerWaitingState)
+                return Align(
+                  alignment: Alignment.bottomCenter,
+                  child: PassengerWaitingWidget(),
+                );
+              else
+                return DraggableScrollableSheet(
+                  initialChildSize: 0.3,
+                  maxChildSize: 0.8,
+                  minChildSize: 0.3,
+                  builder: (context, controller) => SelectStationFragment(
+                      controller,
+                    title: "Select Station",
+                    description: "Select where you want to be picked from.",
+                    itemSelectAction: (a) {
+                      context.read<PassengerHomeBloc>().add(
+                          PassengerFetchStationDetailEvent(
+                              "stationId", "stationName"));
+                      showModalBottomSheet(
+                          context: context,
+                          useRootNavigator: true,
+                          isScrollControlled: true,
+                          enableDrag: true,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(12)),
+                          ),
+                          builder: (context) {
+                            return StationDetailScreen("SEET Head", "1");
+                          },
+                      );
+                    },
+                  ),
+                );
+            })
+          ],
         ),
       ),
     );
