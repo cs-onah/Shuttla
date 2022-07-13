@@ -101,19 +101,19 @@ class StationDetailScreen extends StatelessWidget {
   BoxButton _passengerActionWidget(BuildContext context) {
     return BoxButton.purple(
       text: "JOIN WAIT",
-      // onPressed: () {
-      //   context.read<PassengerHomeBloc>().add(
-      //     PassengerJoinStationEvent(stationId, stationName),
-      //   );
-      //   Navigator.pop(context);
-      // },
-      onPressedWithNotifier: (valueNotifier) async{
-        valueNotifier.value = true;
-        //Network request
-        await Future.delayed(Duration(seconds: 3));
-
-        valueNotifier.value = false;
+      onPressed: () {
+        context.read<PassengerHomeBloc>().add(
+          PassengerJoinStationEvent(stationId, stationName),
+        );
+        Navigator.pop(context);
       },
+      // onPressedWithNotifier: (valueNotifier) async{
+      //   valueNotifier.value = true;
+      //   //Network request
+      //   await Future.delayed(Duration(seconds: 3));
+      //
+      //   valueNotifier.value = false;
+      // },
     );
   }
 

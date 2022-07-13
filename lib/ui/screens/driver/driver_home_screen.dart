@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:shuttla/app.dart';
+import 'package:shuttla/constants/route_names.dart';
 import 'package:shuttla/core/blocs/driver_home_bloc.dart';
+import 'package:shuttla/core/utilities/global_events.dart';
 import 'package:shuttla/ui/screens/driver/driver_complete_fragment.dart';
 import 'package:shuttla/ui/screens/driver/driver_enroute_fragment.dart';
 import 'package:shuttla/ui/screens/driver/selected_station_fragment.dart';
@@ -17,8 +20,19 @@ class DriverHomeScreen extends StatefulWidget {
 }
 
 class _DriverHomeScreenState extends State<DriverHomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    eventBus.on<LogOutEvent>().listen((event) {
+      print("Logged out because: $event");
+      Navigator.pushNamedAndRemoveUntil(
+        context, RouteNames.loginScreen, (route) => false,
+      );
+    });
+  }
+
   late GoogleMapController mapController;
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

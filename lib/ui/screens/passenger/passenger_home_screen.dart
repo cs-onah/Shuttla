@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:shuttla/app.dart';
 import 'package:shuttla/constants/route_names.dart';
 import 'package:shuttla/core/blocs/authentication_bloc.dart';
 import 'package:shuttla/core/blocs/passenger_home_bloc.dart';
 import 'package:shuttla/core/data_models/app_user.dart';
+import 'package:shuttla/core/utilities/global_events.dart';
 import 'package:shuttla/ui/screens/shared/select_busstop_fragment.dart';
 import 'package:shuttla/ui/screens/shared/station_detail_screen.dart';
 import 'package:shuttla/ui/size_config/size_config.dart';
@@ -22,6 +24,13 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
     super.initState();
     BlocProvider.of<PassengerHomeBloc>(context, listen: false)
         .add(PassengerFetchAllStationsEvent());
+    //Listen for logout
+    eventBus.on<LogOutEvent>().listen((event) {
+      print("Logged out because: $event");
+      Navigator.pushNamedAndRemoveUntil(
+        context, RouteNames.loginScreen, (route) => false,
+      );
+    });
   }
 
   @override
