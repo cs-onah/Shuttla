@@ -26,7 +26,7 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
         .add(PassengerFetchAllStationsEvent());
     //Listen for logout
     eventBus.on<LogOutEvent>().listen((event) {
-      print("Logged out because: $event");
+      print("Logged out because: ${event.reason}");
       Navigator.pushNamedAndRemoveUntil(
         context, RouteNames.loginScreen, (route) => false,
       );

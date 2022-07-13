@@ -24,7 +24,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
   void initState() {
     super.initState();
     eventBus.on<LogOutEvent>().listen((event) {
-      print("Logged out because: $event");
+      print("Logged out because: ${event.reason}");
       Navigator.pushNamedAndRemoveUntil(
         context, RouteNames.loginScreen, (route) => false,
       );
