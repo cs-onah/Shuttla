@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -6,6 +8,7 @@ import 'package:shuttla/constants/route_names.dart';
 import 'package:shuttla/core/blocs/authentication_bloc.dart';
 import 'package:shuttla/core/blocs/passenger_home_bloc.dart';
 import 'package:shuttla/core/data_models/app_user.dart';
+import 'package:shuttla/core/services/session_manager.dart';
 import 'package:shuttla/core/utilities/global_events.dart';
 import 'package:shuttla/ui/screens/shared/select_busstop_fragment.dart';
 import 'package:shuttla/ui/screens/shared/station_detail_screen.dart';
@@ -20,20 +23,6 @@ class PassengerHomeScreen extends StatefulWidget {
 
 class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
   @override
-  void initState() {
-    super.initState();
-    BlocProvider.of<PassengerHomeBloc>(context, listen: false)
-        .add(PassengerFetchAllStationsEvent());
-    //Listen for logout
-    eventBus.on<LogOutEvent>().listen((event) {
-      print("Logged out because: ${event.reason}");
-      Navigator.pushNamedAndRemoveUntil(
-        context, RouteNames.loginScreen, (route) => false,
-      );
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     final authBloc = context.read<AuthenticationBloc>();
     return SafeArea(
@@ -41,7 +30,8 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
         body: Stack(
           children: [
             GoogleMap(
-              initialCameraPosition: CameraPosition(target: LatLng(5.377232, 7.000225), zoom: 16),
+              initialCameraPosition:
+                  CameraPosition(target: LatLng(5.377232, 7.000225), zoom: 16),
               myLocationButtonEnabled: false,
               compassEnabled: false,
               zoomControlsEnabled: false,
@@ -57,38 +47,41 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
             Align(
               alignment: Alignment.topLeft,
               child: Container(
-                margin: EdgeInsets.symmetric(vertical: 20, horizontal: SizeConfig.widthOf(5)),
+                margin: EdgeInsets.symmetric(
+                    vertical: 20, horizontal: SizeConfig.widthOf(5)),
                 padding: EdgeInsets.all(6),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.all(Radius.circular(100)),
                 ),
                 child: FutureBuilder(
-                  future: authBloc.currentUser(),
-                  builder: (BuildContext context, AsyncSnapshot<AppUser?> snapshot) {
-                    if(!snapshot.hasData) return Container();
-                    return GestureDetector(
-                      onTap: ()=> authBloc.add(AuthUserLogout()),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          CircleAvatar(
-                            foregroundImage: AssetImage(snapshot.data!.userData.imageResourcePath),
-                            radius: 25,
-                          ),
-                          SizedBox(width: 10),
-                          Text(
+                    future: authBloc.currentUser(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<AppUser?> snapshot) {
+                      if (!snapshot.hasData) return Container();
+                      return GestureDetector(
+                        // onTap: () => authBloc.add(AuthUserLogout()),
+                        onTap: ()=> SessionManager.logout(),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            CircleAvatar(
+                              foregroundImage: AssetImage(
+                                  snapshot.data!.userData.imageResourcePath),
+                              radius: 25,
+                            ),
+                            SizedBox(width: 10),
+                            Text(
                               'Hi ${snapshot.data?.userData.nickname ?? ""} 👋',
                               style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
                               ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-                ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
               ),
             ),
 
@@ -106,7 +99,7 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
                   maxChildSize: 0.8,
                   minChildSize: 0.3,
                   builder: (context, controller) => SelectStationFragment(
-                      controller,
+                    controller,
                     title: "Select Station",
                     description: "Select where you want to be picked from.",
                     itemSelectAction: (a) {
@@ -114,16 +107,16 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
                           PassengerFetchStationDetailEvent(
                               "stationId", "stationName"));
                       showModalBottomSheet(
-                          context: context,
-                          useRootNavigator: true,
-                          isScrollControlled: true,
-                          enableDrag: true,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(12)),
-                          ),
-                          builder: (context) {
-                            return StationDetailScreen("SEET Head", "1");
-                          },
+                        context: context,
+                        useRootNavigator: true,
+                        isScrollControlled: true,
+                        enableDrag: true,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(12)),
+                        ),
+                        builder: (context) {
+                          return StationDetailScreen("SEET Head", "1");
+                        },
                       );
                     },
                   ),
@@ -133,6 +126,29 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
         ),
       ),
     );
+  }
+  late StreamSubscription logOutListener;
+
+  @override
+  void initState() {
+    super.initState();
+    BlocProvider.of<PassengerHomeBloc>(context, listen: false)
+        .add(PassengerFetchAllStationsEvent());
+    //Listen for logout
+    logOutListener = eventBus.on<LogOutEvent>().listen((event) {
+      print("Passenger: Logged out because: ${event.reason}");
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        RouteNames.loginScreen,
+        (route) => route.settings.name == RouteNames.loginScreen,
+      );
+    });
+  }
+
+  @override
+  void dispose() {
+    logOutListener.cancel();
+    super.dispose();
   }
 }
 

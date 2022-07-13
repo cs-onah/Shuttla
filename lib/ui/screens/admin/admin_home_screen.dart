@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:shuttla/app.dart';
 import 'package:shuttla/constants/route_names.dart';
@@ -12,29 +14,51 @@ class AdminHomeScreen extends StatefulWidget {
 
 class _AdminHomeScreenState extends State<AdminHomeScreen> {
   @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text("Stations",
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+        ),
+        backgroundColor: Colors.white,
+        centerTitle: false,
+        elevation: 0,
+        actions: [
+          IconButton(
+            onPressed: () => SessionManager.logout(),
+            icon: Icon(
+              Icons.exit_to_app,
+              color: Colors.black,
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  late StreamSubscription logOutListener;
+
+  @override
   void initState() {
     super.initState();
-    eventBus.on<LogOutEvent>().listen((event) {
-      print("Logged out because: ${event.reason}");
+    logOutListener = eventBus.on<LogOutEvent>().listen((event) {
+      print("Admin: Logged out because: ${event.reason}");
       Navigator.pushNamedAndRemoveUntil(
-        context, RouteNames.loginScreen, (route) => false,
+        context,
+        RouteNames.loginScreen,
+        (route) => route.settings.name == RouteNames.loginScreen,
       );
     });
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Stations"),
-        centerTitle: false,
-        actions: [
-          IconButton(
-            onPressed: () => SessionManager.logout(),
-            icon: Icon(Icons.exit_to_app),
-          )
-        ],
-      ),
-    );
+  void dispose() {
+    logOutListener.cancel();
+    super.dispose();
   }
 }

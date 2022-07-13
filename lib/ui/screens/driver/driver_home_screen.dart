@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -20,19 +22,7 @@ class DriverHomeScreen extends StatefulWidget {
 }
 
 class _DriverHomeScreenState extends State<DriverHomeScreen> {
-  @override
-  void initState() {
-    super.initState();
-    eventBus.on<LogOutEvent>().listen((event) {
-      print("Logged out because: ${event.reason}");
-      Navigator.pushNamedAndRemoveUntil(
-        context, RouteNames.loginScreen, (route) => false,
-      );
-    });
-  }
-
   late GoogleMapController mapController;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -155,11 +145,33 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                     backgroundColor: Colors.transparent,
                     builder: (context) => SelectedStationFragment(),
                   );
-                  mapController.animateCamera(CameraUpdate.newLatLng(LatLng(5.377242, 7.000225)));
+                  mapController.animateCamera(
+                      CameraUpdate.newLatLng(LatLng(5.377242, 7.000225)));
                 },
               );
             },
           );
         });
+  }
+
+  late StreamSubscription logOutListener;
+
+  @override
+  void initState() {
+    super.initState();
+    logOutListener = eventBus.on<LogOutEvent>().listen((event) {
+      print("Driver: Logged out because: ${event.reason}");
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        RouteNames.loginScreen,
+        (route) => route.settings.name == RouteNames.loginScreen,
+      );
+    });
+  }
+
+  @override
+  void dispose() {
+    logOutListener.cancel();
+    super.dispose();
   }
 }
