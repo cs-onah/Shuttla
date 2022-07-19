@@ -10,11 +10,14 @@ class Station {
     required this.coordinates,
     required this.createdDate,
     this.driverId,
+    this.description,
     this.driverName,
     this.plateNumber,
   });
 
   String stationName;
+  String? description;
+  ///format: LatLng
   List<double> coordinates;
   String createdDate;
   String? driverId;
@@ -23,6 +26,7 @@ class Station {
 
   Station copyWith({
     String? stationName,
+    String? description,
     List<double>? coordinates,
     String? createdDate,
     String? driverId,
@@ -31,6 +35,7 @@ class Station {
   }) =>
       Station(
         stationName: stationName ?? this.stationName,
+        description: description ?? this.description,
         coordinates: coordinates ?? this.coordinates,
         createdDate: createdDate ?? this.createdDate,
         driverId: driverId ?? this.driverId,
@@ -49,10 +54,12 @@ class Station {
     driverId: json["driver_id"],
     driverName: json["driver_name"],
     plateNumber: json["plate_number"],
+    description: json["description"],
   );
 
   Map<String, dynamic> toMap() => {
     "station_name": stationName,
+    "description" : description,
     "coordinates": List<dynamic>.from(coordinates.map((x) => x)),
     "created_date": createdDate,
     "driver_id": driverId,
