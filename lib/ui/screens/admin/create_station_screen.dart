@@ -16,20 +16,9 @@ class CreateStationScreen extends StatefulWidget {
 }
 
 class _CreateStationScreenState extends State<CreateStationScreen> with UiKit {
-  Position? _currentLocation;
   final stationName = TextEditingController();
   final stationDescription = TextEditingController();
   ShuttlaLocation? selectedLocation;
-
-  @override
-  void initState() {
-    getCurrentLocation();
-    super.initState();
-  }
-
-  void getCurrentLocation() async {
-    _currentLocation = await LocationService.getCurrentLocation();
-  }
 
   @override
   Widget build(BuildContext context) {

@@ -5,6 +5,7 @@ import 'package:map_picker/map_picker.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shuttla/core/data_models/shuttla_location.dart';
+import 'package:shuttla/core/services/location_service.dart';
 
 /// Opens dialog to select location on map
 ///
@@ -19,8 +20,8 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
   final _controller = Completer<GoogleMapController>();
   MapPickerController mapPickerController = MapPickerController();
 
-  CameraPosition cameraPosition = const CameraPosition(
-    target: LatLng(41.311158, 69.279737),
+  CameraPosition cameraPosition = CameraPosition(
+    target: LocationService.defaultLocationLatLng,
     zoom: 14.4746,
   );
 
@@ -35,7 +36,7 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
           MapPicker(
             // pass icon widget
             iconWidget: SvgPicture.asset(
-              "assets/location_icon.svg",
+              "svgs/location_icon.svg",
               height: 60,
             ),
             //add map picker controller

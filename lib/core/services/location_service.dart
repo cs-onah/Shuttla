@@ -1,4 +1,5 @@
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class LocationService {
   /// Default location
@@ -17,6 +18,11 @@ class LocationService {
     speedAccuracy: 0.0,
     floor: 0,
   );
+
+  static get defaultLocationLatLng => LatLng(
+        DEFAULT_POSITION.latitude,
+        DEFAULT_POSITION.longitude,
+      );
 
   /// Returns current device Location
   static Future<Position> getCurrentLocation() async {
