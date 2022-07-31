@@ -4,10 +4,13 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:map_picker/map_picker.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shuttla/core/data_models/shuttla_location.dart';
 
+/// Opens dialog to select location on map
+///
+/// returns [ShuttlaLocation] object on Navigator.pop()
 class LocationSelectScreen extends StatefulWidget {
   const LocationSelectScreen({Key? key}) : super(key: key);
-
   @override
   State<LocationSelectScreen> createState() => _LocationSelectScreenState();
 }
@@ -67,7 +70,7 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
 
                 // update the ui with the address
                 textController.text =
-                '${placemarks.first.name}, ${placemarks.first.administrativeArea}, ${placemarks.first.country}';
+                    '${placemarks.first.name}, ${placemarks.first.administrativeArea}, ${placemarks.first.country}';
               },
             ),
           ),
@@ -102,13 +105,21 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
                   ),
                 ),
                 onPressed: () {
-                  print(
-                      "Location ${cameraPosition.target.latitude} ${cameraPosition.target.longitude}");
+                  Navigator.pop(
+                    context,
+                    ShuttlaLocation(
+                      latitude: cameraPosition.target.latitude,
+                      longitude: cameraPosition.target.longitude,
+                      address: textController.text,
+                    ),
+                  );
+                  print("Location ${cameraPosition.target.latitude} "
+                      "${cameraPosition.target.longitude}");
                   print("Address: ${textController.text}");
                 },
                 style: ButtonStyle(
                   backgroundColor:
-                  MaterialStateProperty.all<Color>(const Color(0xFFA3080C)),
+                      MaterialStateProperty.all<Color>(const Color(0xFFA3080C)),
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15.0),
