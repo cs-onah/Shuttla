@@ -4,13 +4,11 @@ import 'package:shuttla/constants/collection_names.dart';
 import 'package:shuttla/core/data_models/station.dart';
 
 class StationService {
-  late FirebaseAuth _auth;
   late FirebaseFirestore _firestore;
   late CollectionReference _stationCollection;
 
   StationService({FirebaseAuth? auth, FirebaseFirestore? firestore}) {
     _firestore = firestore ?? FirebaseFirestore.instance;
-    _auth = auth ?? FirebaseAuth.instance;
     _stationCollection = _firestore.collection(CollectionName.STATIONS);
   }
 
