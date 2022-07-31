@@ -6,6 +6,7 @@ import 'package:shuttla/core/blocs/authentication_bloc.dart';
 import 'package:shuttla/core/blocs/blocA.dart';
 import 'package:shuttla/core/blocs/driver_home_bloc.dart';
 import 'package:shuttla/core/blocs/passenger_home_bloc.dart';
+import 'package:shuttla/core/blocs/station_cubit.dart';
 import 'package:shuttla/core/viewmodels/providerA.dart';
 
 
@@ -23,7 +24,8 @@ class AppProviders {
     BlocProvider<BlocA>(create: (BuildContext context) => BlocA()),
     BlocProvider<PassengerHomeBloc>(create: (context) => PassengerHomeBloc()),
     BlocProvider<DriverHomeBloc>(create: (context) => DriverHomeBloc()),
-    BlocProvider<AuthenticationBloc>(create: (context) => AuthenticationBloc())
+    BlocProvider<AuthenticationBloc>(create: (context) => AuthenticationBloc()),
+    BlocProvider<StationCubit>(create: (context) => StationCubit()),
 
   ];
 }

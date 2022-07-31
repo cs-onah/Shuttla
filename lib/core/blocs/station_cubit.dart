@@ -3,7 +3,7 @@ import 'package:shuttla/core/services/station_service.dart';
 
 class StationCubit extends Cubit<StationState> {
   StationService _stationService;
-  StationCubit(StationService? service)
+  StationCubit([StationService? service])
       : _stationService = service ?? StationService(),
         super(IdleStationState());
 

@@ -22,7 +22,7 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
 
   CameraPosition cameraPosition = CameraPosition(
     target: LocationService.defaultLocationLatLng,
-    zoom: 14.4746,
+    zoom: 15,
   );
 
   var textController = TextEditingController();

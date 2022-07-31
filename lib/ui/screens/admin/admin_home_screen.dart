@@ -50,7 +50,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
               child: SizedBox(
                 height: 50,
                 child: TextButton.icon(
-                  onPressed: null,
+                  onPressed: ()=> Navigator.pushNamed(context, RouteNames.createStationScreen),
                   icon: Icon(
                     Icons.add,
                     color: Colors.white,

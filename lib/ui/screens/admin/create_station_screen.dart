@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shuttla/constants/route_names.dart';
 import 'package:shuttla/core/blocs/station_cubit.dart';
 import 'package:shuttla/core/data_models/shuttla_location.dart';
 import 'package:shuttla/core/services/location_service.dart';
+import 'package:shuttla/ui/screens/shared/location_select_screen.dart';
 import 'package:shuttla/ui/screens/shared/ui_kit.dart';
 import 'package:shuttla/ui/widgets/custom_button.dart';
 import 'package:shuttla/ui/widgets/custom_textfield.dart';
@@ -34,24 +36,38 @@ class _CreateStationScreenState extends State<CreateStationScreen> with UiKit {
         body: ListView(
           padding: EdgeInsets.all(16),
           children: [
+            SizedBox(height: 20),
             InkWell(
               onTap: () async {
-                selectedLocation = await Navigator.of(context).pushNamed(
-                  RouteNames.locationSelectScreen,
+                selectedLocation = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => LocationSelectScreen(),
+                  ),
                 );
               },
-              child: Container(
-                height: 150,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(16)),
-                    color: Colors.grey[200]),
-                child: Column(
-                  children: [
-                    Icon(Icons.add_location_alt_outlined, size: 60),
-                    SizedBox(height: 20),
-                    Text("Pick Location"),
-                  ],
+              child: ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(16)),
+                child: Container(
+                  height: 150,
+                  width: double.infinity,
+                  decoration: BoxDecoration(color: Colors.grey[200]),
+                  child: selectedLocation != null
+                      ? GoogleMap(
+                          zoomControlsEnabled: false,
+                          initialCameraPosition: CameraPosition(
+                            target: LatLng(selectedLocation!.latitude!,
+                                selectedLocation!.longitude!),
+                            zoom: 16,
+                          ),
+                        )
+                      : Column(
+                          children: [
+                            Icon(Icons.add_location_alt_outlined, size: 60),
+                            SizedBox(height: 20),
+                            Text("Pick Location"),
+                          ],
+                        ),
                 ),
               ),
             ),
