@@ -48,6 +48,17 @@ class ShuttlaLocation {
     longitude: position.latitude,
   );
 
+  factory ShuttlaLocation.fromFirebaseCoordinates(List coordinates) {
+    try{
+      return ShuttlaLocation(
+        latitude: coordinates[0],
+        longitude: coordinates[1],
+      );
+    } catch(e){
+      return ShuttlaLocation();
+    }
+  }
+
   Map<String, dynamic> toMap() => {
     "latitude": latitude,
     "longitude": longitude,
