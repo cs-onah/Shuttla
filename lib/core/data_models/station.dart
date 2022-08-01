@@ -4,17 +4,23 @@
 
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Station {
   Station({
     required this.stationName,
     required this.coordinates,
     required this.createdDate,
+    this.stationId,
+    this.reference,
     this.driverId,
     this.description,
     this.driverName,
     this.plateNumber,
   });
 
+  String? stationId;
+  DocumentReference? reference;
   String stationName;
   String? description;
   ///format: LatLng
@@ -55,6 +61,18 @@ class Station {
     driverName: json["driver_name"],
     plateNumber: json["plate_number"],
     description: json["description"],
+  );
+
+  factory Station.fromFirebaseSnapshot(DocumentSnapshot doc) => Station(
+    stationId: doc.id,
+    reference: doc.reference,
+    stationName: doc.data()?["station_name"],
+    coordinates: List<double>.from(doc.data()?["coordinates"].map((x) => x.toDouble())),
+    createdDate: doc.data()?["created_date"],
+    driverId: doc.data()?["driver_id"],
+    driverName: doc.data()?["driver_name"],
+    plateNumber: doc.data()?["plate_number"],
+    description: doc.data()?["description"],
   );
 
   Map<String, dynamic> toMap() => {

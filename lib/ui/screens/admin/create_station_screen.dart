@@ -30,6 +30,7 @@ class _CreateStationScreenState extends State<CreateStationScreen> with UiKit {
     }, builder: (context, state) {
       final cubit = BlocProvider.of<StationCubit>(context);
       return Scaffold(
+        backgroundColor: Colors.grey[100],
         appBar: AppBar(
           title: Text("Create Station"),
         ),
@@ -45,6 +46,7 @@ class _CreateStationScreenState extends State<CreateStationScreen> with UiKit {
                     builder: (context) => LocationSelectScreen(),
                   ),
                 );
+                setState(() {});
               },
               child: ClipRRect(
                 borderRadius: BorderRadius.all(Radius.circular(16)),
@@ -55,13 +57,28 @@ class _CreateStationScreenState extends State<CreateStationScreen> with UiKit {
                   child: selectedLocation != null
                       ? GoogleMap(
                           zoomControlsEnabled: false,
+                          markers: {
+                            Marker(
+                              markerId: MarkerId("station"),
+                              icon: BitmapDescriptor.defaultMarkerWithHue(
+                                BitmapDescriptor.hueRed,
+                              ),
+                              position: LatLng(
+                                selectedLocation!.latitude!,
+                                selectedLocation!.longitude!,
+                              ),
+                            )
+                          },
                           initialCameraPosition: CameraPosition(
-                            target: LatLng(selectedLocation!.latitude!,
-                                selectedLocation!.longitude!),
+                            target: LatLng(
+                              selectedLocation!.latitude!,
+                              selectedLocation!.longitude!,
+                            ),
                             zoom: 16,
                           ),
                         )
                       : Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(Icons.add_location_alt_outlined, size: 60),
                             SizedBox(height: 20),
@@ -71,16 +88,16 @@ class _CreateStationScreenState extends State<CreateStationScreen> with UiKit {
                 ),
               ),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 30),
             BoxTextField(
               hintText: "Station Name",
               controller: stationName,
               validator: (value) =>
                   value!.length < 3 ? "Characters must be more than 3" : null,
             ),
-            SizedBox(height: 12),
+            SizedBox(height: 20),
             BoxTextField(hintText: "Station Description"),
-            SizedBox(height: 12),
+            SizedBox(height: 30),
             BoxButton.rounded(
               text: "Create",
               onPressedWithNotifier: (notifier) async {

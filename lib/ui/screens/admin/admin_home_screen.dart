@@ -1,8 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shuttla/app.dart';
 import 'package:shuttla/constants/route_names.dart';
+import 'package:shuttla/core/blocs/station_cubit.dart';
+import 'package:shuttla/core/data_models/station.dart';
 import 'package:shuttla/core/services/session_manager.dart';
 import 'package:shuttla/core/utilities/global_events.dart';
 
@@ -50,7 +53,8 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
               child: SizedBox(
                 height: 50,
                 child: TextButton.icon(
-                  onPressed: ()=> Navigator.pushNamed(context, RouteNames.createStationScreen),
+                  onPressed: () => Navigator.pushNamed(
+                      context, RouteNames.createStationScreen),
                   icon: Icon(
                     Icons.add,
                     color: Colors.white,
@@ -70,51 +74,28 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
             ),
           ),
           Expanded(
-            child: ListView(
-              padding: EdgeInsets.all(16),
-              shrinkWrap: true,
-              children: [
+            child: BlocBuilder<StationCubit, StationState>(
+              builder: (context, state) {
+                if (state is LoadingStationState)
+                  return Center(child: CircularProgressIndicator());
 
-                for(int i=0; i<5 ;i++)
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(15)),
-                    color: Colors.white,
-                  ),
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                  margin: EdgeInsets.only(bottom: 16),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Station Name",
-                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                            ),
-                            SizedBox(height: 10),
-                            Row(
-                              children: [Icon(Icons.location_on_outlined), SizedBox(width: 5),
-                                Text("6.77754, 8.4397")
-                              ],
-                            ),
-                            Row(
-                              children: [Icon(Icons.person_outline), SizedBox(width: 5),
-                                Text("8 waiting")
-                              ],
-                            ),
-                          ],
-                        ),
+                if (state is LoadedStationState)
+                  return RefreshIndicator(
+                    onRefresh: () async{
+                      await BlocProvider.of<StationCubit>(context).getStations(showLoader: false);
+                    },
+                    child: ListView.builder(
+                      padding: EdgeInsets.all(16),
+                      shrinkWrap: true,
+                      itemCount: state.stations.length,
+                      itemBuilder: (context, index) => StationTile(
+                        station: state.stations[index],
                       ),
+                    ),
+                  );
 
-                      IconButton(onPressed: (){}, icon: Icon(Icons.edit)),
-                      IconButton(onPressed: (){}, icon: Icon(Icons.delete), color: Colors.red),
-                    ],
-                  ),
-                ),
-              ],
+                return Center(child: Text("No Station Found!"));
+              },
             ),
           ),
         ],
@@ -135,11 +116,68 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
         (route) => route.settings.name == RouteNames.loginScreen,
       );
     });
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+      BlocProvider.of<StationCubit>(context).getStations();
+    });
   }
 
   @override
   void dispose() {
     logOutListener.cancel();
     super.dispose();
+  }
+}
+
+class StationTile extends StatelessWidget {
+  final Station station;
+  const StationTile({
+    Key? key,
+    required this.station,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(15)),
+        color: Colors.white,
+      ),
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      margin: EdgeInsets.only(bottom: 16),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  station.stationName,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                ),
+                SizedBox(height: 10),
+                Row(
+                  children: [
+                    Icon(Icons.location_on_outlined),
+                    SizedBox(width: 5),
+                    Text("${station.coordinates[0].toStringAsFixed(5)}, ${station.coordinates[1].toStringAsFixed(5)}")
+                  ],
+                ),
+                Row(
+                  children: [
+                    Icon(Icons.person_outline),
+                    SizedBox(width: 5),
+                    Text("0 waiting")
+                  ],
+                ),
+              ],
+            ),
+          ),
+          IconButton(onPressed: () {}, icon: Icon(Icons.edit)),
+          IconButton(
+              onPressed: () {}, icon: Icon(Icons.delete), color: Colors.red),
+        ],
+      ),
+    );
   }
 }

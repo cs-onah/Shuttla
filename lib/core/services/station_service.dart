@@ -12,7 +12,7 @@ class StationService {
     _stationCollection = _firestore.collection(CollectionName.STATIONS);
   }
 
-  createStation({
+  Future createStation({
     required String stationName,
     String? description,
     required List<double> coordinates,
@@ -24,13 +24,28 @@ class StationService {
       coordinates: coordinates,
       createdDate: DateTime.now().toString(),
     );
+    print(newStation.toMap());
     await _stationCollection.add(newStation.toMap());
     return true;
   }
 
   Future<List<Station>> getStation() async {
     QuerySnapshot data = await _stationCollection.get();
+    print(data.docs[0].id);
     return data.docs.map((e) => Station.fromMap(e.data()!)).toList();
+  }
+
+  Future deleteStation(DocumentReference stationReference) async {
+    await stationReference.delete();
+    return true;
+  }
+
+  /// Edit Station details
+  ///
+  /// Usage: use the [Station.copyWith] method to edit the desired properties
+  Future editStation(Station station) async {
+    await station.reference?.set(station.toMap());
+    return true;
   }
 
   /// Provides a listenable snapshot of station collection
