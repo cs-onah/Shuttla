@@ -5,14 +5,19 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shuttla/constants/route_names.dart';
 import 'package:shuttla/core/blocs/station_cubit.dart';
 import 'package:shuttla/core/data_models/shuttla_location.dart';
+import 'package:shuttla/core/data_models/station.dart';
 import 'package:shuttla/core/services/location_service.dart';
 import 'package:shuttla/ui/screens/shared/location_select_screen.dart';
 import 'package:shuttla/ui/screens/shared/ui_kit.dart';
 import 'package:shuttla/ui/widgets/custom_button.dart';
 import 'package:shuttla/ui/widgets/custom_textfield.dart';
 
+/// Create/Edits a station
+///
+/// is used to edit if [station] is provided.
 class CreateStationScreen extends StatefulWidget {
-  const CreateStationScreen({Key? key}) : super(key: key);
+  final Station? station;
+  const CreateStationScreen({Key? key, this.station}) : super(key: key);
   @override
   State<CreateStationScreen> createState() => _CreateStationScreenState();
 }
@@ -21,6 +26,24 @@ class _CreateStationScreenState extends State<CreateStationScreen> with UiKit {
   final stationName = TextEditingController();
   final stationDescription = TextEditingController();
   ShuttlaLocation? selectedLocation;
+
+  bool get isEdit => widget.station != null;
+
+  @override
+  void initState() {
+    //Initialize values if isEdit
+    if (isEdit) {
+      Station s = widget.station!;
+      stationName.text = s.stationName;
+      stationDescription.text = s.description ?? "";
+      selectedLocation = ShuttlaLocation(
+        latitude: s.coordinates[0],
+        longitude: s.coordinates[1],
+        address: "",
+      );
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +122,7 @@ class _CreateStationScreenState extends State<CreateStationScreen> with UiKit {
             BoxTextField(hintText: "Station Description"),
             SizedBox(height: 30),
             BoxButton.rounded(
-              text: "Create",
+              text: isEdit ? "Edit" : "Create",
               onPressedWithNotifier: (notifier) async {
                 if (selectedLocation == null)
                   showToastMessage(
@@ -108,12 +131,24 @@ class _CreateStationScreenState extends State<CreateStationScreen> with UiKit {
                   );
 
                 notifier.value = true;
-                await cubit.createStation(
-                  stationName: stationName.text,
-                  description: stationDescription.text,
-                  latitude: selectedLocation!.latitude!,
-                  longitude: selectedLocation!.longitude!,
-                );
+                if (isEdit)
+                  await cubit.editStation(
+                    widget.station!.copyWith(
+                      stationName: stationName.text,
+                      description: stationDescription.text,
+                      coordinates: [
+                        selectedLocation!.latitude!,
+                        selectedLocation!.longitude!,
+                      ],
+                    ),
+                  );
+                else
+                  await cubit.createStation(
+                    stationName: stationName.text,
+                    description: stationDescription.text,
+                    latitude: selectedLocation!.latitude!,
+                    longitude: selectedLocation!.longitude!,
+                  );
                 notifier.value = false;
               },
             ),

@@ -8,6 +8,7 @@ import 'package:shuttla/core/blocs/station_cubit.dart';
 import 'package:shuttla/core/data_models/station.dart';
 import 'package:shuttla/core/services/session_manager.dart';
 import 'package:shuttla/core/utilities/global_events.dart';
+import 'package:shuttla/ui/screens/admin/create_station_screen.dart';
 
 class AdminHomeScreen extends StatefulWidget {
   const AdminHomeScreen({Key? key}) : super(key: key);
@@ -137,6 +138,7 @@ class StationTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bloc = BlocProvider.of<StationCubit>(context);
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(15)),
@@ -173,9 +175,13 @@ class StationTile extends StatelessWidget {
               ],
             ),
           ),
-          IconButton(onPressed: () {}, icon: Icon(Icons.edit)),
+          IconButton(onPressed: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context)=> CreateStationScreen()));
+          }, icon: Icon(Icons.edit)),
           IconButton(
-              onPressed: () {}, icon: Icon(Icons.delete), color: Colors.red),
+              onPressed: () {
+                bloc.deleteStation(station);
+              }, icon: Icon(Icons.delete), color: Colors.red),
         ],
       ),
     );

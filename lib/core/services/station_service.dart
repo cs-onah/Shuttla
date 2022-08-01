@@ -31,8 +31,7 @@ class StationService {
 
   Future<List<Station>> getStation() async {
     QuerySnapshot data = await _stationCollection.get();
-    print(data.docs[0].id);
-    return data.docs.map((e) => Station.fromMap(e.data()!)).toList();
+    return data.docs.map((e) => Station.fromFirebaseSnapshot(e)).toList();
   }
 
   Future deleteStation(DocumentReference stationReference) async {
