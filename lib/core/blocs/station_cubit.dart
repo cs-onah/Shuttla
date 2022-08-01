@@ -40,7 +40,9 @@ class StationCubit extends Cubit<StationState> {
   Future editStation(Station newStation) async{
     try{
       await _stationService.editStation(newStation);
-      return getStations(showLoader: false);
+      emit(SuccessStationState());
+      getStations();
+      return true;
     } catch (e){
       return emit(ErrorStationState(e.toString()));
     }
@@ -49,7 +51,8 @@ class StationCubit extends Cubit<StationState> {
   Future deleteStation(Station station) async{
     try{
       await _stationService.deleteStation(station.reference!);
-      return getStations(showLoader: false);
+      getStations(showLoader: false);
+      return;
     } catch (e){
       return emit(ErrorStationState(e.toString()));
     }

@@ -24,13 +24,13 @@ class StationService {
       coordinates: coordinates,
       createdDate: DateTime.now().toString(),
     );
-    print(newStation.toMap());
     await _stationCollection.add(newStation.toMap());
     return true;
   }
 
   Future<List<Station>> getStation() async {
     QuerySnapshot data = await _stationCollection.get();
+    print(data.docs[0].data());
     return data.docs.map((e) => Station.fromFirebaseSnapshot(e)).toList();
   }
 
@@ -44,7 +44,7 @@ class StationService {
   /// Usage: use the [Station.copyWith] method to edit the desired properties
   Future editStation(Station station) async {
     await station.reference?.set(station.toMap());
-    return true;
+    return;
   }
 
   /// Provides a listenable snapshot of station collection

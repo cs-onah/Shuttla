@@ -119,7 +119,11 @@ class _CreateStationScreenState extends State<CreateStationScreen> with UiKit {
                   value!.length < 3 ? "Characters must be more than 3" : null,
             ),
             SizedBox(height: 20),
-            BoxTextField(hintText: "Station Description"),
+            BoxTextField(hintText: "Station Description",
+              controller: stationDescription,
+              validator: (value) =>
+              value!.length < 3 ? "Characters must be more than 3" : null,
+            ),
             SizedBox(height: 30),
             BoxButton.rounded(
               text: isEdit ? "Edit" : "Create",
@@ -131,7 +135,7 @@ class _CreateStationScreenState extends State<CreateStationScreen> with UiKit {
                   );
 
                 notifier.value = true;
-                if (isEdit)
+                if (isEdit){
                   await cubit.editStation(
                     widget.station!.copyWith(
                       stationName: stationName.text,
@@ -142,13 +146,14 @@ class _CreateStationScreenState extends State<CreateStationScreen> with UiKit {
                       ],
                     ),
                   );
-                else
+                } else{
                   await cubit.createStation(
                     stationName: stationName.text,
                     description: stationDescription.text,
                     latitude: selectedLocation!.latitude!,
                     longitude: selectedLocation!.longitude!,
                   );
+                }
                 notifier.value = false;
               },
             ),

@@ -82,8 +82,9 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
 
                 if (state is LoadedStationState)
                   return RefreshIndicator(
-                    onRefresh: () async{
-                      await BlocProvider.of<StationCubit>(context).getStations(showLoader: false);
+                    onRefresh: () async {
+                      await BlocProvider.of<StationCubit>(context)
+                          .getStations(showLoader: false);
                     },
                     child: ListView.builder(
                       padding: EdgeInsets.all(16),
@@ -162,7 +163,8 @@ class StationTile extends StatelessWidget {
                   children: [
                     Icon(Icons.location_on_outlined),
                     SizedBox(width: 5),
-                    Text("${station.coordinates[0].toStringAsFixed(5)}, ${station.coordinates[1].toStringAsFixed(5)}")
+                    Text(
+                        "${station.coordinates[0].toStringAsFixed(5)}, ${station.coordinates[1].toStringAsFixed(5)}")
                   ],
                 ),
                 Row(
@@ -175,13 +177,20 @@ class StationTile extends StatelessWidget {
               ],
             ),
           ),
-          IconButton(onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context)=> CreateStationScreen()));
-          }, icon: Icon(Icons.edit)),
           IconButton(
-              onPressed: () {
-                bloc.deleteStation(station);
-              }, icon: Icon(Icons.delete), color: Colors.red),
+              onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CreateStationScreen(
+                      station: station,
+                    ),
+                  ),
+                ),
+              icon: Icon(Icons.edit)),
+          IconButton(
+              onPressed: () => bloc.deleteStation(station),
+              icon: Icon(Icons.delete),
+              color: Colors.red),
         ],
       ),
     );

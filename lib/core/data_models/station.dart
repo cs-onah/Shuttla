@@ -47,6 +47,8 @@ class Station {
         driverId: driverId ?? this.driverId,
         driverName: driverName ?? this.driverName,
         plateNumber: plateNumber ?? this.plateNumber,
+        reference: this.reference,
+        stationId: this.stationId,
       );
 
   factory Station.fromJson(String str) => Station.fromMap(json.decode(str));

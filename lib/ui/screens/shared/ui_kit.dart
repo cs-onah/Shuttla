@@ -15,9 +15,11 @@ mixin UiKit{
         children: [
           Icon(Icons.error_outline, color: Colors.white),
           SizedBox(width: 10),
-          Text(
-            message,
-            style: TextStyle(fontSize: 14, color: Colors.white),
+          Expanded(
+            child: Text(
+              message,
+              style: TextStyle(fontSize: 14, color: Colors.white),
+            ),
           ),
         ],
       ),
