@@ -3,6 +3,7 @@ import 'package:shuttla/constants/user_type_enum.dart';
 import 'package:shuttla/core/blocs/driver_home_bloc.dart';
 import 'package:shuttla/core/blocs/passenger_home_bloc.dart';
 import 'package:shuttla/core/data_models/station.dart';
+import 'package:shuttla/core/utilities/utility.dart';
 import 'package:shuttla/ui/size_config/size_config.dart';
 import 'package:shuttla/ui/widgets/custom_button.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -74,7 +75,7 @@ class StationDetailScreen extends StatelessWidget {
             ),
             StationDetailTile(
               iconData: Icons.schedule,
-              text: "Station created ${station.createdDate}",
+              text: "Station created ${ShuttlaUtility.formatReadableDateString(station.createdDate, timeInclusive: false)}",
               iconBgColor: Colors.blueAccent,
             ),
             Divider(),
