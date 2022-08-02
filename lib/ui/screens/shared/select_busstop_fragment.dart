@@ -79,7 +79,7 @@ class _SelectStationFragmentState extends State<SelectStationFragment> {
             if (bloc.stations.isNotEmpty)
               return Column(
                 children: [
-                  for (int i = 0; i < 4; i++)
+                  for (int i = 0; i < bloc.stations.length; i++)
                     BusstopTile(
                       onClicked: widget.itemSelectAction,
                       station: bloc.stations[i],
