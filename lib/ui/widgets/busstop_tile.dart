@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:shuttla/core/data_models/station.dart';
 
 class BusstopTile extends StatelessWidget {
-  final Function(dynamic)? onClicked;
-  final dynamic stationDetails;
+  final Function(Station)? onClicked;
+  final Station station;
   const BusstopTile({
-    Key? key, this.onClicked, this.stationDetails,
+    Key? key, this.onClicked, required this.station,
   }) : super(key: key);
 
   @override
@@ -13,7 +14,7 @@ class BusstopTile extends StatelessWidget {
       margin: EdgeInsets.only(top: 20),
       child: InkWell(
         onTap: () {
-          if(onClicked != null) onClicked!(stationDetails);
+          if(onClicked != null) onClicked!(station);
         },
         child: Column(
           children: [
@@ -28,7 +29,7 @@ class BusstopTile extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        'SEET Head Station',
+                        station.stationName,
                         style: TextStyle(
                           fontSize: 14,
                           // fontWeight: FontWeight.bold,

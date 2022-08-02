@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shuttla/constants/user_type_enum.dart';
 import 'package:shuttla/core/blocs/driver_home_bloc.dart';
 import 'package:shuttla/core/blocs/passenger_home_bloc.dart';
+import 'package:shuttla/core/data_models/station.dart';
 import 'package:shuttla/ui/size_config/size_config.dart';
 import 'package:shuttla/ui/widgets/custom_button.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,10 +10,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../onboarding/select_user_screen.dart';
 
 class StationDetailScreen extends StatelessWidget {
-  final String stationName, stationId;
+  final Station station;
   final UserType userRole;
-  const StationDetailScreen(this.stationName, this.stationId,
-      {this.userRole = UserType.PASSENGER});
+  const StationDetailScreen(this.station, {this.userRole = UserType.PASSENGER});
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +46,7 @@ class StationDetailScreen extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    'SEET Head Station',
+                    station.stationName,
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -74,7 +74,7 @@ class StationDetailScreen extends StatelessWidget {
             ),
             StationDetailTile(
               iconData: Icons.schedule,
-              text: "Station created 23rd July",
+              text: "Station created ${station.createdDate}",
               iconBgColor: Colors.blueAccent,
             ),
             Divider(),
@@ -103,7 +103,7 @@ class StationDetailScreen extends StatelessWidget {
       text: "JOIN WAIT",
       onPressed: () {
         context.read<PassengerHomeBloc>().add(
-          PassengerJoinStationEvent(stationId, stationName),
+          PassengerJoinStationEvent(station.stationId!, station.stationName),
         );
         Navigator.pop(context);
       },

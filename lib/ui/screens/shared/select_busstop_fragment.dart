@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shuttla/core/blocs/passenger_home_bloc.dart';
+import 'package:shuttla/core/blocs/station_cubit.dart';
+import 'package:shuttla/core/data_models/station.dart';
 import 'package:shuttla/ui/screens/shared/station_detail_screen.dart';
 import 'package:shuttla/ui/size_config/size_config.dart';
 import 'package:shuttla/ui/widgets/busstop_tile.dart';
@@ -9,7 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class SelectStationFragment extends StatefulWidget {
   final ScrollController controller;
   final String? title, description;
-  final Function(dynamic)? itemSelectAction;
+  final Function(Station)? itemSelectAction;
   const SelectStationFragment(this.controller,
       {this.title, this.description, this.itemSelectAction});
   @override
@@ -18,7 +20,16 @@ class SelectStationFragment extends StatefulWidget {
 
 class _SelectStationFragmentState extends State<SelectStationFragment> {
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+      BlocProvider.of<StationCubit>(context).getStations();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final bloc = BlocProvider.of<StationCubit>(context);
     return Card(
       elevation: 30,
       color: Colors.white,
@@ -61,9 +72,33 @@ class _SelectStationFragmentState extends State<SelectStationFragment> {
                 prefixIcon: Icon(Icons.search)),
           ),
           SizedBox(height: 10),
-          for (int i = 0; i < 4; i++)
-            BusstopTile(onClicked: widget.itemSelectAction),
-          SizedBox(height: 20),
+          BlocBuilder<StationCubit, StationState>(builder: (context, state) {
+            if (state is LoadingStationState)
+              return Center(child: CircularProgressIndicator());
+
+            if (bloc.stations.isNotEmpty)
+              return Column(
+                children: [
+                  for (int i = 0; i < 4; i++)
+                    BusstopTile(
+                      onClicked: widget.itemSelectAction,
+                      station: bloc.stations[i],
+                    ),
+                  SizedBox(height: 20),
+                ],
+              );
+
+            return Center(
+                child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text("No Station Found!"),
+                SizedBox(height: 10),
+                TextButton(
+                    onPressed: () => bloc.getStations(), child: Text("Retry")),
+              ],
+            ));
+          }),
         ],
       ),
     );

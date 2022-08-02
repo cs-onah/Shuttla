@@ -8,6 +8,7 @@ import 'package:shuttla/constants/route_names.dart';
 import 'package:shuttla/core/blocs/authentication_bloc.dart';
 import 'package:shuttla/core/blocs/passenger_home_bloc.dart';
 import 'package:shuttla/core/data_models/app_user.dart';
+import 'package:shuttla/core/data_models/station.dart';
 import 'package:shuttla/core/services/session_manager.dart';
 import 'package:shuttla/core/utilities/global_events.dart';
 import 'package:shuttla/ui/screens/shared/select_busstop_fragment.dart';
@@ -102,7 +103,7 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
                     controller,
                     title: "Select Station",
                     description: "Select where you want to be picked from.",
-                    itemSelectAction: (a) {
+                    itemSelectAction: (Station station) {
                       context.read<PassengerHomeBloc>().add(
                           PassengerFetchStationDetailEvent(
                               "stationId", "stationName"));
@@ -115,7 +116,7 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
                           borderRadius: BorderRadius.all(Radius.circular(12)),
                         ),
                         builder: (context) {
-                          return StationDetailScreen("SEET Head", "1");
+                          return StationDetailScreen(station);
                         },
                       );
                     },

@@ -8,6 +8,8 @@ class StationCubit extends Cubit<StationState> {
       : _stationService = service ?? StationService(),
         super(IdleStationState());
 
+  List<Station> stations = [];
+
   Future createStation({
     required String stationName,
     String? description,
@@ -31,7 +33,7 @@ class StationCubit extends Cubit<StationState> {
   Future getStations({bool showLoader = true}) async{
     if(showLoader) emit(LoadingStationState());
     try{
-      List<Station> stations = await _stationService.getStation();
+      stations = await _stationService.getStation();
       return emit(LoadedStationState(stations));
     } catch (e){
       return emit(ErrorStationState(e.toString()));

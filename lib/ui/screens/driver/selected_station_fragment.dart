@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shuttla/constants/user_type_enum.dart';
+import 'package:shuttla/core/data_models/station.dart';
 import 'package:shuttla/ui/screens/shared/station_detail_screen.dart';
 import 'package:shuttla/ui/size_config/size_config.dart';
 import 'package:shuttla/ui/widgets/custom_button.dart';
@@ -77,16 +78,16 @@ class SelectedStationFragment extends StatelessWidget {
                       backgroundColor: Theme.of(context).primaryColorDark,
                       onPressed: () {
                         Navigator.pop(context);
-                        showModalBottomSheet(
-                          context: context,
-                          useRootNavigator: true,
-                          isScrollControlled: true,
-                          enableDrag: true,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(12)),
-                          ),
-                          builder: (context) => StationDetailScreen("SEET Head", "1", userRole: UserType.DRIVER,),
-                        );
+                        // showModalBottomSheet(
+                        //   context: context,
+                        //   useRootNavigator: true,
+                        //   isScrollControlled: true,
+                        //   enableDrag: true,
+                        //   shape: RoundedRectangleBorder(
+                        //     borderRadius: BorderRadius.all(Radius.circular(12)),
+                        //   ),
+                        //   builder: (context) => StationDetailScreen(Station(), userRole: UserType.DRIVER,),
+                        // );
                       },
                     ),
                   ),
