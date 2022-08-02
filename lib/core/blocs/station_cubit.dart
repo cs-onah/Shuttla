@@ -21,6 +21,7 @@ class StationCubit extends Cubit<StationState> {
         description: description,
         coordinates: [latitude, longitude],
       );
+      getStations();
       return emit(SuccessStationState());
     } catch (e){
       return emit(ErrorStationState(e.toString()));
@@ -51,7 +52,7 @@ class StationCubit extends Cubit<StationState> {
   Future deleteStation(Station station) async{
     try{
       await _stationService.deleteStation(station.reference!);
-      getStations(showLoader: false);
+      getStations();
       return;
     } catch (e){
       return emit(ErrorStationState(e.toString()));

@@ -30,7 +30,6 @@ class StationService {
 
   Future<List<Station>> getStation() async {
     QuerySnapshot data = await _stationCollection.get();
-    print(data.docs[0].data());
     return data.docs.map((e) => Station.fromFirebaseSnapshot(e)).toList();
   }
 
@@ -44,21 +43,20 @@ class StationService {
   /// Usage: use the [Station.copyWith] method to edit the desired properties
   Future editStation(Station station) async {
     await station.reference?.set(station.toMap());
-    return;
+    return true;
   }
 
   /// Provides a listenable snapshot of station collection
   ///
   /// To use, create a [StreamSubscription] from the snapshot
   /// remember to cancel stream subscription when not in use.
+  /// ```dart
+  /// getStationSnapshot().listen((event) {
+  ///   event.docs.map((e) => Station.fromMap(e.data()!));
+  /// });
+  /// ```
   Stream<QuerySnapshot> getStationSnapshot() {
     return _stationCollection.snapshots();
   }
 
-  _test(){
-
-    getStationSnapshot().listen((event) {
-      event.docs.map((e) => Station.fromMap(e.data()!));
-    });
-  }
 }

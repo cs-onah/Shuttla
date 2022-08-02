@@ -128,6 +128,7 @@ class _CreateStationScreenState extends State<CreateStationScreen> with UiKit {
             BoxButton.rounded(
               text: isEdit ? "Edit" : "Create",
               onPressedWithNotifier: (notifier) async {
+                print(isEdit);
                 if (selectedLocation == null)
                   showToastMessage(
                     context,

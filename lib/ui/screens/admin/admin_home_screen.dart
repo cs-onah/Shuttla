@@ -19,6 +19,7 @@ class AdminHomeScreen extends StatefulWidget {
 class _AdminHomeScreenState extends State<AdminHomeScreen> {
   @override
   Widget build(BuildContext context) {
+    final bloc = BlocProvider.of<StationCubit>(context);
     return Scaffold(
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
@@ -83,8 +84,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                 if (state is LoadedStationState)
                   return RefreshIndicator(
                     onRefresh: () async {
-                      await BlocProvider.of<StationCubit>(context)
-                          .getStations(showLoader: false);
+                      await bloc.getStations(showLoader: false);
                     },
                     child: ListView.builder(
                       padding: EdgeInsets.all(16),
@@ -96,7 +96,14 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                     ),
                   );
 
-                return Center(child: Text("No Station Found!"));
+                return Center(child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text("No Station Found!"),
+                    SizedBox(height: 10),
+                    TextButton(onPressed: ()=> bloc.getStations(), child: Text("Retry")),
+                  ],
+                ));
               },
             ),
           ),
