@@ -44,14 +44,22 @@ class StationDetailScreen extends StatelessWidget {
               vertical: 20, horizontal: SizeConfig.widthOf(6)),
           children: [
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
-                  child: Text(
-                    station.stationName,
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        station.stationName,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ), SizedBox(height: 10),
+                      Text(station.description ?? ""),
+                    ],
                   ),
                 ),
                 SizedBox(width: 40),

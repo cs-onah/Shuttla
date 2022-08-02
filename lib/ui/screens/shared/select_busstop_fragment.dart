@@ -63,11 +63,11 @@ class _SelectStationFragmentState extends State<SelectStationFragment> {
           SizedBox(height: 10),
           TextFormField(
             controller: searchController,
-            onChanged: (value)=> setState((){}),
+            onChanged: (value) => setState(() {}),
             decoration: InputDecoration(
                 filled: true,
                 fillColor: Colors.grey[200],
-                hintText: "Which station",
+                hintText: "Search Station",
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(12)),
                   borderSide: BorderSide.none,
@@ -82,13 +82,14 @@ class _SelectStationFragmentState extends State<SelectStationFragment> {
             if (bloc.stations.isNotEmpty)
               return Column(
                 children: [
-                  ...bloc.stations.where((element) => stationFilter(element))
-                      .map((e) =>
-                      BusstopTile(
-                        onClicked: widget.itemSelectAction,
-                        station: e,
+                  ...bloc.stations
+                      .where((element) => stationFilter(element))
+                      .map(
+                        (e) => BusstopTile(
+                          onClicked: widget.itemSelectAction,
+                          station: e,
+                        ),
                       ),
-                  ),
                   SizedBox(height: 20),
                 ],
               );
@@ -108,9 +109,14 @@ class _SelectStationFragmentState extends State<SelectStationFragment> {
       ),
     );
   }
-  
-  bool stationFilter(Station station){
-    return station.stationName.contains(searchController.text) ||
-      (station.description?.contains(searchController.text) ?? false);
+
+  bool stationFilter(Station station) {
+    return station.stationName.toLowerCase().contains(
+              searchController.text.toLowerCase(),
+            ) ||
+        (station.description?.toLowerCase().contains(
+                  searchController.text.toLowerCase(),
+                ) ??
+            false);
   }
 }
