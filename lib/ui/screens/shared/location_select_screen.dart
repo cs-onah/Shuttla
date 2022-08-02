@@ -21,7 +21,7 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
   MapPickerController mapPickerController = MapPickerController();
 
   CameraPosition cameraPosition = CameraPosition(
-    target: LocationService.defaultLocationLatLng,
+    target: LocationService.DEFAULT_POSITION.latLng,
     zoom: 15,
   );
 

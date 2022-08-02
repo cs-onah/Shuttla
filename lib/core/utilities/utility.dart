@@ -24,4 +24,9 @@ class ShuttlaUtility{
     }
     return "";
   }
+
+  static String separateAmount(double value){
+    var formatter = NumberFormat('##,###,000.#');
+    return formatter.format(value);
+  }
 }

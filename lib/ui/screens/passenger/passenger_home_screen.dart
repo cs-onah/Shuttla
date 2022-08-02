@@ -9,6 +9,7 @@ import 'package:shuttla/core/blocs/authentication_bloc.dart';
 import 'package:shuttla/core/blocs/passenger_home_bloc.dart';
 import 'package:shuttla/core/data_models/app_user.dart';
 import 'package:shuttla/core/data_models/station.dart';
+import 'package:shuttla/core/services/location_service.dart';
 import 'package:shuttla/core/services/session_manager.dart';
 import 'package:shuttla/core/utilities/global_events.dart';
 import 'package:shuttla/ui/screens/shared/select_busstop_fragment.dart';
@@ -23,6 +24,7 @@ class PassengerHomeScreen extends StatefulWidget {
 }
 
 class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
+  late GoogleMapController map;
   @override
   Widget build(BuildContext context) {
     final authBloc = context.read<AuthenticationBloc>();
@@ -38,8 +40,11 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
               zoomControlsEnabled: false,
               tiltGesturesEnabled: false,
               mapType: MapType.normal,
-              onMapCreated: (GoogleMapController controller) {},
-              markers: {},
+              onMapCreated: (GoogleMapController controller) {
+                map = controller;
+                startLocationStream();
+              },
+              markers: mapMarkers,
               circles: {},
               polylines: {},
             ),
@@ -62,7 +67,7 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
                       if (!snapshot.hasData) return Container();
                       return GestureDetector(
                         // onTap: () => authBloc.add(AuthUserLogout()),
-                        onTap: ()=> SessionManager.logout(),
+                        onTap: () => SessionManager.logout(),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -128,7 +133,11 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
       ),
     );
   }
+
   late StreamSubscription logOutListener;
+  StreamSubscription? locationSubscription;
+
+  Set<Marker> mapMarkers = {};
 
   @override
   void initState() {
@@ -146,9 +155,35 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
     });
   }
 
+  void startLocationStream() async {
+    bool permissionGranted = await LocationService.requestLocationPermission();
+    print("permission: " + permissionGranted.toString());
+    if (permissionGranted) {
+      locationSubscription = LocationService.positionStream().listen((event) async{
+        LocationService.devicePosition = event;
+        final deviceMarker = Marker(
+          markerId: MarkerId("device_location"),
+          position: event.latLng,
+          icon: BitmapDescriptor.defaultMarker,
+          rotation: event.heading,
+        );
+        await map.animateCamera(CameraUpdate.newCameraPosition(
+          CameraPosition(
+            target: LatLng(event.latitude, event.longitude),
+            zoom: 16,
+          ),
+        ));
+        setState(() {
+          mapMarkers.add(deviceMarker);
+        });
+      });
+    }
+  }
+
   @override
   void dispose() {
     logOutListener.cancel();
+    locationSubscription?.cancel();
     super.dispose();
   }
 }

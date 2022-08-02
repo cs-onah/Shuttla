@@ -19,41 +19,64 @@ class LocationService {
     floor: 0,
   );
 
-  static get defaultLocationLatLng => LatLng(
-        DEFAULT_POSITION.latitude,
-        DEFAULT_POSITION.longitude,
-      );
+  static Position? devicePosition = DEFAULT_POSITION;
 
   /// Returns current device Location
-  static Future<Position> getCurrentLocation() async {
+  static Future<Position?> getCurrentLocation() async {
     try {
       requestLocationPermission();
-      return await Geolocator.getCurrentPosition(
+      devicePosition = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
       );
+      return devicePosition;
     } catch (e) {
       print("cannot get location: $e");
       return DEFAULT_POSITION;
     }
   }
 
+  static double distanceFromDevice(LatLng location) {
+    return Geolocator.distanceBetween(
+      devicePosition!.latitude,
+      devicePosition!.longitude,
+      location.latitude,
+      location.latitude,
+    );
+  }
+
   /// Checks and requests for Location Permission
   ///
   /// returns bool based on location permission status.
-  static Future requestLocationPermission() async {
-    if (!await Geolocator.isLocationServiceEnabled()) {
+  static Future<bool> requestLocationPermission() async {
+    LocationPermission p = await Geolocator.checkPermission();
+    if (p == LocationPermission.denied) {
+      print("denied");
       LocationPermission permission = await Geolocator.requestPermission();
       return (permission == LocationPermission.always ||
-              permission == LocationPermission.whileInUse)
-          ? true
-          : false;
-    } else
+          permission == LocationPermission.whileInUse);
+    } else if (p == LocationPermission.deniedForever) {
+      print("denied forever");
+      Geolocator.openLocationSettings();
+      return false;
+    } else {
       return true;
+    }
   }
 
   /// Provides a listenable location stream
   ///
   /// Usage: create a [StreamSubscription] to listen to stream.
   /// Remember to dispose [StreamSubscription] after use.
-  static Stream positionStream() => Geolocator.getPositionStream();
+  static Stream<Position> positionStream() => Geolocator.getPositionStream(
+        desiredAccuracy: LocationAccuracy.best,
+        timeLimit: Duration(seconds: 3),
+        distanceFilter: 1,
+      );
+}
+
+extension PositionAddOns on Position {
+  LatLng get latLng => LatLng(
+        this.latitude,
+        this.longitude,
+      );
 }

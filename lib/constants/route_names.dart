@@ -72,7 +72,7 @@ class RouteNames {
   }
 
 
-  static void routeUserRole(BuildContext context, [AppUser? u]) async{
+  static Future routeUserRole(BuildContext context, [AppUser? u]) async{
     AppUser? user = u ?? await SessionManager.getUser();
 
     if(user == null) {
@@ -93,5 +93,7 @@ class RouteNames {
       default:
         Navigator.push(context, MaterialPageRoute(builder: (context)=> errorView("Unknown")));
     }
+
+    return;
   }
 }

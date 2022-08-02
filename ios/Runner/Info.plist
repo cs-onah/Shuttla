@@ -25,8 +25,14 @@
 	<!--Permissions section -->
     <key>NSCameraUsageDescription</key>
     <string>This allows us to be able to pick images (photos) from your gallery / camera to use for your profile picture.</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>This allows us to use your location to provide services</string>
     <key>NSLocationWhenInUseUsageDescription</key>
-    <string>This allows us to use your location to provide services.</string>
+    <string>This allows us to use your location to provide services</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>This allows us to be able to pick videos from your gallery / camera to use for your profile picture.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>This allows us to be able to pick images (photos) from your gallery / camera to use for your profile picture.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

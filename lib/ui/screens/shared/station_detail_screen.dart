@@ -3,6 +3,7 @@ import 'package:shuttla/constants/user_type_enum.dart';
 import 'package:shuttla/core/blocs/driver_home_bloc.dart';
 import 'package:shuttla/core/blocs/passenger_home_bloc.dart';
 import 'package:shuttla/core/data_models/station.dart';
+import 'package:shuttla/core/services/location_service.dart';
 import 'package:shuttla/core/utilities/utility.dart';
 import 'package:shuttla/ui/size_config/size_config.dart';
 import 'package:shuttla/ui/widgets/custom_button.dart';
@@ -78,7 +79,7 @@ class StationDetailScreen extends StatelessWidget {
             ),
             StationDetailTile(
               iconData: Icons.straighten,
-              text: "40 meters away from your current location",
+              text: "${ShuttlaUtility.separateAmount(LocationService.distanceFromDevice(station.latLng))} meters away from your current location",
               iconBgColor: Colors.amber[600],
             ),
             StationDetailTile(

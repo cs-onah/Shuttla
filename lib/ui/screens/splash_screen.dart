@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shuttla/constants/route_names.dart';
+import 'package:shuttla/core/services/location_service.dart';
 import 'package:shuttla/core/services/session_manager.dart';
 import 'package:shuttla/ui/size_config/size_config.dart';
 
@@ -34,6 +35,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void routeUser() async{
     SessionManager.init();
-    RouteNames.routeUserRole(context);
+    await RouteNames.routeUserRole(context);
   }
 }

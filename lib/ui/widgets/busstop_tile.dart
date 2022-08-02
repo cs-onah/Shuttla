@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shuttla/core/data_models/station.dart';
+import 'package:shuttla/core/services/location_service.dart';
+import 'package:shuttla/core/utilities/utility.dart';
 
 class BusstopTile extends StatelessWidget {
   final Function(Station)? onClicked;
@@ -37,7 +39,8 @@ class BusstopTile extends StatelessWidget {
                       ),
                       SizedBox(height: 5),
                       Text(
-                        '40m away from you',
+                        '${ShuttlaUtility.separateAmount(LocationService.distanceFromDevice(station.latLng))} meters '
+                            'away from you',
                         style: TextStyle(
                           fontSize: 12,
                         ),
