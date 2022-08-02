@@ -19,6 +19,7 @@ class SelectStationFragment extends StatefulWidget {
 }
 
 class _SelectStationFragmentState extends State<SelectStationFragment> {
+  final searchController = TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -61,6 +62,8 @@ class _SelectStationFragmentState extends State<SelectStationFragment> {
           ),
           SizedBox(height: 10),
           TextFormField(
+            controller: searchController,
+            onChanged: (value)=> setState((){}),
             decoration: InputDecoration(
                 filled: true,
                 fillColor: Colors.grey[200],
@@ -79,11 +82,13 @@ class _SelectStationFragmentState extends State<SelectStationFragment> {
             if (bloc.stations.isNotEmpty)
               return Column(
                 children: [
-                  for (int i = 0; i < bloc.stations.length; i++)
-                    BusstopTile(
-                      onClicked: widget.itemSelectAction,
-                      station: bloc.stations[i],
-                    ),
+                  ...bloc.stations.where((element) => stationFilter(element))
+                      .map((e) =>
+                      BusstopTile(
+                        onClicked: widget.itemSelectAction,
+                        station: e,
+                      ),
+                  ),
                   SizedBox(height: 20),
                 ],
               );
@@ -102,5 +107,10 @@ class _SelectStationFragmentState extends State<SelectStationFragment> {
         ],
       ),
     );
+  }
+  
+  bool stationFilter(Station station){
+    return station.stationName.contains(searchController.text) ||
+      (station.description?.contains(searchController.text) ?? false);
   }
 }
