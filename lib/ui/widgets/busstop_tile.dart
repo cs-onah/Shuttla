@@ -39,7 +39,7 @@ class BusstopTile extends StatelessWidget {
                       ),
                       SizedBox(height: 5),
                       Text(
-                        '${ShuttlaUtility.separateAmount(LocationService.distanceFromDevice(station.latLng))} meters '
+                        '${ShuttlaUtility.convertDistance(LocationService.distanceFromDevice(station.latLng))} meters '
                             'away from you',
                         style: TextStyle(
                           fontSize: 12,

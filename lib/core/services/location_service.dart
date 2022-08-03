@@ -46,7 +46,7 @@ class LocationService {
       devicePosition!.latitude,
       devicePosition!.longitude,
       location.latitude,
-      location.latitude,
+      location.longitude,
     );
   }
 

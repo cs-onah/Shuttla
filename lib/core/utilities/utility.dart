@@ -26,7 +26,16 @@ class ShuttlaUtility{
   }
 
   static String separateAmount(double value){
-    var formatter = NumberFormat('##,###,000.#');
+    var formatter = NumberFormat('##,###,##0.##');
     return formatter.format(value);
+  }
+
+  static String convertDistance(double value){
+    String unit = "m";
+    if(value > 1000) {
+      unit = "km";
+      value = value / 1000;
+    }
+    return separateAmount(value) + " $unit";
   }
 }
