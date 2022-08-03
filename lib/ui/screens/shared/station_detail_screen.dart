@@ -24,11 +24,30 @@ class StationDetailScreen extends StatefulWidget {
 }
 
 class _StationDetailScreenState extends State<StationDetailScreen> {
-
+  StreamSubscription? stationDetailStream;
+  late Station station;
   @override
   void initState() {
+    station = widget.station;
     super.initState();
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+      listenForStationUpdates();
+    });
+  }
 
+  listenForStationUpdates(){
+    stationDetailStream = StationService().getStationDetailStream(widget.station).listen((event) {
+      ///TODO: Check driver arriving
+      ///TODO: Check if joined waiting list
+      ///TODO: Check if driver has picked passengers
+      station = event;
+    });
+  }
+
+  @override
+  void dispose() {
+    stationDetailStream?.cancel();
+    super.dispose();
   }
 
   @override
