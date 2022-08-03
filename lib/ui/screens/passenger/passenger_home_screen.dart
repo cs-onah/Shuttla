@@ -157,14 +157,15 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
 
   void startLocationStream() async {
     bool permissionGranted = await LocationService.requestLocationPermission();
-    print("permission: " + permissionGranted.toString());
+    BitmapDescriptor bitmap = await LocationService.initDeviceLocationBitmap();
+    print("Generated bitmap");
     if (permissionGranted) {
       locationSubscription = LocationService.positionStream().listen((event) async{
         LocationService.devicePosition = event;
         final deviceMarker = Marker(
           markerId: MarkerId("device_location"),
           position: event.latLng,
-          icon: BitmapDescriptor.defaultMarker,
+          icon: bitmap,
           rotation: event.heading,
         );
         await map.animateCamera(CameraUpdate.newCameraPosition(

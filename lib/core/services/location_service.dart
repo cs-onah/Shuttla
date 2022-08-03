@@ -75,8 +75,7 @@ class LocationService {
   /// Remember to dispose [StreamSubscription] after use.
   static Stream<Position> positionStream() => Geolocator.getPositionStream(
         desiredAccuracy: LocationAccuracy.best,
-        timeLimit: Duration(seconds: 3),
-        distanceFilter: 1,
+        distanceFilter: 3,
       );
 
   /// Generates [BitmapDescriptor] for device position.
