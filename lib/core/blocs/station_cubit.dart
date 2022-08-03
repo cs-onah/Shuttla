@@ -23,8 +23,9 @@ class StationCubit extends Cubit<StationState> {
         description: description,
         coordinates: [latitude, longitude],
       );
+      emit(SuccessStationState());
       getStations();
-      return emit(SuccessStationState());
+      return;
     } catch (e){
       return emit(ErrorStationState(e.toString()));
     }

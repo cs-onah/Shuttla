@@ -81,7 +81,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                 if (state is LoadingStationState)
                   return Center(child: CircularProgressIndicator());
 
-                if (state is LoadedStationState)
+                if (state is LoadedStationState && state.stations.isNotEmpty)
                   return RefreshIndicator(
                     onRefresh: () async {
                       await bloc.getStations(showLoader: false);
@@ -101,7 +101,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                   children: [
                     Text("No Station Found!"),
                     SizedBox(height: 10),
-                    TextButton(onPressed: ()=> bloc.getStations(), child: Text("Retry")),
+                    TextButton(onPressed: ()=> bloc.getStations(), child: Text("Refresh")),
                   ],
                 ));
               },
