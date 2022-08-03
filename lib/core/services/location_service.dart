@@ -23,7 +23,7 @@ class LocationService {
     floor: 0,
   );
 
-  static Position? devicePosition = DEFAULT_POSITION;
+  static Position? devicePosition;
 
   static BitmapDescriptor? devicePositionBitmap;
 
@@ -41,7 +41,8 @@ class LocationService {
     }
   }
 
-  static double distanceFromDevice(LatLng location) {
+  static double? distanceFromDevice(LatLng location) {
+    if(devicePosition == null) return null;
     return Geolocator.distanceBetween(
       devicePosition!.latitude,
       devicePosition!.longitude,

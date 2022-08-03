@@ -6,6 +6,8 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:shuttla/core/services/location_service.dart';
+import 'package:shuttla/core/utilities/utility.dart';
 
 class Station {
   Station({
@@ -31,6 +33,8 @@ class Station {
   String? driverName;
   String? plateNumber;
   LatLng get latLng => LatLng(coordinates[0], coordinates[1]);
+  String? get distanceFromDeviceString => ShuttlaUtility.convertDistance(LocationService.distanceFromDevice(latLng));
+  double? get distanceFromDeviceFigure => LocationService.distanceFromDevice(latLng);
 
   Station copyWith({
     String? stationName,

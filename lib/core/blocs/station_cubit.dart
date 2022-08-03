@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shuttla/core/data_models/station.dart';
 import 'package:shuttla/core/services/station_service.dart';
@@ -9,6 +11,14 @@ class StationCubit extends Cubit<StationState> {
         super(IdleStationState());
 
   List<Station> stations = [];
+
+  /// List of closest stations
+  List<Station> get suggestedStations {
+    if(stations.isEmpty) return [];
+    if(stations[0].distanceFromDeviceFigure == null) return [];
+    List<double> listOfDistances = stations.map((e) => e.distanceFromDeviceFigure!).toList();
+    return stations.where((element) => listOfDistances.reduce(min) == element.distanceFromDeviceFigure).toList();
+  } 
 
   Future createStation({
     required String stationName,

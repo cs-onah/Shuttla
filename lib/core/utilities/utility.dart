@@ -30,7 +30,8 @@ class ShuttlaUtility{
     return formatter.format(value);
   }
 
-  static String convertDistance(double value){
+  static String? convertDistance(double? value){
+    if (value == null) return null;
     String unit = "m";
     if(value > 1000) {
       unit = "km";

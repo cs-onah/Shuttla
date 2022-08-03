@@ -6,8 +6,11 @@ import 'package:shuttla/core/utilities/utility.dart';
 class BusstopTile extends StatelessWidget {
   final Function(Station)? onClicked;
   final Station station;
+  final bool isSuggested;
   const BusstopTile({
-    Key? key, this.onClicked, required this.station,
+    Key? key,
+    this.onClicked,
+    required this.station, this.isSuggested = false,
   }) : super(key: key);
 
   @override
@@ -16,14 +19,15 @@ class BusstopTile extends StatelessWidget {
       margin: EdgeInsets.only(top: 20),
       child: InkWell(
         onTap: () {
-          if(onClicked != null) onClicked!(station);
+          if (onClicked != null) onClicked!(station);
         },
         child: Column(
           children: [
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(Icons.location_on_outlined, size: 30, color: Colors.grey[600]),
+                Icon(Icons.location_on_outlined,
+                    size: 30, color: Colors.grey[600]),
                 SizedBox(width: 15),
                 Expanded(
                   child: Column(
@@ -39,15 +43,23 @@ class BusstopTile extends StatelessWidget {
                       ),
                       SizedBox(height: 5),
                       Text(
-                        '${ShuttlaUtility.convertDistance(LocationService.distanceFromDevice(station.latLng))} meters '
-                            'away from you',
-                        style: TextStyle(
-                          fontSize: 12,
-                        ),
+                        '${station.distanceFromDeviceString ?? '-- meters'} '
+                        'away from you',
+                        style: TextStyle(fontSize: 12),
                       ),
                     ],
                   ),
                 ),
+                if (isSuggested) SizedBox(width: 5),
+                if(isSuggested) Text(
+                  "Suggested",
+                  style: TextStyle(
+                    color: Colors.green,
+                    fontSize: 12,
+                    fontStyle: FontStyle.italic,
+                    fontWeight: FontWeight.bold,
+                  ),
+                )
               ],
             ),
             SizedBox(height: 10),

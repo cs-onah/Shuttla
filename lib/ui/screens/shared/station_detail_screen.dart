@@ -77,9 +77,9 @@ class StationDetailScreen extends StatelessWidget {
               text: "5 people are currently waiting",
               iconBgColor: Theme.of(context).accentColor,
             ),
-            StationDetailTile(
+            if(station.distanceFromDeviceString != null) StationDetailTile(
               iconData: Icons.straighten,
-              text: "${ShuttlaUtility.separateAmount(LocationService.distanceFromDevice(station.latLng))} meters away from your current location",
+              text: station.distanceFromDeviceString!,
               iconBgColor: Colors.amber[600],
             ),
             StationDetailTile(

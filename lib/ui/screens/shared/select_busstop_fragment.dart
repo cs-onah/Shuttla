@@ -88,6 +88,7 @@ class _SelectStationFragmentState extends State<SelectStationFragment> {
                         (e) => BusstopTile(
                           onClicked: widget.itemSelectAction,
                           station: e,
+                          isSuggested: bloc.suggestedStations.contains(e),
                         ),
                       ),
                   SizedBox(height: 20),
