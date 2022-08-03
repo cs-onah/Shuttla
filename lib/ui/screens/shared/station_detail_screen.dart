@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:shuttla/constants/user_type_enum.dart';
 import 'package:shuttla/core/blocs/driver_home_bloc.dart';
 import 'package:shuttla/core/blocs/passenger_home_bloc.dart';
 import 'package:shuttla/core/data_models/station.dart';
 import 'package:shuttla/core/services/location_service.dart';
+import 'package:shuttla/core/services/station_service.dart';
 import 'package:shuttla/core/utilities/utility.dart';
 import 'package:shuttla/ui/size_config/size_config.dart';
 import 'package:shuttla/ui/widgets/custom_button.dart';
@@ -11,10 +14,22 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../onboarding/select_user_screen.dart';
 
-class StationDetailScreen extends StatelessWidget {
+class StationDetailScreen extends StatefulWidget {
   final Station station;
   final UserType userRole;
   const StationDetailScreen(this.station, {this.userRole = UserType.PASSENGER});
+
+  @override
+  State<StationDetailScreen> createState() => _StationDetailScreenState();
+}
+
+class _StationDetailScreenState extends State<StationDetailScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,13 +68,13 @@ class StationDetailScreen extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        station.stationName,
+                        widget.station.stationName,
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
                       ), SizedBox(height: 10),
-                      Text(station.description ?? ""),
+                      Text(widget.station.description ?? ""),
                     ],
                   ),
                 ),
@@ -77,14 +92,14 @@ class StationDetailScreen extends StatelessWidget {
               text: "5 people are currently waiting",
               iconBgColor: Theme.of(context).accentColor,
             ),
-            if(station.distanceFromDeviceString != null) StationDetailTile(
+            if(widget.station.distanceFromDeviceString != null) StationDetailTile(
               iconData: Icons.straighten,
-              text: station.distanceFromDeviceString!,
+              text: ShuttlaUtility.convertDistance(widget.station.distanceFromDeviceFigure) ?? "",
               iconBgColor: Colors.amber[600],
             ),
             StationDetailTile(
               iconData: Icons.schedule,
-              text: "Station created ${ShuttlaUtility.formatReadableDateString(station.createdDate, timeInclusive: false)}",
+              text: "Station created ${ShuttlaUtility.formatReadableDateString(widget.station.createdDate, timeInclusive: false)}",
               iconBgColor: Colors.blueAccent,
             ),
             Divider(),
@@ -93,7 +108,7 @@ class StationDetailScreen extends StatelessWidget {
             SizedBox(height: 40),
             Builder(
               builder: (context) {
-                switch (userRole) {
+                switch (widget.userRole) {
                   case UserType.DRIVER:
                     return _driverActionWidget(context);
                   case UserType.PASSENGER:
@@ -113,7 +128,7 @@ class StationDetailScreen extends StatelessWidget {
       text: "JOIN WAIT",
       onPressed: () {
         context.read<PassengerHomeBloc>().add(
-          PassengerJoinStationEvent(station.stationId!, station.stationName),
+          PassengerJoinStationEvent(widget.station.stationId, widget.station.stationName),
         );
         Navigator.pop(context);
       },

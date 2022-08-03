@@ -60,7 +60,7 @@ class _SelectStationFragmentState extends State<SelectStationFragment> {
             '${widget.description ?? ""}',
             style: TextStyle(fontSize: 14),
           ),
-          SizedBox(height: 10),
+          SizedBox(height: 20),
           TextFormField(
             controller: searchController,
             onChanged: (value) => setState(() {}),

@@ -14,16 +14,16 @@ class Station {
     required this.stationName,
     required this.coordinates,
     required this.createdDate,
-    this.stationId,
-    this.reference,
+    required this.stationId,
+    required this.reference,
     this.driverId,
     this.description,
     this.driverName,
     this.plateNumber,
   });
 
-  String? stationId;
-  DocumentReference? reference;
+  String stationId;
+  DocumentReference reference;
   String stationName;
   String? description;
   ///format: LatLng
@@ -57,19 +57,19 @@ class Station {
         stationId: this.stationId,
       );
 
-  factory Station.fromJson(String str) => Station.fromMap(json.decode(str));
+  // factory Station.fromJson(String str) => Station.fromMap(json.decode(str));
 
   String toJson() => json.encode(toMap());
 
-  factory Station.fromMap(Map<String, dynamic> json) => Station(
-    stationName: json["station_name"],
-    coordinates: List<double>.from(json["coordinates"].map((x) => x.toDouble())),
-    createdDate: json["created_date"],
-    driverId: json["driver_id"],
-    driverName: json["driver_name"],
-    plateNumber: json["plate_number"],
-    description: json["description"],
-  );
+  // factory Station.fromMap(Map<String, dynamic> json) => Station(
+  //   stationName: json["station_name"],
+  //   coordinates: List<double>.from(json["coordinates"].map((x) => x.toDouble())),
+  //   createdDate: json["created_date"],
+  //   driverId: json["driver_id"],
+  //   driverName: json["driver_name"],
+  //   plateNumber: json["plate_number"],
+  //   description: json["description"],
+  // );
 
   factory Station.fromFirebaseSnapshot(DocumentSnapshot doc) => Station(
     stationId: doc.id,

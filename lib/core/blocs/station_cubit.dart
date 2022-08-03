@@ -64,7 +64,7 @@ class StationCubit extends Cubit<StationState> {
 
   Future deleteStation(Station station) async{
     try{
-      await _stationService.deleteStation(station.reference!);
+      await _stationService.deleteStation(station.reference);
       getStations();
       return;
     } catch (e){

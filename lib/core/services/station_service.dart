@@ -18,13 +18,15 @@ class StationService {
     required List<double> coordinates,
     int? capacity,
   }) async {
-    Station newStation = Station(
-      stationName: stationName,
-      description: description,
-      coordinates: coordinates,
-      createdDate: DateTime.now().toString(),
-    );
-    await _stationCollection.add(newStation.toMap());
+
+    Map<String, dynamic> newStation = {
+      "station_name": stationName,
+      "description" : description,
+      "coordinates": coordinates,
+      "created_date": DateTime.now().toString(),
+    };
+
+    await _stationCollection.add(newStation);
     return true;
   }
 
@@ -42,7 +44,7 @@ class StationService {
   ///
   /// Usage: use the [Station.copyWith] method to edit the desired properties
   Future editStation(Station station) async {
-    await station.reference?.set(station.toMap());
+    await station.reference.set(station.toMap());
     return true;
   }
 
@@ -57,6 +59,11 @@ class StationService {
   /// ```
   Stream<QuerySnapshot> getStationSnapshot() {
     return _stationCollection.snapshots();
+  }
+
+  /// Provides a stream of a station details
+  Stream getStationDetailStream(Station station){
+    return station.reference.snapshots();
   }
 
 }
