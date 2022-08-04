@@ -98,8 +98,15 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> with UiKit {
               if (state is PassengerErrorState) {
                 showToastMessage(context, state.errorMessage);
               }
+
               if(state is PassengerPickupState){
                 //Show dialog to allow Passenger select if they want to keep waiting
+                // go to IdleState on okay clicked
+                // go back to waiting state on 'keep waiting' clicked, and navigate to details screen
+              }
+
+              if(State is PassengerIdleState){
+                Navigator.pushNamedAndRemoveUntil(context, RouteNames.passengerHomeScreen, (route) => false);
               }
 
             }, buildWhen: (oldState, newState) {
@@ -119,7 +126,7 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> with UiKit {
                 builder: (context, controller) => SelectStationFragment(
                   controller,
                   title: "Select Station",
-                  description: "Select where you want to be picked from.",
+                  description: "Select where you want to be picked from",
                   itemSelectAction: (Station station) {
                     context
                         .read<PassengerHomeBloc>()
@@ -155,8 +162,6 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> with UiKit {
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<PassengerHomeBloc>(context, listen: false)
-        .add(PassengerFetchAllStationsEvent());
     //Listen for logout
     logOutListener = eventBus.on<LogOutEvent>().listen((event) {
       print("Passenger: Logged out because: ${event.reason}");

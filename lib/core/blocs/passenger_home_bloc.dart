@@ -10,9 +10,7 @@ class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState> {
   Station? selectedStation;
 
   PassengerHomeBloc() : super(PassengerIdleState()) {
-    on<PassengerFetchAllStationsEvent>(
-      (event, emit) => emit(PassengerIdleState()),
-    );
+
 
     on<PassengerFetchStationDetailEvent>(
       (event, emit) {
@@ -47,7 +45,7 @@ class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState> {
       (event, emit) {
         //Add new passenger to station queue
         try {
-          StationService().joinQueue(
+          StationService().joinStation(
             user: SessionManager.user!.userData,
             station: selectedStation!,
           );
@@ -69,10 +67,6 @@ class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState> {
 //Events
 abstract class PassengerHomeEvent {}
 
-class PassengerIdleEvent extends PassengerHomeEvent {}
-
-class PassengerFetchAllStationsEvent extends PassengerHomeEvent {}
-
 class PassengerFetchStationDetailEvent extends PassengerHomeEvent {
   final Station station;
   PassengerFetchStationDetailEvent(this.station);
@@ -83,10 +77,7 @@ class PassengerLeaveStationEvent extends PassengerHomeEvent {
   PassengerLeaveStationEvent(this.stationId, this.stationName);
 }
 
-class PassengerJoinStationEvent extends PassengerHomeEvent {
-  final String stationId, stationName;
-  PassengerJoinStationEvent(this.stationId, this.stationName);
-}
+class PassengerJoinStationEvent extends PassengerHomeEvent {}
 
 //states
 abstract class PassengerHomeState {}
@@ -106,10 +97,6 @@ class PassengerErrorState extends PassengerHomeState {
   PassengerErrorState(this.errorMessage);
 }
 
-class PassengerWaitingState extends PassengerHomeState {
-  PassengerWaitingState();
-}
+class PassengerWaitingState extends PassengerHomeState {}
 
-class PassengerPickupState extends PassengerHomeState {
-  PassengerPickupState();
-}
+class PassengerPickupState extends PassengerHomeState {}

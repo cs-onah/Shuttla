@@ -136,7 +136,7 @@ class _StationDetailScreenState extends State<StationDetailScreen> {
       text: "JOIN WAIT",
       onPressed: () {
         context.read<PassengerHomeBloc>().add(
-          PassengerJoinStationEvent(widget.station.stationId, widget.station.stationName),
+          PassengerJoinStationEvent(),
         );
         Navigator.pop(context);
       },

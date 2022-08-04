@@ -49,10 +49,18 @@ class StationService {
     return true;
   }
 
-  /// App user to queue
+  /// Add user to queue
   ///
-  Future joinQueue({required UserData user, required Station station}) async {
+  Future joinStation({required UserData user, required Station station}) async {
     station.waitingPassengers.add(user);
+    await station.reference.set(station.toMap());
+    return true;
+  }
+
+  /// Add user to queue
+  ///
+  Future leaveStation({required UserData user, required Station station}) async {
+    station.waitingPassengers.remove(user);
     await station.reference.set(station.toMap());
     return true;
   }
