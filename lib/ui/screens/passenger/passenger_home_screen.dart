@@ -14,6 +14,7 @@ import 'package:shuttla/core/services/session_manager.dart';
 import 'package:shuttla/core/utilities/global_events.dart';
 import 'package:shuttla/ui/screens/shared/select_busstop_fragment.dart';
 import 'package:shuttla/ui/screens/shared/station_detail_screen.dart';
+import 'package:shuttla/ui/screens/shared/ui_kit.dart';
 import 'package:shuttla/ui/size_config/size_config.dart';
 import 'package:shuttla/ui/widgets/custom_button.dart';
 
@@ -23,7 +24,7 @@ class PassengerHomeScreen extends StatefulWidget {
   State<PassengerHomeScreen> createState() => _PassengerHomeScreenState();
 }
 
-class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
+class _PassengerHomeScreenState extends State<PassengerHomeScreen> with UiKit {
   late GoogleMapController map;
   @override
   Widget build(BuildContext context) {
@@ -92,41 +93,48 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
             ),
 
             //BottomSheet section
-            BlocBuilder<PassengerHomeBloc, PassengerHomeState>(
-                builder: (context, state) {
+            BlocConsumer<PassengerHomeBloc, PassengerHomeState>(
+                listener: (context, state) {
+              if (state is PassengerErrorState) {
+                showToastMessage(context, state.errorMessage);
+              }
+            }, buildWhen: (oldState, newState) {
+              return newState is PassengerWaitingState;
+            }, builder: (context, state) {
               if (state is PassengerWaitingState)
                 return Align(
                   alignment: Alignment.bottomCenter,
                   child: PassengerWaitingWidget(),
                 );
-              else
-                return DraggableScrollableSheet(
-                  initialChildSize: 0.3,
-                  maxChildSize: 0.8,
-                  minChildSize: 0.3,
-                  builder: (context, controller) => SelectStationFragment(
-                    controller,
-                    title: "Select Station",
-                    description: "Select where you want to be picked from.",
-                    itemSelectAction: (Station station) {
-                      context.read<PassengerHomeBloc>().add(
-                          PassengerFetchStationDetailEvent(station));
 
-                      showModalBottomSheet(
-                        context: context,
-                        useRootNavigator: true,
-                        isScrollControlled: true,
-                        enableDrag: true,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(12)),
-                        ),
-                        builder: (context) {
-                          return StationDetailScreen(station);
-                        },
-                      );
-                    },
-                  ),
-                );
+              return DraggableScrollableSheet(
+                initialChildSize: 0.3,
+                maxChildSize: 0.8,
+                minChildSize: 0.3,
+                builder: (context, controller) => SelectStationFragment(
+                  controller,
+                  title: "Select Station",
+                  description: "Select where you want to be picked from.",
+                  itemSelectAction: (Station station) {
+                    context
+                        .read<PassengerHomeBloc>()
+                        .add(PassengerFetchStationDetailEvent(station));
+
+                    showModalBottomSheet(
+                      context: context,
+                      useRootNavigator: true,
+                      isScrollControlled: true,
+                      enableDrag: true,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                      ),
+                      builder: (context) {
+                        return StationDetailScreen(station);
+                      },
+                    );
+                  },
+                ),
+              );
             })
           ],
         ),
@@ -160,7 +168,8 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
     BitmapDescriptor bitmap = await LocationService.initDeviceLocationBitmap();
     print("Generated bitmap");
     if (permissionGranted) {
-      locationSubscription = LocationService.positionStream().listen((event) async{
+      locationSubscription =
+          LocationService.positionStream().listen((event) async {
         LocationService.devicePosition = event;
         final deviceMarker = Marker(
           markerId: MarkerId("device_location"),

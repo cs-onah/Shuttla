@@ -107,7 +107,7 @@ class _StationDetailScreenState extends State<StationDetailScreen> {
             ),
             StationDetailTile(
               iconData: Icons.schedule,
-              text: "Station created ${ShuttlaUtility.formatReadableDateString(widget.station.createdDate, timeInclusive: false)}",
+              text: "Station created ${ShuttlaUtility.formatReadableDateTime(widget.station.createdDate, timeInclusive: false)}",
               iconBgColor: Colors.blueAccent,
             ),
             Divider(),

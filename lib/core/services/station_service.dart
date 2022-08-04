@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shuttla/constants/collection_names.dart';
 import 'package:shuttla/core/data_models/station.dart';
+import 'package:shuttla/core/data_models/user_data.dart';
 
 class StationService {
   late FirebaseFirestore _firestore;
@@ -48,6 +49,14 @@ class StationService {
     return true;
   }
 
+  /// App user to queue
+  ///
+  Future joinQueue({required UserData user, required Station station}) async {
+    station.waitingPassengers.add(user);
+    await station.reference.set(station.toMap());
+    return true;
+  }
+
   /// Provides a listenable snapshot of station collection
   ///
   /// To use, create a [StreamSubscription] from the snapshot
@@ -62,7 +71,7 @@ class StationService {
   }
 
   /// Provides a stream of a station details
-  Stream getStationDetailStream(Station station){
+  Stream<DocumentSnapshot> getStationDetailStream(Station station){
     return station.reference.snapshots();
   }
 
