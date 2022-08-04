@@ -72,11 +72,7 @@ class SelectedStationFragment extends StatelessWidget {
                   BoxButton.rounded(
                     text: "Cancel",
                     backgroundColor: Colors.grey[500],
-                    onPressed: () {
-                      homeModel.removeLocationMarkers();
-                      homeModel.startLocationStream();
-                      Navigator.pop(context);
-                    },
+                    onPressed: () => Navigator.pop(context),
                   ),
                   SizedBox(width: 10),
                   SizedBox(
@@ -88,6 +84,16 @@ class SelectedStationFragment extends StatelessWidget {
                         homeModel.removeLocationMarkers();
                         homeModel.startLocationStream();
                         Navigator.pop(context);
+                        showModalBottomSheet(
+                          context: context,
+                          useRootNavigator: true,
+                          isScrollControlled: true,
+                          enableDrag: true,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(12)),
+                          ),
+                          builder: (context) => StationDetailScreen(station, userRole: UserType.DRIVER),
+                        );
                       },
                     ),
                   ),

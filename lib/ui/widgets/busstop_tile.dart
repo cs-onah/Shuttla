@@ -47,6 +47,11 @@ class BusstopTile extends StatelessWidget {
                         'away from you',
                         style: TextStyle(fontSize: 12),
                       ),
+                      SizedBox(height: 5),
+                      Text(
+                        '${station.waitingPassengers.length} passengers waiting',
+                        style: TextStyle(fontSize: 10),
+                      ),
                     ],
                   ),
                 ),
