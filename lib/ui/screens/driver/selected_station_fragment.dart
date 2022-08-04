@@ -76,7 +76,11 @@ class SelectedStationFragment extends StatelessWidget {
                   BoxButton.rounded(
                     text: "Cancel",
                     backgroundColor: Colors.grey[500],
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () {
+                      homeModel.removeLocationMarkers();
+                      homeModel.startLocationStream();
+                      Navigator.pop(context);
+                    },
                   ),
                   SizedBox(width: 10),
                   SizedBox(

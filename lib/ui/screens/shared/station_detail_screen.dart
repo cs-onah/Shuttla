@@ -25,7 +25,6 @@ class StationDetailScreen extends StatefulWidget {
 }
 
 class _StationDetailScreenState extends State<StationDetailScreen> {
-  StreamSubscription? stationDetailStream;
   late Station station;
   @override
   void initState() {
@@ -33,15 +32,10 @@ class _StationDetailScreenState extends State<StationDetailScreen> {
     super.initState();
   }
 
-  @override
-  void dispose() {
-    stationDetailStream?.cancel();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
-    // final passengerBloc = BlocProvider.of<PassengerHomeBloc>(context);
+    final passengerBloc = BlocProvider.of<PassengerHomeBloc>(context);
     return Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(12)),
@@ -100,7 +94,7 @@ class _StationDetailScreenState extends State<StationDetailScreen> {
             StationDetailTile(
               iconData: Icons.person,
               text:
-                  "${station.waitingPassengers.length} passengers are currently waiting",
+                  "${passengerBloc.selectedStation?.waitingPassengers.length} passengers are currently waiting",
               iconBgColor: Theme.of(context).accentColor,
             ),
             if (widget.station.distanceFromDeviceString != null)

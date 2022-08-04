@@ -85,6 +85,10 @@ class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState> {
         add(UserJoinStationEvent(stationUpdate));
       }
 
+      if(selectedStation!.waitingPassengers.length != stationUpdate.waitingPassengers.length){
+        add(PassengerFetchStationDetailEvent(stationUpdate));
+      }
+
       /// Checks if driver has picked passengers
       if (selectedStation!.lastPickupTime != null) {
         if (stationUpdate.lastPickupTime!
@@ -94,6 +98,7 @@ class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState> {
       }
 
       selectedStation = stationUpdate;
+      // return add(PassengerFetchStationDetailEvent(stationUpdate));
     });
   }
 }
