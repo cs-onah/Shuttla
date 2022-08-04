@@ -10,37 +10,11 @@ class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState> {
   Station? selectedStation;
 
   PassengerHomeBloc() : super(PassengerIdleState()) {
-
-
     on<PassengerFetchStationDetailEvent>(
       (event, emit) {
         selectedStation = event.station;
-
-        //Station stream
-        stationStream?.cancel();
-        stationStream = StationService()
-            .getStationDetailStream(event.station)
-            .listen((event) {
-              print("Stream fired");
-          Station stationUpdate = Station.fromFirebaseSnapshot(event);
-              print(stationUpdate.waitingPassengers);
-
-          ///TODO: Check driver arriving
-
-          /// Checks if current user has joined waiting list
-          if (stationUpdate.waitingPassengers
-              .contains(SessionManager.user!.userData)) {
-            emit(PassengerWaitingState());
-          }
-
-          /// Checks if driver has picked passengers
-          if(selectedStation!.lastPickupTime != null){
-            if(stationUpdate.lastPickupTime!.isAfter(selectedStation!.lastPickupTime!))
-              emit(PassengerPickupState());
-          }
-        });
-
-        return emit(PassengerStationDetailState(selectedStation!));
+        listenToStationEvents(event);
+        emit(PassengerStationDetailState(selectedStation!));
       },
     );
 
@@ -58,12 +32,68 @@ class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState> {
         return;
       },
     );
+
     on<PassengerLeaveStationEvent>(
       (event, emit) {
         stationStream?.cancel();
+        try {
+          StationService().leaveStation(
+            user: SessionManager.user!.userData,
+            station: selectedStation!,
+          );
+        } catch (e) {
+          return emit(PassengerErrorState(e.toString()));
+        }
         return emit(PassengerIdleState());
       },
     );
+
+    on<DriverComingEvent>(
+      (event, emit) => emit(PassengerStationDetailState(event.station)),
+    );
+
+    on<UserJoinStationEvent>(
+      (event, emit) => emit(PassengerWaitingState()),
+    );
+
+    on<DriverPickedPassengerEvent>(
+      (event, emit) => emit(PassengerPickupState()),
+    );
+  }
+
+  void listenToStationEvents(PassengerFetchStationDetailEvent event) {
+    //Station stream
+    stationStream?.cancel();
+    stationStream =
+        StationService().getStationDetailStream(event.station).listen((event) {
+      print("Stream fired");
+      Station stationUpdate = Station.fromFirebaseSnapshot(event);
+
+      ///Check if New driver is assigned to station
+      if (selectedStation?.driverName == null &&
+          stationUpdate.driverName != null) {
+        add(DriverComingEvent(stationUpdate));
+      }
+
+      ///TODO: On passenger leave
+      ///add PassengerLeaveStationEvent from Button
+
+      /// Checks if current user has joined waiting list
+      if (stationUpdate.waitingPassengers
+          .contains(SessionManager.user!.userData)) {
+        add(UserJoinStationEvent(stationUpdate));
+      }
+
+      /// Checks if driver has picked passengers
+      if (selectedStation!.lastPickupTime != null) {
+        if (stationUpdate.lastPickupTime!
+            .isAfter(selectedStation!.lastPickupTime!)) {
+          add(DriverPickedPassengerEvent(stationUpdate));
+        }
+      }
+
+      selectedStation = stationUpdate;
+    });
   }
 }
 
@@ -76,8 +106,23 @@ class PassengerFetchStationDetailEvent extends PassengerHomeEvent {
 }
 
 class PassengerLeaveStationEvent extends PassengerHomeEvent {
-  final String stationId, stationName;
-  PassengerLeaveStationEvent(this.stationId, this.stationName);
+  final Station? station;
+  PassengerLeaveStationEvent([this.station]);
+}
+
+class DriverComingEvent extends PassengerHomeEvent {
+  final Station station;
+  DriverComingEvent(this.station);
+}
+
+class UserJoinStationEvent extends PassengerHomeEvent {
+  final Station station;
+  UserJoinStationEvent(this.station);
+}
+
+class DriverPickedPassengerEvent extends PassengerHomeEvent {
+  final Station station;
+  DriverPickedPassengerEvent(this.station);
 }
 
 class PassengerJoinStationEvent extends PassengerHomeEvent {}

@@ -215,6 +215,9 @@ class PassengerWaitingWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bloc = BlocProvider.of<PassengerHomeBloc>(context);
+    int totalPassengerCount = bloc.selectedStation?.waitingPassengers.length ?? 1;
+    int otherPassengerCount = totalPassengerCount - 1;
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -229,12 +232,19 @@ class PassengerWaitingWidget extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: Text(
-                  'SEET head Station',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${bloc.selectedStation?.stationName ?? 'N/A'}',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 5),
+                    Text("${bloc.selectedStation?.description ?? 'No description'}"),
+                  ],
                 ),
               ),
               SizedBox(width: 40),
@@ -246,17 +256,14 @@ class PassengerWaitingWidget extends StatelessWidget {
           Divider(),
           SizedBox(height: 10),
           Text(
-            'You are waiting with 5 other passengers.',
-            style: TextStyle(
-              fontSize: 14,
-            ),
+            otherPassengerCount < 1 ? "You are the only passenger waiting in this station." :
+            'You are waiting with $otherPassengerCount other passengers.',
+            style: TextStyle(fontSize: 14),
           ),
           SizedBox(height: 10),
           Text(
             'Driver is approaching.',
-            style: TextStyle(
-              fontSize: 14,
-            ),
+            style: TextStyle(fontSize: 14),
           ),
           SizedBox(height: 20),
           SizedBox(
@@ -266,7 +273,7 @@ class PassengerWaitingWidget extends StatelessWidget {
               backgroundColor: Colors.red,
               onPressed: () {
                 BlocProvider.of<PassengerHomeBloc>(context).add(
-                  PassengerLeaveStationEvent("", ""),
+                  PassengerLeaveStationEvent(),
                 );
               },
             ),

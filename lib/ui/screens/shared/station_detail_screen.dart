@@ -97,7 +97,7 @@ class _StationDetailScreenState extends State<StationDetailScreen> {
             ),
             StationDetailTile(
               iconData: Icons.person,
-              text: "5 people are currently waiting",
+              text: "${station.waitingPassengers.length} passengers are currently waiting",
               iconBgColor: Theme.of(context).accentColor,
             ),
             if(widget.station.distanceFromDeviceString != null) StationDetailTile(
