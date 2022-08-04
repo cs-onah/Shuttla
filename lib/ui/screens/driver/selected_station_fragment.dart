@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:shuttla/constants/user_type_enum.dart';
 import 'package:shuttla/core/data_models/station.dart';
+import 'package:shuttla/core/viewmodels/home_viewmodel.dart';
 import 'package:shuttla/ui/screens/shared/station_detail_screen.dart';
 import 'package:shuttla/ui/size_config/size_config.dart';
 import 'package:shuttla/ui/widgets/custom_button.dart';
+import 'package:provider/provider.dart';
 
 class SelectedStationFragment extends StatelessWidget {
   final Station station;
@@ -11,6 +13,7 @@ class SelectedStationFragment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final homeModel = context.read<HomeViewmodel>();
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(12)),
@@ -69,7 +72,11 @@ class SelectedStationFragment extends StatelessWidget {
                   BoxButton.rounded(
                     text: "Cancel",
                     backgroundColor: Colors.grey[500],
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () {
+                      homeModel.removeLocationMarkers();
+                      homeModel.startLocationStream();
+                      Navigator.pop(context);
+                    },
                   ),
                   SizedBox(width: 10),
                   SizedBox(
@@ -78,17 +85,9 @@ class SelectedStationFragment extends StatelessWidget {
                       text: "Continue",
                       backgroundColor: Theme.of(context).primaryColorDark,
                       onPressed: () {
+                        homeModel.removeLocationMarkers();
+                        homeModel.startLocationStream();
                         Navigator.pop(context);
-                        // showModalBottomSheet(
-                        //   context: context,
-                        //   useRootNavigator: true,
-                        //   isScrollControlled: true,
-                        //   enableDrag: true,
-                        //   shape: RoundedRectangleBorder(
-                        //     borderRadius: BorderRadius.all(Radius.circular(12)),
-                        //   ),
-                        //   builder: (context) => StationDetailScreen(Station(), userRole: UserType.DRIVER,),
-                        // );
                       },
                     ),
                   ),

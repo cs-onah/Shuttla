@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shuttla/constants/route_names.dart';
+import 'package:shuttla/core/data_models/station.dart';
 import 'package:shuttla/core/services/location_service.dart';
 import 'package:shuttla/core/utilities/global_events.dart';
 
@@ -13,11 +15,17 @@ class HomeViewmodel extends ChangeNotifier {
   late StreamSubscription logOutListener;
   StreamSubscription? locationSubscription;
 
+  Marker _locationMarker(LatLng location) => Marker(
+    markerId: MarkerId("location_marker"),
+    position: location,
+    icon: BitmapDescriptor.defaultMarker,
+  );
+
   Set<Marker> mapMarkers = {};
 
-  void listenForLogout(BuildContext context) {
+  void listenForLogout(BuildContext context, {String userType = "Unknown user"}) {
     logOutListener = eventBus.on<LogOutEvent>().listen((event) {
-      print("Passenger: Logged out because: ${event.reason}");
+      print("$userType: Logged out because: ${event.reason}");
       Navigator.pushNamedAndRemoveUntil(
         context,
         RouteNames.loginScreen,
@@ -55,5 +63,22 @@ class HomeViewmodel extends ChangeNotifier {
   void disposeDisposables() {
     logOutListener.cancel();
     locationSubscription?.cancel();
+  }
+
+  void showStationOnMap(Station station) {
+    //Stop location stream
+    locationSubscription?.cancel();
+
+    //show location on map
+    map.animateCamera(
+        CameraUpdate.newLatLng(station.latLng));
+
+    mapMarkers.add(_locationMarker(station.latLng));
+    notifyListeners();
+  }
+
+  removeLocationMarkers(){
+    mapMarkers.clear();
+    notifyListeners();
   }
 }

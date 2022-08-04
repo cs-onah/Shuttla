@@ -161,13 +161,12 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> with UiKit {
   void initState() {
     super.initState();
     //Listen for logout
-    context.read<HomeViewmodel>().listenForLogout(context);
+    context.read<HomeViewmodel>().listenForLogout(context, userType: "Passenger");
   }
 
   @override
   void dispose() {
     context.read<HomeViewmodel>().disposeDisposables();
-    // HomeViewmodel.disposeDisposables();
     super.dispose();
   }
 }

@@ -3,11 +3,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:shuttla/app.dart';
 import 'package:shuttla/constants/route_names.dart';
 import 'package:shuttla/core/blocs/driver_home_bloc.dart';
 import 'package:shuttla/core/data_models/station.dart';
 import 'package:shuttla/core/utilities/global_events.dart';
+import 'package:shuttla/core/viewmodels/home_viewmodel.dart';
 import 'package:shuttla/ui/screens/driver/driver_complete_fragment.dart';
 import 'package:shuttla/ui/screens/driver/driver_enroute_fragment.dart';
 import 'package:shuttla/ui/screens/driver/selected_station_fragment.dart';
@@ -23,9 +25,9 @@ class DriverHomeScreen extends StatefulWidget {
 }
 
 class _DriverHomeScreenState extends State<DriverHomeScreen> {
-  late GoogleMapController mapController;
   @override
   Widget build(BuildContext context) {
+    final homeModel = Provider.of<HomeViewmodel>(context);
     return Scaffold(
       body: BlocListener<DriverHomeBloc, DriverHomeState>(
         listener: (ctx, state) {
@@ -63,17 +65,18 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
           child: Stack(
             children: [
               GoogleMap(
-                initialCameraPosition: CameraPosition(
-                    target: LatLng(5.377232, 7.000225), zoom: 16),
+                initialCameraPosition:
+                CameraPosition(target: LatLng(5.377232, 7.000225), zoom: 16),
                 myLocationButtonEnabled: false,
                 compassEnabled: false,
                 zoomControlsEnabled: false,
                 tiltGesturesEnabled: false,
                 mapType: MapType.normal,
                 onMapCreated: (GoogleMapController controller) {
-                  this.mapController = controller;
+                  homeModel.map = controller;
+                  homeModel.startLocationStream();
                 },
-                markers: {},
+                markers: homeModel.mapMarkers,
                 circles: {},
                 polylines: {},
               ),
@@ -110,7 +113,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                       width: double.infinity,
                       child: BoxButton.rounded(
                         text: "See Stations",
-                        onPressed: () => _seeStations(context),
+                        onPressed: () => _seeStations(context, homeModel),
                       ),
                     );
                   }),
@@ -123,7 +126,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     );
   }
 
-  _seeStations(BuildContext context) {
+  _seeStations(BuildContext context, HomeViewmodel homeViewmodel) {
     showBottomSheet(
         context: context,
         backgroundColor: Colors.transparent,
@@ -144,8 +147,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                     backgroundColor: Colors.transparent,
                     builder: (context) => SelectedStationFragment(station),
                   );
-                  mapController.animateCamera(
-                      CameraUpdate.newLatLng(LatLng(5.377242, 7.000225)));
+                  homeViewmodel.showStationOnMap(station);
                 },
               );
             },
@@ -153,24 +155,16 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
         });
   }
 
-  late StreamSubscription logOutListener;
 
   @override
   void initState() {
     super.initState();
-    logOutListener = eventBus.on<LogOutEvent>().listen((event) {
-      print("Driver: Logged out because: ${event.reason}");
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        RouteNames.loginScreen,
-        (route) => route.settings.name == RouteNames.loginScreen,
-      );
-    });
+    context.read<HomeViewmodel>().listenForLogout(context, userType: "Driver");
   }
 
   @override
   void dispose() {
-    logOutListener.cancel();
+    context.read<HomeViewmodel>().disposeDisposables();
     super.dispose();
   }
 }

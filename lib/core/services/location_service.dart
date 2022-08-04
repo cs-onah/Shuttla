@@ -81,6 +81,7 @@ class LocationService {
 
   /// Generates [BitmapDescriptor] for device position.
   static Future<BitmapDescriptor> initDeviceLocationBitmap() async{
+    if(devicePositionBitmap != null) return devicePositionBitmap!;
     final bytes = await getBytesFromAsset('images/marker.png');
     devicePositionBitmap = BitmapDescriptor.fromBytes(bytes);
     return devicePositionBitmap!;
