@@ -98,8 +98,13 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> with UiKit {
               if (state is PassengerErrorState) {
                 showToastMessage(context, state.errorMessage);
               }
+              if(state is PassengerPickupState){
+                //Show dialog to allow Passenger select if they want to keep waiting
+              }
+
             }, buildWhen: (oldState, newState) {
-              return newState is PassengerWaitingState;
+              return newState is PassengerWaitingState ||
+                newState is PassengerIdleState;
             }, builder: (context, state) {
               if (state is PassengerWaitingState)
                 return Align(

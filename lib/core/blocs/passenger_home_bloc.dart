@@ -17,6 +17,8 @@ class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState> {
     on<PassengerFetchStationDetailEvent>(
       (event, emit) {
         selectedStation = event.station;
+
+        //Station stream
         stationStream = StationService()
             .getStationDetailStream(event.station)
             .listen((event) {
@@ -24,13 +26,17 @@ class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState> {
 
           ///TODO: Check driver arriving
 
-          ///TODO: Check if joined waiting list
+          /// Checks if current user has joined waiting list
           if (stationUpdate.waitingPassengers
               .contains(SessionManager.user!.userData)) {
             emit(PassengerWaitingState());
           }
 
-          ///TODO: Check if driver has picked passengers
+          /// Checks if driver has picked passengers
+          if(selectedStation!.lastPickupTime != null){
+            if(stationUpdate.lastPickupTime!.isAfter(selectedStation!.lastPickupTime!))
+              emit(PassengerPickupState());
+          }
         });
 
         return emit(PassengerStationDetailState(selectedStation!));
