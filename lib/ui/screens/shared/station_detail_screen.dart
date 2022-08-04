@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:shuttla/constants/user_type_enum.dart';
 import 'package:shuttla/core/blocs/driver_home_bloc.dart';
 import 'package:shuttla/core/blocs/passenger_home_bloc.dart';
+import 'package:shuttla/core/data_models/app_user.dart';
 import 'package:shuttla/core/data_models/station.dart';
 import 'package:shuttla/core/services/location_service.dart';
 import 'package:shuttla/core/services/station_service.dart';
@@ -81,7 +82,8 @@ class _StationDetailScreenState extends State<StationDetailScreen> {
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
-                      ), SizedBox(height: 10),
+                      ),
+                      SizedBox(height: 10),
                       Text(widget.station.description ?? ""),
                     ],
                   ),
@@ -97,21 +99,26 @@ class _StationDetailScreenState extends State<StationDetailScreen> {
             ),
             StationDetailTile(
               iconData: Icons.person,
-              text: "${station.waitingPassengers.length} passengers are currently waiting",
+              text:
+                  "${station.waitingPassengers.length} passengers are currently waiting",
               iconBgColor: Theme.of(context).accentColor,
             ),
-            if(widget.station.distanceFromDeviceString != null) StationDetailTile(
-              iconData: Icons.straighten,
-              text: ShuttlaUtility.convertDistance(widget.station.distanceFromDeviceFigure) ?? "",
-              iconBgColor: Colors.amber[600],
-            ),
+            if (widget.station.distanceFromDeviceString != null)
+              StationDetailTile(
+                iconData: Icons.straighten,
+                text: ShuttlaUtility.convertDistance(
+                        widget.station.distanceFromDeviceFigure) ??
+                    "",
+                iconBgColor: Colors.amber[600],
+              ),
             StationDetailTile(
               iconData: Icons.schedule,
-              text: "Station created ${ShuttlaUtility.formatReadableDateTime(widget.station.createdDate, timeInclusive: false)}",
+              text:
+                  "Station created ${ShuttlaUtility.formatReadableDateTime(widget.station.createdDate, timeInclusive: false)}",
               iconBgColor: Colors.blueAccent,
             ),
             Divider(),
-            DriverStatusTile("none"),
+            DriverStatusTile(station.approachingDrivers),
             Divider(),
             SizedBox(height: 40),
             Builder(
@@ -136,8 +143,8 @@ class _StationDetailScreenState extends State<StationDetailScreen> {
       text: "JOIN WAIT",
       onPressed: () {
         context.read<PassengerHomeBloc>().add(
-          PassengerJoinStationEvent(),
-        );
+              PassengerJoinStationEvent(),
+            );
         Navigator.pop(context);
       },
     );
@@ -148,8 +155,8 @@ class _StationDetailScreenState extends State<StationDetailScreen> {
       text: "SELECT STATION",
       onPressed: () {
         context.read<DriverHomeBloc>().add(
-          DriverEnrouteEvent(),
-        );
+              DriverEnrouteEvent(),
+            );
         Navigator.pop(context);
       },
     );
@@ -202,52 +209,87 @@ class StationDetailTile extends StatelessWidget {
 }
 
 class DriverStatusTile extends StatelessWidget {
-  final String status;
-  final String? driverDetails;
+  final List<AppUser> drivers;
 
-  const DriverStatusTile(this.status, {this.driverDetails});
+  const DriverStatusTile(this.drivers);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 15),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(12)),
-                color: Colors.black45,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Icon(Icons.bus_alert, size: 25, color: Colors.white),
-              )),
-          SizedBox(width: 25),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Driver Status',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
+        padding: EdgeInsets.symmetric(vertical: 15),
+        child: drivers.isNotEmpty
+            ? Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Driver(s) Approaching",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
+                  SizedBox(height: 10),
+                  ...drivers.map(
+                    (e) => Container(
+                      padding: EdgeInsets.symmetric(horizontal: 0, vertical: 5),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CircleAvatar(
+                              foregroundImage:
+                                  AssetImage(e.userData.imageResourcePath)),
+                          SizedBox(width: 15),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "${e.userData.nickname}",
+                                style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(height: 5),
+                              Text("${e.driverData!.carManufacturer}, ${e.driverData!.carModel}"),
+                              SizedBox(height: 10),
+                              Text("${e.driverData!.plateNumber}"),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                ],
+              )
+            : Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                      color: Colors.black45,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child:
+                          Icon(Icons.bus_alert, size: 25, color: Colors.white),
+                    )),
+                SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Driver Status',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 25),
+                        Text(
+                          'No driver approaching at the moment.',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                      ]),
                 ),
-                SizedBox(height: 5),
-                Text(
-                  'No driver approaching at the moment.',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontStyle: FontStyle.italic,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+              ]));
   }
 }

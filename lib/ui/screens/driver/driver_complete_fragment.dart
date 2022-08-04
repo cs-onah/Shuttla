@@ -9,10 +9,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class DriverCompleteFragment extends StatelessWidget {
   DriverCompleteFragment({Key? key}) : super(key: key);
 
-  ValueNotifier<bool> pickedAll = ValueNotifier(false);
+  final ValueNotifier<bool> pickedAll = ValueNotifier(false);
 
   @override
   Widget build(BuildContext context) {
+    final bloc = BlocProvider.of<DriverHomeBloc>(context);
     return Padding(
         padding: const EdgeInsets.all(8.0),
         child: Card(
@@ -73,8 +74,8 @@ class DriverCompleteFragment extends StatelessWidget {
                       backgroundColor: Colors.green[700],
                       onPressed: (){
                         Navigator.pop(context);
-                        // context.read<DriverHomeBloc>()
-                        //     .add(DriverCompleteEvent(Station()));
+                        context.read<DriverHomeBloc>()
+                            .add(DriverCompleteEvent());
                       },
                     ),
                   ),

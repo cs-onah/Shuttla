@@ -27,8 +27,6 @@ class DriverHomeBloc extends Bloc<DriverHomeEvent, DriverHomeState> {
             station: selectedStation!,
           );
         } catch (e, s) {
-          print(e);
-          print(s);
           return emit(DriverErrorState(e.toString()));
         }
         return emit(DriverEnrouteState());
@@ -51,6 +49,11 @@ class DriverHomeBloc extends Bloc<DriverHomeEvent, DriverHomeState> {
     );
     on<DriverPickupEvent>(
       (event, emit) {
+        return emit(DriverPickupState());
+      },
+    );
+    on<DriverCompleteEvent>(
+      (event, emit) {
         stationStream?.cancel();
         try {
           StationService().driverPickupPassengers(
@@ -60,11 +63,8 @@ class DriverHomeBloc extends Bloc<DriverHomeEvent, DriverHomeState> {
         } catch (e) {
           return emit(DriverErrorState(e.toString()));
         }
-        return emit(DriverPickupState());
+        emit(DriverIdleState(completedSession: true));
       },
-    );
-    on<DriverCompleteEvent>(
-      (event, emit) => emit(DriverIdleState(completedSession: true)),
     );
   }
 
@@ -109,13 +109,13 @@ class DriverEnrouteEvent extends DriverHomeEvent {
 }
 
 class DriverPickupEvent extends DriverHomeEvent {
-  final Station station;
-  DriverPickupEvent(this.station);
+  final Station? station;
+  DriverPickupEvent([this.station]);
 }
 
 class DriverCompleteEvent extends DriverHomeEvent {
-  final Station station;
-  DriverCompleteEvent(this.station);
+  final Station? station;
+  DriverCompleteEvent([this.station]);
 }
 
 //states

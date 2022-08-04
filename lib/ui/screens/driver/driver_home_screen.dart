@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:shuttla/app.dart';
+import 'package:shuttla/constants/route_names.dart';
 import 'package:shuttla/core/blocs/driver_home_bloc.dart';
 import 'package:shuttla/core/data_models/station.dart';
 import 'package:shuttla/core/utilities/global_events.dart';
@@ -26,7 +27,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> with UiKit{
     final homeModel = Provider.of<HomeViewmodel>(context);
     return Scaffold(
       body: BlocListener<DriverHomeBloc, DriverHomeState>(
-        listener: (ctx, state) {
+        listener: (ctx, state) async {
           if(state is DriverErrorState)
             showToastMessage(context, state.errorMessage);
           if (state is DriverEnrouteState)
@@ -41,13 +42,15 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> with UiKit{
               backgroundColor: Colors.transparent,
               builder: (ctx) => DriverCompleteFragment(),
             );
-          if (state is DriverIdleState && state.completedSession)
-            showDialog(
+          if (state is DriverIdleState && state.completedSession){
+            await showDialog(
               context: context,
               builder: (context) {
                 return AlertDialog(
                   title: Text("Success"),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(16))),
                   content: Text("Successfully completed session"),
+                  actionsPadding: EdgeInsets.symmetric(horizontal: 10),
                   actions: [
                     BoxButton.rounded(
                       text: "Okay",
@@ -58,6 +61,8 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> with UiKit{
                 );
               },
             );
+          }
+
         },
         child: SafeArea(
           child: Stack(
