@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:shuttla/core/data_models/station.dart';
-import 'package:shuttla/core/services/location_service.dart';
-import 'package:shuttla/core/utilities/utility.dart';
 
 class BusstopTile extends StatelessWidget {
   final Function(Station)? onClicked;

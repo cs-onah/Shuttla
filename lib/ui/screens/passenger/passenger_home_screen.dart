@@ -1,18 +1,13 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:shuttla/app.dart';
 import 'package:shuttla/constants/route_names.dart';
 import 'package:shuttla/core/blocs/authentication_bloc.dart';
 import 'package:shuttla/core/blocs/passenger_home_bloc.dart';
 import 'package:shuttla/core/data_models/app_user.dart';
 import 'package:shuttla/core/data_models/station.dart';
-import 'package:shuttla/core/services/location_service.dart';
 import 'package:shuttla/core/services/session_manager.dart';
-import 'package:shuttla/core/utilities/global_events.dart';
 import 'package:shuttla/core/viewmodels/home_viewmodel.dart';
 import 'package:shuttla/ui/screens/shared/select_busstop_fragment.dart';
 import 'package:shuttla/ui/screens/shared/station_detail_screen.dart';
