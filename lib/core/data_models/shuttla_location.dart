@@ -17,13 +17,13 @@ class ShuttlaLocation {
   double? latitude;
   double? longitude;
   String? address;
-  dynamic? miscellaneous;
+  dynamic miscellaneous;
 
   ShuttlaLocation copyWith({
     double? latitude,
     double? longitude,
     String? address,
-    dynamic? miscellaneous,
+    dynamic miscellaneous,
   }) =>
       ShuttlaLocation(
         latitude: latitude ?? this.latitude,
