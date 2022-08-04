@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shuttla/constants/user_type_enum.dart';
+import 'package:shuttla/core/blocs/driver_home_bloc.dart';
 import 'package:shuttla/core/data_models/station.dart';
 import 'package:shuttla/core/viewmodels/home_viewmodel.dart';
 import 'package:shuttla/ui/screens/shared/station_detail_screen.dart';
 import 'package:shuttla/ui/size_config/size_config.dart';
 import 'package:shuttla/ui/widgets/custom_button.dart';
-import 'package:provider/provider.dart';
 
 class SelectedStationFragment extends StatelessWidget {
   final Station station;
@@ -14,6 +15,7 @@ class SelectedStationFragment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final homeModel = context.read<HomeViewmodel>();
+    final bloc = BlocProvider.of<DriverHomeBloc>(context);
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(12)),
@@ -43,14 +45,16 @@ class SelectedStationFragment extends StatelessWidget {
                             ),
                             children: [
                               TextSpan(
-                                text: "SEET HEAD",
+                                text: "${station.stationName}",
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               )
                             ]),
                       ),
+                      SizedBox(height: 5),
+                      Text("${station.waitingPassengers.length} passengers waiting"),
                       SizedBox(height: 10),
                       Text(
-                        '* 1km from your location',
+                        '* ${station.distanceFromDeviceString} from your location',
                         style: TextStyle(
                           fontSize: 12,
                           color: Colors.green,
@@ -83,6 +87,7 @@ class SelectedStationFragment extends StatelessWidget {
                       onPressed: () {
                         homeModel.removeLocationMarkers();
                         homeModel.startLocationStream();
+                        bloc.add(DriverFetchStationDetailEvent(station));
                         Navigator.pop(context);
                         showModalBottomSheet(
                           context: context,

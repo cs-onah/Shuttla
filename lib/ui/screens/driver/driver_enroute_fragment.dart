@@ -9,6 +9,8 @@ class DriverEnrouteFragment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bloc = BlocProvider.of<DriverHomeBloc>(context);
+    print(bloc.selectedStation?.approachingDrivers.length);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Card(
@@ -52,7 +54,7 @@ class DriverEnrouteFragment extends StatelessWidget {
                   backgroundColor: Theme.of(context).primaryColorDark,
                   onPressed: (){
                     context.read<DriverHomeBloc>()
-                        .add(DriverPickupEvent("stationId", "stationName"));
+                        .add(DriverPickupEvent(bloc.selectedStation!));
                   },
                 ),
               ),
@@ -63,7 +65,7 @@ class DriverEnrouteFragment extends StatelessWidget {
                   onPressed: () {
                     Navigator.pop(context);
                     context.read<DriverHomeBloc>()
-                        .add(DriverCancelEvent("stationId", "stationName"));
+                        .add(DriverCancelEvent(bloc.selectedStation!));
                   },
                 ),
               ),

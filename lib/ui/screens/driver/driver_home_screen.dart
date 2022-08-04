@@ -11,6 +11,7 @@ import 'package:shuttla/ui/screens/driver/driver_complete_fragment.dart';
 import 'package:shuttla/ui/screens/driver/driver_enroute_fragment.dart';
 import 'package:shuttla/ui/screens/driver/selected_station_fragment.dart';
 import 'package:shuttla/ui/screens/shared/select_busstop_fragment.dart';
+import 'package:shuttla/ui/screens/shared/ui_kit.dart';
 import 'package:shuttla/ui/widgets/custom_button.dart';
 
 class DriverHomeScreen extends StatefulWidget {
@@ -19,13 +20,15 @@ class DriverHomeScreen extends StatefulWidget {
   State<DriverHomeScreen> createState() => _DriverHomeScreenState();
 }
 
-class _DriverHomeScreenState extends State<DriverHomeScreen> {
+class _DriverHomeScreenState extends State<DriverHomeScreen> with UiKit{
   @override
   Widget build(BuildContext context) {
     final homeModel = Provider.of<HomeViewmodel>(context);
     return Scaffold(
       body: BlocListener<DriverHomeBloc, DriverHomeState>(
         listener: (ctx, state) {
+          if(state is DriverErrorState)
+            showToastMessage(context, state.errorMessage);
           if (state is DriverEnrouteState)
             showBottomSheet(
               context: ctx,

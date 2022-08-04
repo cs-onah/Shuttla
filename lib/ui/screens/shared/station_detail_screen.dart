@@ -148,7 +148,7 @@ class _StationDetailScreenState extends State<StationDetailScreen> {
       text: "SELECT STATION",
       onPressed: () {
         context.read<DriverHomeBloc>().add(
-          DriverEnrouteEvent("stationId", "stationName"),
+          DriverEnrouteEvent(),
         );
         Navigator.pop(context);
       },

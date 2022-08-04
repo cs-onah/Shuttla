@@ -22,11 +22,13 @@ class DriverHomeBloc extends Bloc<DriverHomeEvent, DriverHomeState> {
       (event, emit) {
         //Add driver to approachingDrivers list
         try {
-          StationService().driverPickupPassengers(
+          StationService().driverSelectStation(
             driver: SessionManager.user!,
             station: selectedStation!,
           );
-        } catch (e) {
+        } catch (e, s) {
+          print(e);
+          print(s);
           return emit(DriverErrorState(e.toString()));
         }
         return emit(DriverEnrouteState());
@@ -97,23 +99,23 @@ class DriverFetchStationDetailEvent extends DriverHomeEvent {
 }
 
 class DriverCancelEvent extends DriverHomeEvent {
-  final String stationId, stationName;
-  DriverCancelEvent(this.stationId, this.stationName);
+  final Station? station;
+  DriverCancelEvent([this.station]);
 }
 
 class DriverEnrouteEvent extends DriverHomeEvent {
-  final String stationId, stationName;
-  DriverEnrouteEvent(this.stationId, this.stationName);
+  final Station? station;
+  DriverEnrouteEvent([this.station]);
 }
 
 class DriverPickupEvent extends DriverHomeEvent {
-  final String stationId, stationName;
-  DriverPickupEvent(this.stationId, this.stationName);
+  final Station station;
+  DriverPickupEvent(this.station);
 }
 
 class DriverCompleteEvent extends DriverHomeEvent {
-  final String stationId, stationName;
-  DriverCompleteEvent(this.stationId, this.stationName);
+  final Station station;
+  DriverCompleteEvent(this.station);
 }
 
 //states

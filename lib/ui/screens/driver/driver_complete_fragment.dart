@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shuttla/core/blocs/driver_home_bloc.dart';
 import 'package:shuttla/core/blocs/passenger_home_bloc.dart';
+import 'package:shuttla/core/data_models/station.dart';
 import 'package:shuttla/ui/size_config/size_config.dart';
 import 'package:shuttla/ui/widgets/custom_button.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -72,8 +73,8 @@ class DriverCompleteFragment extends StatelessWidget {
                       backgroundColor: Colors.green[700],
                       onPressed: (){
                         Navigator.pop(context);
-                        context.read<DriverHomeBloc>()
-                            .add(DriverCompleteEvent("stationId", "stationName"));
+                        // context.read<DriverHomeBloc>()
+                        //     .add(DriverCompleteEvent(Station()));
                       },
                     ),
                   ),
