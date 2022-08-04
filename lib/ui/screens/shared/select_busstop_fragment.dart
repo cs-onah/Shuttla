@@ -77,7 +77,10 @@ class _SelectStationFragmentState extends State<SelectStationFragment> {
           SizedBox(height: 10),
           BlocBuilder<StationCubit, StationState>(builder: (context, state) {
             if (state is LoadingStationState)
-              return Center(child: CircularProgressIndicator());
+              return Padding(
+                padding: const EdgeInsets.only(top: 30.0),
+                child: Center(child: CircularProgressIndicator()),
+              );
 
             if (bloc.stations.isNotEmpty)
               return Column(
@@ -95,16 +98,19 @@ class _SelectStationFragmentState extends State<SelectStationFragment> {
                 ],
               );
 
-            return Center(
-                child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text("No Station Found!"),
-                SizedBox(height: 10),
-                TextButton(
-                    onPressed: () => bloc.getStations(), child: Text("Retry")),
-              ],
-            ));
+            return Padding(
+              padding: const EdgeInsets.only(top: 30.0),
+              child: Center(
+                  child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text("No Station Found!"),
+                  SizedBox(height: 10),
+                  TextButton(
+                      onPressed: () => bloc.getStations(), child: Text("Retry")),
+                ],
+              )),
+            );
           }),
         ],
       ),

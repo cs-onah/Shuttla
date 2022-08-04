@@ -46,7 +46,9 @@ class StationCubit extends Cubit<StationState> {
     try{
       stations = await _stationService.getStation();
       return emit(LoadedStationState(stations));
-    } catch (e){
+    } catch (e, s){
+      print(e);
+      print(s);
       return emit(ErrorStationState(e.toString()));
     }
   }
