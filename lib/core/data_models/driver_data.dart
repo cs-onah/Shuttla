@@ -1,6 +1,8 @@
 import 'dart:convert';
 
-class DriverData {
+import 'package:equatable/equatable.dart';
+
+class DriverData extends Equatable {
   DriverData({
     required this.plateNumber,
     required this.carManufacturer,
@@ -26,21 +28,31 @@ class DriverData {
         carColor: carColor ?? this.carColor,
       );
 
-  factory DriverData.fromJson(String str) => DriverData.fromMap(json.decode(str));
+  factory DriverData.fromJson(String str) =>
+      DriverData.fromMap(json.decode(str));
 
   String toJson() => json.encode(toMap());
 
   factory DriverData.fromMap(Map<String, dynamic> json) => DriverData(
-    plateNumber: json["plateNumber"] == null ? null : json["plateNumber"],
-    carManufacturer: json["carManufacturer"] == null ? null : json["carManufacturer"],
-    carModel: json["carModel"] == null ? null : json["carModel"],
-    carColor: json["carColor"] == null ? null : json["carColor"],
-  );
+        plateNumber: json["plateNumber"] == null ? null : json["plateNumber"],
+        carManufacturer:
+            json["carManufacturer"] == null ? null : json["carManufacturer"],
+        carModel: json["carModel"] == null ? null : json["carModel"],
+        carColor: json["carColor"] == null ? null : json["carColor"],
+      );
 
   Map<String, dynamic> toMap() => {
-    "plateNumber": plateNumber,
-    "carManufacturer": carManufacturer,
-    "carModel": carModel,
-    "carColor": carColor,
-  };
+        "plateNumber": plateNumber,
+        "carManufacturer": carManufacturer,
+        "carModel": carModel,
+        "carColor": carColor,
+      };
+
+  @override
+  List<Object?> get props => [
+        plateNumber,
+        carManufacturer,
+        carModel,
+        carColor,
+      ];
 }

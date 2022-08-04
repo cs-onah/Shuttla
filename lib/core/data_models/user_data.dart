@@ -1,8 +1,9 @@
 import 'dart:convert';
 
+import 'package:equatable/equatable.dart';
 import 'package:shuttla/constants/user_type_enum.dart';
 
-class UserData {
+class UserData extends Equatable {
   UserData({
     required this.userId,
     required this.nickname,
@@ -39,18 +40,27 @@ class UserData {
   String toJson() => json.encode(toMap());
 
   factory UserData.fromMap(Map<String, dynamic> json) => UserData(
-    nickname: json["nickname"] == null ? null : json["nickname"],
-    email: json["email"] == null ? null : json["email"],
-    userId: json["userId"] == null ? null : json["userId"],
-    imageResource: json["imageResource"]?.toString(),
-    userType: json["userType"] == null ? null : json["userType"],
-  );
+        nickname: json["nickname"] == null ? null : json["nickname"],
+        email: json["email"] == null ? null : json["email"],
+        userId: json["userId"] == null ? null : json["userId"],
+        imageResource: json["imageResource"]?.toString(),
+        userType: json["userType"] == null ? null : json["userType"],
+      );
 
   Map<String, dynamic> toMap() => {
-    "nickname": nickname,
-    "email": email,
-    "userId": userId,
-    "imageResource": imageResource,
-    "userType": userType,
-  };
+        "nickname": nickname,
+        "email": email,
+        "userId": userId,
+        "imageResource": imageResource,
+        "userType": userType,
+      };
+
+  @override
+  List<Object?> get props => [
+        nickname,
+        email,
+        userId,
+        imageResource,
+        userType,
+      ];
 }

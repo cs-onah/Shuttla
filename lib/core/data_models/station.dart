@@ -85,7 +85,7 @@ class Station {
     stationName: doc.data()?["station_name"],
     coordinates: List<double>.from(doc.data()?["coordinates"].map((x) => x.toDouble())),
     lastPickupTime: doc.data()?["lastPickupTime"] == null ? null : DateTime.parse(doc.data()?["lastPickupTime"]),
-    createdDate: DateTime.parse(doc.data()?["created_date"]),
+    createdDate: DateTime.parse(doc.data()!["created_date"]!.toString()),
     waitingPassengers: doc.data()?["waitingPassengers"] == null ? [] : List<UserData>.from(doc.data()?["waitingPassengers"].map((x) => UserData.fromMap(x))),
     driverId: doc.data()?["driver_id"],
     driverName: doc.data()?["driver_name"],
@@ -98,12 +98,11 @@ class Station {
     "description" : description,
     "coordinates": List<dynamic>.from(coordinates.map((x) => x)),
     "waitingPassengers" : List<Map<String, dynamic>>.from(waitingPassengers.map((x) => x.toMap())),
-    "created_date": createdDate,
+    "created_date": createdDate.toString(),
     "driver_id": driverId,
     "driver_name": driverName,
     "plate_number": plateNumber,
-    "lastPickupTime": lastPickupTime?.toIso8601String(),
-    "createdDate": createdDate.toIso8601String(),
+    "lastPickupTime": lastPickupTime?.toString(),
   };
 }
 

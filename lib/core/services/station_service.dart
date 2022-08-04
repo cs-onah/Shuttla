@@ -52,6 +52,7 @@ class StationService {
   /// Add user to queue
   ///
   Future joinStation({required UserData user, required Station station}) async {
+    if (station.waitingPassengers.contains(user)) return true;
     station.waitingPassengers.add(user);
     await station.reference.set(station.toMap());
     return true;
@@ -60,6 +61,7 @@ class StationService {
   /// Add user to queue
   ///
   Future leaveStation({required UserData user, required Station station}) async {
+    if (!station.waitingPassengers.contains(user)) return true;
     station.waitingPassengers.remove(user);
     await station.reference.set(station.toMap());
     return true;

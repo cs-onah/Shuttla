@@ -3,10 +3,12 @@
 //     final appUser = appUserFromMap(jsonString);
 
 import 'dart:convert';
+import 'package:equatable/equatable.dart';
+
 import 'driver_data.dart';
 import 'user_data.dart';
 
-class AppUser {
+class AppUser extends Equatable{
   AppUser({
     required this.userData,
     this.driverData,
@@ -43,6 +45,9 @@ class AppUser {
     "driverData": driverData?.toMap(),
     "admin":  admin?.toMap(),
   };
+
+  @override
+  List<Object?> get props => [userData, driverData, admin];
 }
 
 class Admin {

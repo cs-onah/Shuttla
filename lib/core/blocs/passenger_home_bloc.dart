@@ -17,10 +17,13 @@ class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState> {
         selectedStation = event.station;
 
         //Station stream
+        stationStream?.cancel();
         stationStream = StationService()
             .getStationDetailStream(event.station)
             .listen((event) {
+              print("Stream fired");
           Station stationUpdate = Station.fromFirebaseSnapshot(event);
+              print(stationUpdate.waitingPassengers);
 
           ///TODO: Check driver arriving
 

@@ -4,9 +4,10 @@
 
 import 'dart:convert';
 
+import 'package:equatable/equatable.dart';
 import 'package:geolocator/geolocator.dart';
 
-class ShuttlaLocation {
+class ShuttlaLocation extends Equatable{
   ShuttlaLocation({
     this.latitude,
     this.longitude,
@@ -65,4 +66,7 @@ class ShuttlaLocation {
     "address": address,
     "miscellaneous": miscellaneous,
   };
+
+  @override
+  List<Object?> get props => [longitude, latitude, address, miscellaneous];
 }
