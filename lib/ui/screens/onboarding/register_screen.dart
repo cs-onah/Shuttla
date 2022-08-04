@@ -177,7 +177,8 @@ class DriverRegistrationFragment extends StatelessWidget with Validators {
   final carManufacturerC = TextEditingController();
   final carModelC = TextEditingController();
   final carColorC = TextEditingController();
-  final driverRegisterFormKey = GlobalKey<FormState>();
+  final driverRegisterFormKeyOne = GlobalKey<FormState>();
+  final driverRegisterFormKeyTwo = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -187,7 +188,7 @@ class DriverRegistrationFragment extends StatelessWidget with Validators {
       children: [
         //Personal Info section
         Form(
-          key: driverRegisterFormKey,
+          key: driverRegisterFormKeyOne,
           child: ListView(
             padding: EdgeInsets.symmetric(horizontal: SizeConfig.widthOf(6)),
             children: [
@@ -240,11 +241,14 @@ class DriverRegistrationFragment extends StatelessWidget with Validators {
               Gap(40),
               BoxButton.purple(
                 text: "Next",
-                onPressed: () => controller.animateToPage(
+                onPressed: () {
+                  if(!driverRegisterFormKeyOne.currentState!.validate()) return;
+                  controller.animateToPage(
                   1,
                   duration: Duration(milliseconds: 500),
                   curve: Curves.linear,
-                ),
+                );
+                },
               ),
               Gap(30),
             ],
@@ -252,92 +256,94 @@ class DriverRegistrationFragment extends StatelessWidget with Validators {
         ),
 
         //Driver Info section
-        ListView(
-          padding: EdgeInsets.symmetric(horizontal: SizeConfig.widthOf(6)),
-          children: [
-            Text(
-              'Vehicle Data',
-              style: TextStyle(
-                fontSize: 14,
+        Form(
+          key: driverRegisterFormKeyTwo,
+          child: ListView(
+            padding: EdgeInsets.symmetric(horizontal: SizeConfig.widthOf(6)),
+            children: [
+              Text(
+                'Vehicle Data',
+                style: TextStyle(
+                  fontSize: 14,
+                ),
               ),
-            ),
-            Gap(10),
-            Divider(height: 0, color: Colors.grey),
-            Gap(20),
-            Text("Plate Number",
-                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-            const Gap(10),
-            BoxTextField(
-              hintText: "ABC-XYZ",
-              controller: plateNumberC,
-              validator: (value) => validateName(value!),
-            ),
-            const Gap(30),
-            Text("Car Manufacturer",
-                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-            const Gap(10),
-            BoxTextField(
-              hintText: "Toyota",
-              controller: carManufacturerC,
-              validator: (value) => validateName(value!),
-            ),
-            const Gap(30),
-            Text("Car Model",
-                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-            const Gap(10),
-            BoxTextField(
-              hintText: "E-350",
-              controller: carModelC,
-              validator: (value) => validateName(value!),
-            ),
-            const Gap(30),
-            Text("Color",
-                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-            const Gap(10),
-            BoxTextField(
-              obscureText: true,
-              hintText: "Red",
-              controller: carColorC,
-              validator: (value) => validateName(value!),
-            ),
-            Gap(40),
-            BoxButton.purple(
-              text: "Register",
-              onPressedWithNotifier: (notifier) {
-                if (!driverRegisterFormKey.currentState!.validate()) return;
-                notifier.value = true;
-                final bloc = context.read<AuthenticationBloc>();
-                bloc.add(AuthDriverRegister(
-                  email: emailC.text,
-                  password: passwordC.text,
-                  plateNumber: plateNumberC.text,
-                  carManufacturer: carManufacturerC.text,
-                  carModel: carModelC.text,
-                  carColor: carColorC.text,
-                  nickName: nickNameC.text,
-                ));
-                notifier.value = false;
-              },
-            ),
-            Gap(30),
-            Row(
-              children: [
-                Text("Already have an account?"),
-                TextButton(
-                  onPressed: () =>
-                      Navigator.pushNamed(context, RouteNames.loginScreen),
-                  child: Text(
-                    "Sign in",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
+              Gap(10),
+              Divider(height: 0, color: Colors.grey),
+              Gap(20),
+              Text("Plate Number",
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+              const Gap(10),
+              BoxTextField(
+                hintText: "ABC-XYZ",
+                controller: plateNumberC,
+                validator: (value) => validateName(value!),
+              ),
+              const Gap(30),
+              Text("Car Manufacturer",
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+              const Gap(10),
+              BoxTextField(
+                hintText: "Toyota",
+                controller: carManufacturerC,
+                validator: (value) => validateName(value!),
+              ),
+              const Gap(30),
+              Text("Car Model",
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+              const Gap(10),
+              BoxTextField(
+                hintText: "E-350",
+                controller: carModelC,
+                validator: (value) => validateName(value!),
+              ),
+              const Gap(30),
+              Text("Color",
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+              const Gap(10),
+              BoxTextField(
+                hintText: "Red",
+                controller: carColorC,
+                validator: (value) => validateName(value!),
+              ),
+              Gap(40),
+              BoxButton.purple(
+                text: "Register",
+                onPressedWithNotifier: (notifier) {
+                  if(!driverRegisterFormKeyTwo.currentState!.validate()) return;
+                  notifier.value = true;
+                  final bloc = context.read<AuthenticationBloc>();
+                  bloc.add(AuthDriverRegister(
+                    email: emailC.text,
+                    password: passwordC.text,
+                    plateNumber: plateNumberC.text,
+                    carManufacturer: carManufacturerC.text,
+                    carModel: carModelC.text,
+                    carColor: carColorC.text,
+                    nickName: nickNameC.text,
+                  ));
+                  notifier.value = false;
+                },
+              ),
+              Gap(30),
+              Row(
+                children: [
+                  Text("Already have an account?"),
+                  TextButton(
+                    onPressed: () =>
+                        Navigator.pushNamed(context, RouteNames.loginScreen),
+                    child: Text(
+                      "Sign in",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                )
-              ],
-            ),
-            Gap(30),
-          ],
+                  )
+                ],
+              ),
+              Gap(30),
+            ],
+          ),
         ),
       ],
     );

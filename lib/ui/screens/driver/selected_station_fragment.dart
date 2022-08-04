@@ -6,7 +6,8 @@ import 'package:shuttla/ui/size_config/size_config.dart';
 import 'package:shuttla/ui/widgets/custom_button.dart';
 
 class SelectedStationFragment extends StatelessWidget {
-  const SelectedStationFragment({Key? key}) : super(key: key);
+  final Station station;
+  const SelectedStationFragment(this.station);
 
   @override
   Widget build(BuildContext context) {

@@ -6,6 +6,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shuttla/app.dart';
 import 'package:shuttla/constants/route_names.dart';
 import 'package:shuttla/core/blocs/driver_home_bloc.dart';
+import 'package:shuttla/core/data_models/station.dart';
 import 'package:shuttla/core/utilities/global_events.dart';
 import 'package:shuttla/ui/screens/driver/driver_complete_fragment.dart';
 import 'package:shuttla/ui/screens/driver/driver_enroute_fragment.dart';
@@ -85,7 +86,8 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                         color: Colors.grey.shade300,
                         offset: Offset(0, 0),
                         spreadRadius: 3,
-                        blurRadius: 3)
+                        blurRadius: 3,
+                    )
                   ],
                 ),
                 padding: EdgeInsets.all(2),
@@ -107,11 +109,6 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                       child: BoxButton.rounded(
                         text: "See Stations",
                         onPressed: () => _seeStations(context),
-                        // onPressedWithNotifier: (valueNotifier) async{
-                        //   valueNotifier.value = true;
-                        //   await Future.delayed(Duration(seconds: 3));
-                        //   valueNotifier.value = false;
-                        // },
                       ),
                     );
                   }),
@@ -130,20 +127,20 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
         backgroundColor: Colors.transparent,
         builder: (context) {
           return DraggableScrollableSheet(
-            initialChildSize: 0.3,
-            maxChildSize: 0.6,
-            minChildSize: 0.3,
+            initialChildSize: 0.5,
+            maxChildSize: 0.8,
+            minChildSize: 0.5,
             builder: (context, controller) {
               return SelectStationFragment(
                 controller,
                 title: "Select Station",
                 description: "Select which station you'd like to pickup from.",
-                itemSelectAction: (a) {
+                itemSelectAction: (Station station) {
                   Navigator.pop(context);
                   showBottomSheet(
                     context: context,
                     backgroundColor: Colors.transparent,
-                    builder: (context) => SelectedStationFragment(),
+                    builder: (context) => SelectedStationFragment(station),
                   );
                   mapController.animateCamera(
                       CameraUpdate.newLatLng(LatLng(5.377242, 7.000225)));
