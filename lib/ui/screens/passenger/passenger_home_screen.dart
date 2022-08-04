@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:shuttla/app.dart';
 import 'package:shuttla/constants/route_names.dart';
 import 'package:shuttla/core/blocs/authentication_bloc.dart';
@@ -12,6 +13,7 @@ import 'package:shuttla/core/data_models/station.dart';
 import 'package:shuttla/core/services/location_service.dart';
 import 'package:shuttla/core/services/session_manager.dart';
 import 'package:shuttla/core/utilities/global_events.dart';
+import 'package:shuttla/core/viewmodels/home_viewmodel.dart';
 import 'package:shuttla/ui/screens/shared/select_busstop_fragment.dart';
 import 'package:shuttla/ui/screens/shared/station_detail_screen.dart';
 import 'package:shuttla/ui/screens/shared/ui_kit.dart';
@@ -25,10 +27,11 @@ class PassengerHomeScreen extends StatefulWidget {
 }
 
 class _PassengerHomeScreenState extends State<PassengerHomeScreen> with UiKit {
-  late GoogleMapController map;
+
   @override
   Widget build(BuildContext context) {
     final authBloc = context.read<AuthenticationBloc>();
+    final homeModel = Provider.of<HomeViewmodel>(context);
     return SafeArea(
       child: Scaffold(
         body: Stack(
@@ -42,10 +45,10 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> with UiKit {
               tiltGesturesEnabled: false,
               mapType: MapType.normal,
               onMapCreated: (GoogleMapController controller) {
-                map = controller;
-                startLocationStream();
+                homeModel.map = controller;
+                homeModel.startLocationStream();
               },
-              markers: mapMarkers,
+              markers: homeModel.mapMarkers,
               circles: {},
               polylines: {},
             ),
@@ -154,56 +157,17 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> with UiKit {
     );
   }
 
-  late StreamSubscription logOutListener;
-  StreamSubscription? locationSubscription;
-
-  Set<Marker> mapMarkers = {};
-
   @override
   void initState() {
     super.initState();
     //Listen for logout
-    logOutListener = eventBus.on<LogOutEvent>().listen((event) {
-      print("Passenger: Logged out because: ${event.reason}");
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        RouteNames.loginScreen,
-        (route) => route.settings.name == RouteNames.loginScreen,
-      );
-    });
-  }
-
-  void startLocationStream() async {
-    bool permissionGranted = await LocationService.requestLocationPermission();
-    BitmapDescriptor bitmap = await LocationService.initDeviceLocationBitmap();
-    print("Generated bitmap");
-    if (permissionGranted) {
-      locationSubscription =
-          LocationService.positionStream().listen((event) async {
-        LocationService.devicePosition = event;
-        final deviceMarker = Marker(
-          markerId: MarkerId("device_location"),
-          position: event.latLng,
-          icon: bitmap,
-          rotation: event.heading,
-        );
-        await map.animateCamera(CameraUpdate.newCameraPosition(
-          CameraPosition(
-            target: LatLng(event.latitude, event.longitude),
-            zoom: 16,
-          ),
-        ));
-        setState(() {
-          mapMarkers.add(deviceMarker);
-        });
-      });
-    }
+    context.read<HomeViewmodel>().listenForLogout(context);
   }
 
   @override
   void dispose() {
-    logOutListener.cancel();
-    locationSubscription?.cancel();
+    context.read<HomeViewmodel>().disposeDisposables();
+    // HomeViewmodel.disposeDisposables();
     super.dispose();
   }
 }

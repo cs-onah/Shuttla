@@ -7,6 +7,7 @@ import 'package:shuttla/core/blocs/blocA.dart';
 import 'package:shuttla/core/blocs/driver_home_bloc.dart';
 import 'package:shuttla/core/blocs/passenger_home_bloc.dart';
 import 'package:shuttla/core/blocs/station_cubit.dart';
+import 'package:shuttla/core/viewmodels/home_viewmodel.dart';
 import 'package:shuttla/core/viewmodels/providerA.dart';
 
 
@@ -16,6 +17,7 @@ class AppProviders {
   static final providers = <SingleChildWidget>[
     //format for registering providers:
     ListenableProvider(create: (_) => ProviderA()),
+    ListenableProvider(create: (_) => HomeViewmodel()),
 
   ];
 

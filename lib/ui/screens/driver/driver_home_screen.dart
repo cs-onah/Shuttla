@@ -93,7 +93,9 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                 padding: EdgeInsets.all(2),
                 margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                 child: IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    eventBus.fire(LogOutEvent("No time"));
+                  },
                   icon: Icon(Icons.menu),
                   color: Colors.black,
                   iconSize: 30,
