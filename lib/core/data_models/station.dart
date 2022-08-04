@@ -6,6 +6,8 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:shuttla/core/data_models/app_user.dart';
+import 'package:shuttla/core/data_models/user_data.dart';
 import 'package:shuttla/core/services/location_service.dart';
 import 'package:shuttla/core/utilities/utility.dart';
 
@@ -16,6 +18,7 @@ class Station {
     required this.createdDate,
     required this.stationId,
     required this.reference,
+    this.waitingPassengers = const [],
     this.driverId,
     this.description,
     this.driverName,
@@ -32,6 +35,7 @@ class Station {
   String? driverId;
   String? driverName;
   String? plateNumber;
+  List<UserData> waitingPassengers;
   LatLng get latLng => LatLng(coordinates[0], coordinates[1]);
   String? get distanceFromDeviceString => ShuttlaUtility.convertDistance(LocationService.distanceFromDevice(latLng));
   double? get distanceFromDeviceFigure => LocationService.distanceFromDevice(latLng);
@@ -41,6 +45,7 @@ class Station {
     String? description,
     List<double>? coordinates,
     String? createdDate,
+    List<UserData>? waitingPassengers,
     String? driverId,
     String? driverName,
     String? plateNumber,
@@ -51,6 +56,7 @@ class Station {
         coordinates: coordinates ?? this.coordinates,
         createdDate: createdDate ?? this.createdDate,
         driverId: driverId ?? this.driverId,
+        waitingPassengers: waitingPassengers ?? this.waitingPassengers,
         driverName: driverName ?? this.driverName,
         plateNumber: plateNumber ?? this.plateNumber,
         reference: this.reference,
@@ -77,6 +83,7 @@ class Station {
     stationName: doc.data()?["station_name"],
     coordinates: List<double>.from(doc.data()?["coordinates"].map((x) => x.toDouble())),
     createdDate: doc.data()?["created_date"],
+    waitingPassengers: List<UserData>.from(doc.data()?["waitingPassengers"].map((x) => UserData.fromMap(x))),
     driverId: doc.data()?["driver_id"],
     driverName: doc.data()?["driver_name"],
     plateNumber: doc.data()?["plate_number"],
@@ -87,6 +94,7 @@ class Station {
     "station_name": stationName,
     "description" : description,
     "coordinates": List<dynamic>.from(coordinates.map((x) => x)),
+    "waitingPassengers" : waitingPassengers,
     "created_date": createdDate,
     "driver_id": driverId,
     "driver_name": driverName,

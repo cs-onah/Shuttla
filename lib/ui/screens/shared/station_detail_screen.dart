@@ -30,18 +30,6 @@ class _StationDetailScreenState extends State<StationDetailScreen> {
   void initState() {
     station = widget.station;
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-      listenForStationUpdates();
-    });
-  }
-
-  listenForStationUpdates(){
-    stationDetailStream = StationService().getStationDetailStream(widget.station).listen((event) {
-      ///TODO: Check driver arriving
-      ///TODO: Check if joined waiting list
-      ///TODO: Check if driver has picked passengers
-      station = event;
-    });
   }
 
   @override
@@ -52,6 +40,7 @@ class _StationDetailScreenState extends State<StationDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // final passengerBloc = BlocProvider.of<PassengerHomeBloc>(context);
     return Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(12)),

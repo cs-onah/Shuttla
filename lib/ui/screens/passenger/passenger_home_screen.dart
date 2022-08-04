@@ -110,8 +110,8 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
                     description: "Select where you want to be picked from.",
                     itemSelectAction: (Station station) {
                       context.read<PassengerHomeBloc>().add(
-                          PassengerFetchStationDetailEvent(
-                              "stationId", "stationName"));
+                          PassengerFetchStationDetailEvent(station));
+
                       showModalBottomSheet(
                         context: context,
                         useRootNavigator: true,
