@@ -66,12 +66,13 @@ class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState> {
     stationStream?.cancel();
     stationStream =
         StationService().getStationDetailStream(event.station).listen((event) {
-      print("Stream fired");
+      print("Firebase Station Stream fired");
+
       Station stationUpdate = Station.fromFirebaseSnapshot(event);
 
       ///Check if New driver is assigned to station
-      if (selectedStation?.driverName == null &&
-          stationUpdate.driverName != null) {
+      if (selectedStation!.approachingDrivers.length !=
+          stationUpdate.approachingDrivers.length) {
         add(DriverComingEvent(stationUpdate));
       }
 

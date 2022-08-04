@@ -140,13 +140,6 @@ class _StationDetailScreenState extends State<StationDetailScreen> {
         );
         Navigator.pop(context);
       },
-      // onPressedWithNotifier: (valueNotifier) async{
-      //   valueNotifier.value = true;
-      //   //Network request
-      //   await Future.delayed(Duration(seconds: 3));
-      //
-      //   valueNotifier.value = false;
-      // },
     );
   }
 

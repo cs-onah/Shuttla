@@ -6,6 +6,7 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:shuttla/core/data_models/app_user.dart';
 import 'package:shuttla/core/data_models/user_data.dart';
 import 'package:shuttla/core/services/location_service.dart';
 import 'package:shuttla/core/utilities/utility.dart';
@@ -19,10 +20,8 @@ class Station {
     required this.reference,
     this.lastPickupTime,
     this.waitingPassengers = const [],
-    this.driverId,
+    this.approachingDrivers = const [],
     this.description,
-    this.driverName,
-    this.plateNumber,
   });
 
   String stationId;
@@ -33,10 +32,8 @@ class Station {
   List<double> coordinates;
   DateTime? lastPickupTime;
   DateTime createdDate;
-  String? driverId;
-  String? driverName;
-  String? plateNumber;
   List<UserData> waitingPassengers;
+  List<AppUser> approachingDrivers;
   LatLng get latLng => LatLng(coordinates[0], coordinates[1]);
   String? get distanceFromDeviceString => ShuttlaUtility.convertDistance(LocationService.distanceFromDevice(latLng));
   double? get distanceFromDeviceFigure => LocationService.distanceFromDevice(latLng);
@@ -48,19 +45,15 @@ class Station {
     DateTime? lastPickupTime,
     DateTime? createdDate,
     List<UserData>? waitingPassengers,
-    String? driverId,
-    String? driverName,
-    String? plateNumber,
+    List<AppUser>? approachingDrivers,
   }) =>
       Station(
         stationName: stationName ?? this.stationName,
         description: description ?? this.description,
         coordinates: coordinates ?? this.coordinates,
         createdDate: createdDate ?? this.createdDate,
-        driverId: driverId ?? this.driverId,
         waitingPassengers: waitingPassengers ?? this.waitingPassengers,
-        driverName: driverName ?? this.driverName,
-        plateNumber: plateNumber ?? this.plateNumber,
+        approachingDrivers: approachingDrivers ?? this.approachingDrivers,
         reference: this.reference,
         stationId: this.stationId,
       );
@@ -87,9 +80,7 @@ class Station {
     lastPickupTime: doc.data()?["lastPickupTime"] == null ? null : DateTime.parse(doc.data()?["lastPickupTime"]),
     createdDate: DateTime.parse(doc.data()!["created_date"]!.toString()),
     waitingPassengers: doc.data()?["waitingPassengers"] == null ? [] : List<UserData>.from(doc.data()?["waitingPassengers"].map((x) => UserData.fromMap(x))),
-    driverId: doc.data()?["driver_id"],
-    driverName: doc.data()?["driver_name"],
-    plateNumber: doc.data()?["plate_number"],
+    approachingDrivers: doc.data()?["approachingDrivers"] == null ? [] : List<AppUser>.from(doc.data()?["approachingDrivers"].map((x) => AppUser.fromMap(x))),
     description: doc.data()?["description"],
   );
 
@@ -98,19 +89,8 @@ class Station {
     "description" : description,
     "coordinates": List<dynamic>.from(coordinates.map((x) => x)),
     "waitingPassengers" : List<Map<String, dynamic>>.from(waitingPassengers.map((x) => x.toMap())),
+    "approachingDrivers" : List<Map<String, dynamic>>.from(approachingDrivers.map((x) => x.toMap())),
     "created_date": createdDate.toString(),
-    "driver_id": driverId,
-    "driver_name": driverName,
-    "plate_number": plateNumber,
     "lastPickupTime": lastPickupTime?.toString(),
   };
 }
-
-///{
-//     "station_name" : "hey",
-//     "coordinates" : [6.943, 8.126],
-//     "created_date" : "hdk",
-//     "driver_id" : "",
-//     "driver_name" : "",
-//     "plate_number" : "driver_plate_number"
-// }

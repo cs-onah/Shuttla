@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shuttla/constants/collection_names.dart';
+import 'package:shuttla/core/data_models/app_user.dart';
 import 'package:shuttla/core/data_models/station.dart';
 import 'package:shuttla/core/data_models/user_data.dart';
 
@@ -19,10 +20,9 @@ class StationService {
     required List<double> coordinates,
     int? capacity,
   }) async {
-
     Map<String, dynamic> newStation = {
       "station_name": stationName,
-      "description" : description,
+      "description": description,
       "coordinates": coordinates,
       "created_date": DateTime.now().toString(),
     };
@@ -60,7 +60,8 @@ class StationService {
 
   /// Add user to queue
   ///
-  Future leaveStation({required UserData user, required Station station}) async {
+  Future leaveStation(
+      {required UserData user, required Station station}) async {
     if (!station.waitingPassengers.contains(user)) return true;
     station.waitingPassengers.remove(user);
     await station.reference.set(station.toMap());
@@ -81,8 +82,47 @@ class StationService {
   }
 
   /// Provides a stream of a station details
-  Stream<DocumentSnapshot> getStationDetailStream(Station station){
+  Stream<DocumentSnapshot> getStationDetailStream(Station station) {
     return station.reference.snapshots();
   }
 
+  Future<bool> driverSelectStation({
+    required Station station,
+    required AppUser driver,
+  }) async {
+    if (station.approachingDrivers.contains(driver)) return true;
+    station.approachingDrivers.add(driver);
+    await station.reference.set(station.toMap());
+    return true;
+  }
+
+  Future driverCancelStationSelection({
+    required AppUser driver,
+    required Station station,
+  }) async {
+    if (!station.approachingDrivers.contains(driver)) return true;
+    station.approachingDrivers.remove(driver);
+    await station.reference.set(station.toMap());
+    return true;
+  }
+
+  Future driverPickupPassengers({
+    required AppUser driver,
+    required Station station,
+  }) async {
+    if (!station.approachingDrivers.contains(driver))
+      return Future.error("You have not selected this station for pickup.");
+
+    //Remove driver from approaching list
+    station.approachingDrivers.remove(driver);
+
+    //Clear passenger list
+    station.waitingPassengers = [];
+
+    //Update last pickup time
+    station.lastPickupTime = DateTime.now();
+
+    await station.reference.set(station.toMap());
+    return true;
+  }
 }
