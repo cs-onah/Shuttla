@@ -8,14 +8,14 @@ import 'package:shuttla/core/services/station_service.dart';
 class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState> {
   StreamSubscription? stationStream;
   Station? selectedStation;
-  PassengerHomeEvent? lastPassengerEvent;
+  dynamic lastPassengerEvent;
 
   PassengerHomeBloc() : super(PassengerIdleState()) {
     on<PassengerFetchStationDetailEvent>(
       (event, emit) {
         selectedStation = event.station;
         listenToStationEvents(event);
-        emit(PassengerStationDetailState(selectedStation!));
+        return emit(PassengerStationDetailState(event.station));
       },
     );
 
@@ -40,7 +40,7 @@ class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState> {
         try {
           StationService().leaveStation(
             user: SessionManager.user!.userData,
-            station: selectedStation!,
+            station: event.station ?? selectedStation!,
           );
         } catch (e) {
           return emit(PassengerErrorState(e.toString()));
@@ -53,7 +53,14 @@ class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState> {
       (event, emit) => emit(PassengerStationDetailState(event.station)),
     );
 
-    on<UserJoinStationEvent>(
+    on<PassengerResetEvent>(
+      (event, emit) {
+        stationStream?.cancel();
+        return emit(PassengerIdleState());
+      },
+    );
+
+    on<UserJoinSuccessfulEvent>(
       (event, emit) => emit(PassengerWaitingState()),
     );
 
@@ -65,7 +72,6 @@ class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState> {
   @override
   Stream<PassengerHomeState> mapEventToState(PassengerHomeEvent event) {
     lastPassengerEvent = event;
-    print("Stored last event");
     return super.mapEventToState(event);
   }
 
@@ -90,10 +96,11 @@ class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState> {
       /// Checks if current user has joined waiting list
       if (stationUpdate.waitingPassengers
           .contains(SessionManager.user!.userData)) {
-        add(UserJoinStationEvent(stationUpdate));
+        add(UserJoinSuccessfulEvent(stationUpdate));
       }
 
-      if(selectedStation!.waitingPassengers.length != stationUpdate.waitingPassengers.length){
+      if (selectedStation!.waitingPassengers.length !=
+          stationUpdate.waitingPassengers.length) {
         add(PassengerFetchStationDetailEvent(stationUpdate));
       }
 
@@ -106,9 +113,13 @@ class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState> {
       }
 
       ///Check if station data is updated
-      if(selectedStation != stationUpdate){
+      if (selectedStation != stationUpdate) {
         print("station data changed");
-        selectedStation = stationUpdate;
+        if(lastPassengerEvent is PassengerFetchStationDetailEvent ||
+        lastPassengerEvent is FirebaseTriggeredHomeEvent
+        ) {
+          lastPassengerEvent.station = stationUpdate;
+        }
         add(lastPassengerEvent!);
       }
     });
@@ -117,35 +128,35 @@ class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState> {
 
 //Events
 abstract class PassengerHomeEvent {}
+abstract class AppTriggeredHomeEvent extends PassengerHomeEvent{}
+class PassengerResetEvent extends AppTriggeredHomeEvent {}
 
-class PassengerResetEvent extends PassengerHomeEvent{}
-
-class PassengerFetchStationDetailEvent extends PassengerHomeEvent {
-  final Station station;
+class PassengerFetchStationDetailEvent extends AppTriggeredHomeEvent {
+  final Station? station;
   PassengerFetchStationDetailEvent(this.station);
 }
 
-class PassengerLeaveStationEvent extends PassengerHomeEvent {
+class PassengerLeaveStationEvent extends AppTriggeredHomeEvent {
   final Station? station;
   PassengerLeaveStationEvent([this.station]);
 }
+class PassengerJoinStationEvent extends AppTriggeredHomeEvent {}
 
-class DriverComingEvent extends PassengerHomeEvent {
+
+///Firebase Triggered Events
+abstract class FirebaseTriggeredHomeEvent extends PassengerHomeEvent{}
+class DriverComingEvent extends FirebaseTriggeredHomeEvent {
   final Station station;
   DriverComingEvent(this.station);
 }
-
-class UserJoinStationEvent extends PassengerHomeEvent {
+class UserJoinSuccessfulEvent extends FirebaseTriggeredHomeEvent {
   final Station station;
-  UserJoinStationEvent(this.station);
+  UserJoinSuccessfulEvent(this.station);
 }
-
-class DriverPickedPassengerEvent extends PassengerHomeEvent {
+class DriverPickedPassengerEvent extends FirebaseTriggeredHomeEvent {
   final Station station;
   DriverPickedPassengerEvent(this.station);
 }
-
-class PassengerJoinStationEvent extends PassengerHomeEvent {}
 
 //states
 abstract class PassengerHomeState {}

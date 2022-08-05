@@ -25,14 +25,6 @@ class StationDetailScreen extends StatefulWidget {
 }
 
 class _StationDetailScreenState extends State<StationDetailScreen> {
-  late Station station;
-  @override
-  void initState() {
-    station = widget.station;
-    super.initState();
-  }
-
-
   @override
   Widget build(BuildContext context) {
     final passengerBloc = BlocProvider.of<PassengerHomeBloc>(context, listen: true);
@@ -59,75 +51,77 @@ class _StationDetailScreenState extends State<StationDetailScreen> {
             ),
           ],
         ),
-        body: ListView(
-          padding: EdgeInsets.symmetric(
-              vertical: 20, horizontal: SizeConfig.widthOf(6)),
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        widget.station.stationName,
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
+        body: BlocBuilder<PassengerHomeBloc, PassengerHomeState>(
+          builder: (context, state) => ListView(
+            padding: EdgeInsets.symmetric(
+                vertical: 20, horizontal: SizeConfig.widthOf(6)),
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          passengerBloc.selectedStation?.stationName ?? widget.station.stationName,
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 10),
-                      Text(passengerBloc.selectedStation?.description ?? ""),
-                    ],
+                        SizedBox(height: 10),
+                        Text(passengerBloc.selectedStation?.description ?? "N/A"),
+                      ],
+                    ),
                   ),
-                ),
-                SizedBox(width: 40),
-                Icon(Icons.departure_board_outlined, size: 45)
-              ],
-            ),
-            SizedBox(height: 20),
-            Divider(
-              height: 20,
-              color: Colors.black,
-            ),
-            StationDetailTile(
-              iconData: Icons.person,
-              text:
-                  "${passengerBloc.selectedStation?.waitingPassengers.length} passengers are currently waiting",
-              iconBgColor: Theme.of(context).accentColor,
-            ),
-            if (widget.station.distanceFromDeviceString != null)
-              StationDetailTile(
-                iconData: Icons.straighten,
-                text: ShuttlaUtility.convertDistance(
-                        widget.station.distanceFromDeviceFigure) ??
-                    "",
-                iconBgColor: Colors.amber[600],
+                  SizedBox(width: 40),
+                  Icon(Icons.departure_board_outlined, size: 45)
+                ],
               ),
-            StationDetailTile(
-              iconData: Icons.schedule,
-              text:
-                  "Station created ${ShuttlaUtility.formatReadableDateTime(widget.station.createdDate, timeInclusive: false)}",
-              iconBgColor: Colors.blueAccent,
-            ),
-            Divider(),
-            DriverStatusTile(station.approachingDrivers),
-            Divider(),
-            SizedBox(height: 40),
-            Builder(
-              builder: (context) {
-                switch (widget.userRole) {
-                  case UserType.DRIVER:
-                    return _driverActionWidget(context);
-                  case UserType.PASSENGER:
-                  default:
-                    return _passengerActionWidget(context);
-                }
-              },
-            )
-          ],
+              SizedBox(height: 20),
+              Divider(
+                height: 20,
+                color: Colors.black,
+              ),
+              StationDetailTile(
+                iconData: Icons.person,
+                text:
+                    "${passengerBloc.selectedStation?.waitingPassengers.length ?? 0} passengers are currently waiting",
+                iconBgColor: Theme.of(context).accentColor,
+              ),
+              if (widget.station.distanceFromDeviceString != null)
+                StationDetailTile(
+                  iconData: Icons.straighten,
+                  text: ShuttlaUtility.convertDistance(
+                          widget.station.distanceFromDeviceFigure) ??
+                      "",
+                  iconBgColor: Colors.amber[600],
+                ),
+              StationDetailTile(
+                iconData: Icons.schedule,
+                text:
+                    "Station created ${ShuttlaUtility.formatReadableDateTime(widget.station.createdDate, timeInclusive: false)}",
+                iconBgColor: Colors.blueAccent,
+              ),
+              Divider(),
+              DriverStatusTile(passengerBloc.selectedStation?.approachingDrivers ?? []),
+              Divider(),
+              SizedBox(height: 40),
+              Builder(
+                builder: (context) {
+                  switch (widget.userRole) {
+                    case UserType.DRIVER:
+                      return _driverActionWidget(context);
+                    case UserType.PASSENGER:
+                    default:
+                      return _passengerActionWidget(context);
+                  }
+                },
+              )
+            ],
+          ),
         ),
       ),
     );
