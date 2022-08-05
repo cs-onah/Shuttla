@@ -41,15 +41,15 @@ class StationCubit extends Cubit<StationState> {
     }
   }
 
-  Future getStations({bool showLoader = true}) async{
+  Future<List<Station>> getStations({bool showLoader = true}) async{
     if(showLoader) emit(LoadingStationState());
     try{
       stations = await _stationService.getStation();
-      return emit(LoadedStationState(stations));
+      emit(LoadedStationState(stations));
+      return stations;
     } catch (e, s){
-      print(e);
-      print(s);
-      return emit(ErrorStationState(e.toString()));
+      emit(ErrorStationState(e.toString()));
+      return [];
     }
   }
 

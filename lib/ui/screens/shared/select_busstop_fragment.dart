@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shuttla/core/blocs/passenger_home_bloc.dart';
 import 'package:shuttla/core/blocs/station_cubit.dart';
 import 'package:shuttla/core/data_models/station.dart';
+import 'package:shuttla/core/services/session_manager.dart';
 import 'package:shuttla/ui/screens/shared/station_detail_screen.dart';
 import 'package:shuttla/ui/size_config/size_config.dart';
 import 'package:shuttla/ui/widgets/busstop_tile.dart';
@@ -23,7 +24,17 @@ class _SelectStationFragmentState extends State<SelectStationFragment> {
   @override
   void initState() {
     super.initState();
-    context.read<StationCubit>().getStations(showLoader: true);
+    context
+        .read<StationCubit>()
+        .getStations(showLoader: true)
+        .then((value) async {
+      List<Station> result = value
+          .where((e) =>
+              e.waitingPassengers.contains(SessionManager.user!.userData))
+          .toList();
+      if (result.isNotEmpty)
+        context.read<PassengerHomeBloc>().setupStationAndJoinWait(result.first);
+    });
   }
 
   @override
@@ -107,7 +118,8 @@ class _SelectStationFragmentState extends State<SelectStationFragment> {
                     Text("No Station Found!"),
                     SizedBox(height: 10),
                     TextButton(
-                        onPressed: () => bloc.getStations(), child: Text("Retry")),
+                        onPressed: () => bloc.getStations(),
+                        child: Text("Retry")),
                   ],
                 )),
               );
