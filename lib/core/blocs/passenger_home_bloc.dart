@@ -8,14 +8,14 @@ import 'package:shuttla/core/services/station_service.dart';
 class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState> {
   StreamSubscription? stationStream;
   Station? selectedStation;
-  dynamic lastPassengerEvent;
 
   PassengerHomeBloc() : super(PassengerIdleState()) {
     on<PassengerFetchStationDetailEvent>(
       (event, emit) {
         selectedStation = event.station;
-        listenToStationEvents(event);
-        return emit(PassengerStationDetailState(event.station));
+        if (stationStream == null) listenToStationEvents(event);
+        return emit(PassengerStationDetailState(event.station,
+            showUI: event.showStationDetailsUI));
       },
     );
 
@@ -25,7 +25,7 @@ class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState> {
         try {
           StationService().joinStation(
             user: SessionManager.user!.userData,
-            station: selectedStation!,
+            station: event.station ?? selectedStation!,
           );
         } catch (e) {
           return emit(PassengerErrorState(e.toString()));
@@ -36,7 +36,7 @@ class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState> {
 
     on<PassengerLeaveStationEvent>(
       (event, emit) {
-        stationStream?.cancel();
+        stopStationStream();
         try {
           StationService().leaveStation(
             user: SessionManager.user!.userData,
@@ -55,7 +55,7 @@ class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState> {
 
     on<PassengerResetEvent>(
       (event, emit) {
-        stationStream?.cancel();
+        stopStationStream();
         return emit(PassengerIdleState());
       },
     );
@@ -65,14 +65,18 @@ class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState> {
     );
 
     on<DriverPickedPassengerEvent>(
-      (event, emit) => emit(PassengerPickupState()),
+      (event, emit) => emit(PassengerPickupState(event.station)),
     );
   }
 
-  @override
-  Stream<PassengerHomeState> mapEventToState(PassengerHomeEvent event) {
-    lastPassengerEvent = event;
-    return super.mapEventToState(event);
+  void stopStationStream() {
+    stationStream?.cancel();
+    stationStream = null;
+  }
+
+  void setupStationAndJoinWait(Station station) {
+    add(PassengerFetchStationDetailEvent(station, showStationDetailsUI: false));
+    add(PassengerJoinStationEvent(station));
   }
 
   void listenToStationEvents(PassengerFetchStationDetailEvent event) {
@@ -99,11 +103,6 @@ class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState> {
         add(UserJoinSuccessfulEvent(stationUpdate));
       }
 
-      if (selectedStation!.waitingPassengers.length !=
-          stationUpdate.waitingPassengers.length) {
-        add(PassengerFetchStationDetailEvent(stationUpdate));
-      }
-
       /// Checks if driver has picked passengers
       if (selectedStation!.lastPickupTime != null) {
         if (stationUpdate.lastPickupTime!
@@ -115,12 +114,18 @@ class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState> {
       ///Check if station data is updated
       if (selectedStation != stationUpdate) {
         print("station data changed");
-        if(lastPassengerEvent is PassengerFetchStationDetailEvent ||
-        lastPassengerEvent is FirebaseTriggeredHomeEvent
-        ) {
-          lastPassengerEvent.station = stationUpdate;
+
+        /// Add Event to update UI
+        ///
+        /// Updates UI if remote data changes while state is
+        /// [PassengerStationDetailState] or [PassengerWaitingState]
+        if (state is PassengerStationDetailState) {
+          add(PassengerFetchStationDetailEvent(stationUpdate));
+        } else if (state is PassengerWaitingState &&
+            stationUpdate.waitingPassengers
+                .contains(SessionManager.user!.userData)) {
+          add(UserJoinSuccessfulEvent(stationUpdate));
         }
-        add(lastPassengerEvent!);
       }
     });
   }
@@ -128,31 +133,41 @@ class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState> {
 
 //Events
 abstract class PassengerHomeEvent {}
-abstract class AppTriggeredHomeEvent extends PassengerHomeEvent{}
+
+abstract class AppTriggeredHomeEvent extends PassengerHomeEvent {}
+
 class PassengerResetEvent extends AppTriggeredHomeEvent {}
 
 class PassengerFetchStationDetailEvent extends AppTriggeredHomeEvent {
-  final Station? station;
-  PassengerFetchStationDetailEvent(this.station);
+  Station station;
+  final bool showStationDetailsUI;
+  PassengerFetchStationDetailEvent(this.station,
+      {this.showStationDetailsUI = true});
 }
 
 class PassengerLeaveStationEvent extends AppTriggeredHomeEvent {
   final Station? station;
   PassengerLeaveStationEvent([this.station]);
 }
-class PassengerJoinStationEvent extends AppTriggeredHomeEvent {}
 
+class PassengerJoinStationEvent extends AppTriggeredHomeEvent {
+  final Station? station;
+  PassengerJoinStationEvent([this.station]);
+}
 
 ///Firebase Triggered Events
-abstract class FirebaseTriggeredHomeEvent extends PassengerHomeEvent{}
+abstract class FirebaseTriggeredHomeEvent extends PassengerHomeEvent {}
+
 class DriverComingEvent extends FirebaseTriggeredHomeEvent {
   final Station station;
   DriverComingEvent(this.station);
 }
+
 class UserJoinSuccessfulEvent extends FirebaseTriggeredHomeEvent {
   final Station station;
   UserJoinSuccessfulEvent(this.station);
 }
+
 class DriverPickedPassengerEvent extends FirebaseTriggeredHomeEvent {
   final Station station;
   DriverPickedPassengerEvent(this.station);
@@ -168,7 +183,8 @@ class PassengerIdleState extends PassengerHomeState {
 
 class PassengerStationDetailState extends PassengerHomeState {
   final Station station;
-  PassengerStationDetailState(this.station);
+  final bool showUI;
+  PassengerStationDetailState(this.station, {this.showUI = true});
 }
 
 class PassengerErrorState extends PassengerHomeState {
@@ -178,4 +194,7 @@ class PassengerErrorState extends PassengerHomeState {
 
 class PassengerWaitingState extends PassengerHomeState {}
 
-class PassengerPickupState extends PassengerHomeState {}
+class PassengerPickupState extends PassengerHomeState {
+  final Station station;
+  PassengerPickupState(this.station);
+}

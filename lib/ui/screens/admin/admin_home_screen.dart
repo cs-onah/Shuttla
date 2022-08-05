@@ -178,7 +178,7 @@ class StationTile extends StatelessWidget {
                   children: [
                     Icon(Icons.person_outline),
                     SizedBox(width: 5),
-                    Text("0 waiting")
+                    Text("${station.waitingPassengers.length} waiting")
                   ],
                 ),
               ],

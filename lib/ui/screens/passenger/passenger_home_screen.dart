@@ -22,7 +22,6 @@ class PassengerHomeScreen extends StatefulWidget {
 }
 
 class _PassengerHomeScreenState extends State<PassengerHomeScreen> with UiKit {
-
   @override
   Widget build(BuildContext context) {
     final authBloc = context.read<AuthenticationBloc>();
@@ -93,43 +92,11 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> with UiKit {
             //BottomSheet section
             BlocConsumer<PassengerHomeBloc, PassengerHomeState>(
                 listener: (context, state) {
-              if (state is PassengerErrorState) {
-                showToastMessage(context, state.errorMessage);
-              }
+                  if (state is PassengerErrorState) {
+                    showToastMessage(context, state.errorMessage);
+                  }
 
-              if(state is PassengerPickupState){
-                //Show dialog to allow Passenger select if they want to keep waiting
-                // go to IdleState on okay clicked
-                // go back to waiting state on 'keep waiting' clicked, and navigate to details screen
-              }
-
-              if(State is PassengerIdleState){
-                Navigator.pushNamedAndRemoveUntil(context, RouteNames.passengerHomeScreen, (route) => false);
-              }
-
-            }, buildWhen: (oldState, newState) {
-              return newState is PassengerWaitingState ||
-                newState is PassengerIdleState;
-            }, builder: (context, state) {
-              if (state is PassengerWaitingState)
-                return Align(
-                  alignment: Alignment.bottomCenter,
-                  child: PassengerWaitingWidget(),
-                );
-
-              return DraggableScrollableSheet(
-                initialChildSize: 0.3,
-                maxChildSize: 0.8,
-                minChildSize: 0.3,
-                builder: (context, controller) => SelectStationFragment(
-                  controller,
-                  title: "Select Station",
-                  description: "Select where you want to be picked from",
-                  itemSelectAction: (Station station) {
-                    context
-                        .read<PassengerHomeBloc>()
-                        .add(PassengerFetchStationDetailEvent(station));
-
+                  if (state is PassengerStationDetailState && state.showUI) {
                     showModalBottomSheet(
                       context: context,
                       useRootNavigator: true,
@@ -139,13 +106,48 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> with UiKit {
                         borderRadius: BorderRadius.all(Radius.circular(12)),
                       ),
                       builder: (context) {
-                        return StationDetailScreen(station);
+                        return StationDetailScreen(state.station);
                       },
                     );
-                  },
-                ),
-              );
-            })
+                  }
+                },
+                listenWhen: (oldState, newState) =>
+                    oldState.runtimeType != newState.runtimeType,
+                buildWhen: (oldState, newState) =>
+                    newState is PassengerWaitingState ||
+                    newState is PassengerIdleState ||
+                    newState is PassengerPickupState,
+                builder: (context, state) {
+                  if (state is PassengerWaitingState)
+                    return Align(
+                      alignment: Alignment.bottomCenter,
+                      child: PassengerWaitingWidget(),
+                    );
+
+                  if (state is PassengerPickupState)
+                    return Align(
+                      alignment: Alignment.bottomCenter,
+                      child: PassengerPickupCompleteFragment(
+                        station: state.station,
+                      ),
+                    );
+
+                  return DraggableScrollableSheet(
+                    initialChildSize: 0.3,
+                    maxChildSize: 0.8,
+                    minChildSize: 0.3,
+                    builder: (context, controller) => SelectStationFragment(
+                      controller,
+                      title: "Select Station",
+                      description: "Select where you want to be picked from",
+                      itemSelectAction: (Station station) {
+                        context
+                            .read<PassengerHomeBloc>()
+                            .add(PassengerFetchStationDetailEvent(station));
+                      },
+                    ),
+                  );
+                })
           ],
         ),
       ),
@@ -156,13 +158,93 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> with UiKit {
   void initState() {
     super.initState();
     //Listen for logout
-    context.read<HomeViewmodel>().listenForLogout(context, userType: "Passenger");
+    context
+        .read<HomeViewmodel>()
+        .listenForLogout(context, userType: "Passenger");
   }
 
   @override
   void dispose() {
     context.read<HomeViewmodel>().disposeDisposables();
     super.dispose();
+  }
+}
+
+class PassengerPickupCompleteFragment extends StatelessWidget {
+  final Station station;
+  const PassengerPickupCompleteFragment({
+    Key? key,
+    required this.station,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.all(Radius.circular(12)),
+      ),
+      padding: EdgeInsets.all(16),
+      margin: EdgeInsets.all(22),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Driver has picked up passengers in this station'),
+                    SizedBox(height: 5),
+                    Text(
+                      '${station.stationName}',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 5),
+                    Text("${station.description ?? 'No description'}"),
+                  ],
+                ),
+              ),
+              SizedBox(width: 40),
+              Icon(Icons.directions_bus_sharp, size: 30, color: Colors.green)
+            ],
+          ),
+          SizedBox(height: 10),
+          Divider(),
+          SizedBox(height: 10),
+          SizedBox(
+            width: double.infinity,
+            child: BoxButton(
+              text: "FINISH WAIT",
+              backgroundColor: Colors.green,
+              onPressed: () {
+                context.read<PassengerHomeBloc>().add(
+                      PassengerResetEvent(),
+                    );
+              },
+            ),
+          ),
+          SizedBox(height: 10),
+          SizedBox(
+            width: double.infinity,
+            child: BoxButton(
+              text: "KEEP WAITING",
+              backgroundColor: Colors.red,
+              onPressed: () {
+                context
+                    .read<PassengerHomeBloc>()
+                    .setupStationAndJoinWait(station);
+              },
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -174,7 +256,8 @@ class PassengerWaitingWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bloc = BlocProvider.of<PassengerHomeBloc>(context);
-    int totalPassengerCount = bloc.selectedStation?.waitingPassengers.length ?? 1;
+    int totalPassengerCount =
+        bloc.selectedStation?.waitingPassengers.length ?? 1;
     int otherPassengerCount = totalPassengerCount - 1;
     return Container(
       decoration: BoxDecoration(
@@ -201,7 +284,8 @@ class PassengerWaitingWidget extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 5),
-                    Text("${bloc.selectedStation?.description ?? 'No description'}"),
+                    Text(
+                        "${bloc.selectedStation?.description ?? 'No description'}"),
                   ],
                 ),
               ),
@@ -214,8 +298,9 @@ class PassengerWaitingWidget extends StatelessWidget {
           Divider(),
           SizedBox(height: 10),
           Text(
-            otherPassengerCount < 1 ? "You are the only passenger waiting in this station." :
-            'You are waiting with $otherPassengerCount other passengers.',
+            otherPassengerCount < 1
+                ? "You are the only passenger waiting in this station."
+                : 'You are waiting with $otherPassengerCount other passengers.',
             style: TextStyle(fontSize: 14),
           ),
           SizedBox(height: 10),

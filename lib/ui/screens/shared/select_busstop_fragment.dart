@@ -23,9 +23,7 @@ class _SelectStationFragmentState extends State<SelectStationFragment> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-      BlocProvider.of<StationCubit>(context).getStations(showLoader: false);
-    });
+    context.read<StationCubit>().getStations(showLoader: true);
   }
 
   @override
