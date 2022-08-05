@@ -35,7 +35,7 @@ class _StationDetailScreenState extends State<StationDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final passengerBloc = BlocProvider.of<PassengerHomeBloc>(context);
+    final passengerBloc = BlocProvider.of<PassengerHomeBloc>(context, listen: true);
     return Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(12)),
@@ -51,6 +51,7 @@ class _StationDetailScreenState extends State<StationDetailScreen> {
             IconButton(
               onPressed: () {
                 Navigator.pop(context);
+                passengerBloc.add(PassengerResetEvent());
               },
               icon: Icon(Icons.close),
               iconSize: 30,
@@ -78,7 +79,7 @@ class _StationDetailScreenState extends State<StationDetailScreen> {
                         ),
                       ),
                       SizedBox(height: 10),
-                      Text(widget.station.description ?? ""),
+                      Text(passengerBloc.selectedStation?.description ?? ""),
                     ],
                   ),
                 ),

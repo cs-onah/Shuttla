@@ -8,6 +8,7 @@ import 'package:shuttla/core/services/station_service.dart';
 class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState> {
   StreamSubscription? stationStream;
   Station? selectedStation;
+  PassengerHomeEvent? lastPassengerEvent;
 
   PassengerHomeBloc() : super(PassengerIdleState()) {
     on<PassengerFetchStationDetailEvent>(
@@ -61,6 +62,13 @@ class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState> {
     );
   }
 
+  @override
+  Stream<PassengerHomeState> mapEventToState(PassengerHomeEvent event) {
+    lastPassengerEvent = event;
+    print("Stored last event");
+    return super.mapEventToState(event);
+  }
+
   void listenToStationEvents(PassengerFetchStationDetailEvent event) {
     //Station stream
     stationStream?.cancel();
@@ -97,14 +105,20 @@ class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState> {
         }
       }
 
-      selectedStation = stationUpdate;
-      // return add(PassengerFetchStationDetailEvent(stationUpdate));
+      ///Check if station data is updated
+      if(selectedStation != stationUpdate){
+        print("station data changed");
+        selectedStation = stationUpdate;
+        add(lastPassengerEvent!);
+      }
     });
   }
 }
 
 //Events
 abstract class PassengerHomeEvent {}
+
+class PassengerResetEvent extends PassengerHomeEvent{}
 
 class PassengerFetchStationDetailEvent extends PassengerHomeEvent {
   final Station station;
