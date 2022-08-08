@@ -4,6 +4,7 @@ import 'package:shuttla/core/blocs/passenger_home_bloc.dart';
 import 'package:shuttla/core/blocs/station_cubit.dart';
 import 'package:shuttla/core/data_models/station.dart';
 import 'package:shuttla/core/services/session_manager.dart';
+import 'package:shuttla/core/viewmodels/home_viewmodel.dart';
 import 'package:shuttla/ui/screens/shared/station_detail_screen.dart';
 import 'package:shuttla/ui/size_config/size_config.dart';
 import 'package:shuttla/ui/widgets/busstop_tile.dart';
@@ -29,6 +30,7 @@ class _SelectStationFragmentState extends State<SelectStationFragment> {
         .read<StationCubit>()
         .getStations(showLoader: true)
         .then((value) async {
+          context.read<HomeViewmodel>().setupBusStationMarkers(value);
       if (SessionManager.user!.userData.userType !=
           UserType.PASSENGER.getString) return;
 

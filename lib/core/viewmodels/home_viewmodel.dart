@@ -20,6 +20,7 @@ class HomeViewmodel extends ChangeNotifier {
   late StreamSubscription logOutListener;
 
   Marker? _deviceMarker;
+  Set<Marker> busStationMarkers = {};
 
   StreamSubscription? locationSubscription;
   List<StreamSubscription>? approachingDriverLocationSubscription;
@@ -86,7 +87,11 @@ class HomeViewmodel extends ChangeNotifier {
             AppUser driver = SessionManager.user!;
             AuthService().updateDriver(driver.copyWith(
                 driverData: driver.driverData!.copyWith(
-              lastKnownLocation: [event.latitude, event.longitude, event.heading],
+              lastKnownLocation: [
+                event.latitude,
+                event.longitude,
+                event.heading
+              ],
             )));
           } catch (e) {}
         }
@@ -108,11 +113,12 @@ class HomeViewmodel extends ChangeNotifier {
     cancelApproachingDriverSubscriptions();
   }
 
-  void cancelApproachingDriverSubscriptions(){
+  void cancelApproachingDriverSubscriptions() {
     approachingDriverLocationSubscription?.map((e) => e.cancel());
     approachingDriverLocationSubscription?.clear();
     mapMarkers = {};
-    if(_deviceMarker != null) mapMarkers.add(_deviceMarker!);
+    mapMarkers.addAll(busStationMarkers);
+    if (_deviceMarker != null) mapMarkers.add(_deviceMarker!);
     notifyListeners();
     print("Discarded all driver location streams");
   }
@@ -157,26 +163,46 @@ class HomeViewmodel extends ChangeNotifier {
 
   List<AppUser> approachingDrivers = [];
   void listenToApproachingDrivers(Station selectedStation) async {
-    if(selectedStation.approachingDrivers.length == approachingDrivers.length) return;
-    if(approachingDriverLocationSubscription?.isNotEmpty ?? false) cancelApproachingDriverSubscriptions();
-    BitmapDescriptor driverBitmap = await LocationService.initDriverLocationBitmap();
+    if (selectedStation.approachingDrivers.length == approachingDrivers.length)
+      return;
+    if (approachingDriverLocationSubscription?.isNotEmpty ?? false)
+      cancelApproachingDriverSubscriptions();
+    BitmapDescriptor driverBitmap =
+        await LocationService.initDriverLocationBitmap();
     approachingDrivers = selectedStation.approachingDrivers;
     cancelApproachingDriverSubscriptions();
-    if(selectedStation.approachingDrivers.isEmpty) return;
-    approachingDriverLocationSubscription = selectedStation.approachingDrivers.map((e) =>
-        FirebaseFirestore.instance.collection(CollectionName.USERS).doc(e.userData.userId).snapshots().listen((event) {
-          AppUser driver = AppUser.fromMap(event.data()!);
-          if(driver.driverData!.lastKnownLocation.isEmpty) return;
-          mapMarkers.add(
-              Marker(
-                markerId: MarkerId("${e.userData.userId}"),
-                position: driver.driverData!.latLng,
-                icon: driverBitmap,
-                rotation: driver.driverData!.lastKnownLocation[2],
-              )
-          );
-          notifyListeners();
-        }),
-    ).toList();
+    if (selectedStation.approachingDrivers.isEmpty) return;
+    approachingDriverLocationSubscription = selectedStation.approachingDrivers
+        .map(
+          (e) => FirebaseFirestore.instance
+              .collection(CollectionName.USERS)
+              .doc(e.userData.userId)
+              .snapshots()
+              .listen((event) {
+            AppUser driver = AppUser.fromMap(event.data()!);
+            if (driver.driverData!.lastKnownLocation.isEmpty) return;
+            mapMarkers.add(Marker(
+              markerId: MarkerId("${e.userData.userId}"),
+              position: driver.driverData!.latLng,
+              icon: driverBitmap,
+              rotation: driver.driverData!.lastKnownLocation[2],
+            ));
+            notifyListeners();
+          }),
+        )
+        .toList();
+  }
+
+  void setupBusStationMarkers(List<Station> stations) async {
+    BitmapDescriptor stationBitmap = await LocationService.initStationLocationBitmap();
+    busStationMarkers.addAll(
+      stations.map(
+        (e) => Marker(
+          markerId: MarkerId(e.stationName),
+          position: e.latLng,
+          icon: stationBitmap,
+        ),
+      ),
+    );
   }
 }
