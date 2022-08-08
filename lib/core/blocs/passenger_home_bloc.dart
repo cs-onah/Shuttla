@@ -88,6 +88,20 @@ class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState> {
 
       Station stationUpdate = Station.fromFirebaseSnapshot(event);
 
+      /// Checks if current user has joined waiting list
+      if (stationUpdate.waitingPassengers
+          .contains(SessionManager.user!.userData)) {
+        return add(PassengerJoinSuccessfulEvent(stationUpdate));
+      }
+
+      /// Checks if driver has picked passengers from station since last update
+      if (selectedStation!.lastPickupTime != null) {
+        if (stationUpdate.lastPickupTime!
+            .isAfter(selectedStation!.lastPickupTime!)) {
+          return add(DriverPickedPassengerEvent(stationUpdate));
+        }
+      }
+
       ///Check if station data is updated
       if (selectedStation != stationUpdate) {
         print("station data changed");
@@ -96,20 +110,6 @@ class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState> {
         if (selectedStation!.approachingDrivers.length <
             stationUpdate.approachingDrivers.length) {
           print("New driver coming");
-        }
-
-        /// Checks if current user has joined waiting list
-        if (stationUpdate.waitingPassengers
-            .contains(SessionManager.user!.userData)) {
-          add(PassengerJoinSuccessfulEvent(stationUpdate));
-        }
-
-        /// Checks if driver has picked passengers from station since last update
-        if (selectedStation!.lastPickupTime != null) {
-          if (stationUpdate.lastPickupTime!
-              .isAfter(selectedStation!.lastPickupTime!)) {
-            add(DriverPickedPassengerEvent(stationUpdate));
-          }
         }
 
         /// Add Event to update UI
@@ -123,7 +123,6 @@ class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState> {
                 .contains(SessionManager.user!.userData)) {
           add(PassengerJoinSuccessfulEvent(stationUpdate));
         }
-
       }
     });
   }

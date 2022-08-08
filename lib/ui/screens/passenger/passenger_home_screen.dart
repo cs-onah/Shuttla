@@ -26,7 +26,7 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> with UiKit {
   Widget build(BuildContext context) {
     final authBloc = context.read<AuthenticationBloc>();
     final homeModel = Provider.of<HomeViewmodel>(context);
-    final driverBloc = Provider.of<PassengerHomeBloc>(context);
+    final passengerBloc = Provider.of<PassengerHomeBloc>(context);
     return SafeArea(
       child: Scaffold(
         body: Stack(
@@ -92,7 +92,7 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> with UiKit {
 
             //BottomSheet section
             BlocConsumer(
-                bloc: driverBloc,
+                bloc: passengerBloc,
                 listener: (context, state) {
                   if (state is PassengerErrorState) {
                     showToastMessage(context, state.errorMessage);
@@ -108,7 +108,7 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> with UiKit {
                         borderRadius: BorderRadius.all(Radius.circular(12)),
                       ),
                       builder: (context) {
-                        return StationDetailScreen(state.station, driverBloc);
+                        return StationDetailScreen(state.station, passengerBloc);
                       },
                     );
                   }

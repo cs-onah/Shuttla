@@ -43,7 +43,10 @@ class _StationDetailScreenState extends State<StationDetailScreen> {
             IconButton(
               onPressed: () {
                 Navigator.pop(context);
-                widget.bloc.add(PassengerResetEvent());
+                if(widget.bloc is DriverHomeBloc)
+                  widget.bloc.add(DriverResetEvent());
+                if(widget.bloc is PassengerHomeBloc)
+                  widget.bloc.add(PassengerResetEvent());
               },
               icon: Icon(Icons.close),
               iconSize: 30,

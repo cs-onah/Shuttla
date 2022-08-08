@@ -76,6 +76,18 @@ class DriverHomeBloc extends Bloc<DriverHomeEvent, DriverHomeState> {
         return emit(state);
       }
     });
+    on<DriverResetEvent>(
+          (event, emit) {
+        resetDriverHomeBloc();
+        return emit(DriverIdleState());
+      },
+    );
+  }
+
+  void resetDriverHomeBloc() {
+    stationStream?.cancel();
+    stationStream = null;
+    selectedStation = null;
   }
 
   void listenToStationEvents(Station station) {
@@ -95,10 +107,13 @@ class DriverHomeBloc extends Bloc<DriverHomeEvent, DriverHomeState> {
   }
 }
 
+
 //Events
 abstract class DriverHomeEvent {}
 
 class DriverIdleEvent extends DriverHomeEvent {}
+
+class DriverResetEvent extends DriverHomeEvent{}
 
 class DriverFetchStationDetailEvent extends DriverHomeEvent {
   final Station station;
