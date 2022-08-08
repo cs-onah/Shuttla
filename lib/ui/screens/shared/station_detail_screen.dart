@@ -18,7 +18,8 @@ import '../onboarding/select_user_screen.dart';
 class StationDetailScreen extends StatefulWidget {
   final Station station;
   final UserType userRole;
-  const StationDetailScreen(this.station, {this.userRole = UserType.PASSENGER});
+  final dynamic bloc;
+  const StationDetailScreen(this.station, this.bloc, {this.userRole = UserType.PASSENGER});
 
   @override
   State<StationDetailScreen> createState() => _StationDetailScreenState();
@@ -27,8 +28,6 @@ class StationDetailScreen extends StatefulWidget {
 class _StationDetailScreenState extends State<StationDetailScreen> {
   @override
   Widget build(BuildContext context) {
-    final passengerBloc =
-        BlocProvider.of<PassengerHomeBloc>(context, listen: true);
     return Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(12)),
@@ -44,7 +43,7 @@ class _StationDetailScreenState extends State<StationDetailScreen> {
             IconButton(
               onPressed: () {
                 Navigator.pop(context);
-                passengerBloc.add(PassengerResetEvent());
+                widget.bloc.add(PassengerResetEvent());
               },
               icon: Icon(Icons.close),
               iconSize: 30,
@@ -52,7 +51,8 @@ class _StationDetailScreenState extends State<StationDetailScreen> {
             ),
           ],
         ),
-        body: BlocBuilder<PassengerHomeBloc, PassengerHomeState>(
+        body: BlocBuilder(
+          bloc: widget.bloc as Bloc,
           builder: (context, state) => ListView(
             padding: EdgeInsets.symmetric(
                 vertical: 20, horizontal: SizeConfig.widthOf(6)),
@@ -66,7 +66,7 @@ class _StationDetailScreenState extends State<StationDetailScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          passengerBloc.selectedStation?.stationName ??
+                          widget.bloc.selectedStation?.stationName ??
                               widget.station.stationName,
                           style: TextStyle(
                             fontSize: 20,
@@ -74,7 +74,7 @@ class _StationDetailScreenState extends State<StationDetailScreen> {
                           ),
                         ),
                         SizedBox(height: 10),
-                        Text(passengerBloc.selectedStation?.description ??
+                        Text(widget.bloc.selectedStation?.description ??
                             "N/A"),
                       ],
                     ),
@@ -91,7 +91,7 @@ class _StationDetailScreenState extends State<StationDetailScreen> {
               StationDetailTile(
                 iconData: Icons.person,
                 text:
-                    "${passengerBloc.selectedStation?.waitingPassengers.length ?? 0} passengers are currently waiting",
+                    "${widget.bloc.selectedStation?.waitingPassengers.length ?? 0} passengers are currently waiting",
                 iconBgColor: Theme.of(context).accentColor,
               ),
               if (widget.station.distanceFromDeviceString != null)
@@ -110,7 +110,7 @@ class _StationDetailScreenState extends State<StationDetailScreen> {
               ),
               Divider(),
               DriverStatusTile(
-                  passengerBloc.selectedStation?.approachingDrivers ?? []),
+                  widget.bloc.selectedStation?.approachingDrivers ?? []),
               Divider(),
               SizedBox(height: 40),
               Builder(

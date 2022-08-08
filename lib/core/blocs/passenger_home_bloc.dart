@@ -124,8 +124,6 @@ class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState> {
           add(PassengerJoinSuccessfulEvent(stationUpdate));
         }
 
-        ///Passively update local station details
-
       }
     });
   }

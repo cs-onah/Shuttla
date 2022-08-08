@@ -26,6 +26,7 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> with UiKit {
   Widget build(BuildContext context) {
     final authBloc = context.read<AuthenticationBloc>();
     final homeModel = Provider.of<HomeViewmodel>(context);
+    final driverBloc = Provider.of<PassengerHomeBloc>(context);
     return SafeArea(
       child: Scaffold(
         body: Stack(
@@ -90,7 +91,8 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> with UiKit {
             ),
 
             //BottomSheet section
-            BlocConsumer<PassengerHomeBloc, PassengerHomeState>(
+            BlocConsumer(
+                bloc: driverBloc,
                 listener: (context, state) {
                   if (state is PassengerErrorState) {
                     showToastMessage(context, state.errorMessage);
@@ -106,7 +108,7 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> with UiKit {
                         borderRadius: BorderRadius.all(Radius.circular(12)),
                       ),
                       builder: (context) {
-                        return StationDetailScreen(state.station);
+                        return StationDetailScreen(state.station, driverBloc);
                       },
                     );
                   }
@@ -266,11 +268,10 @@ class PassengerWaitingWidget extends StatelessWidget {
       String driverComingText = station.approachingDrivers.isEmpty
           ? 'No Driver is approaching yet.'
           : 'Driver ${station.approachingDrivers[0].userData.nickname} in a'
-          ' ${station.approachingDrivers[0].driverData!.carColor} '
-          '${station.approachingDrivers[0].driverData!.carManufacturer}'
-          ' with plate number ${station.approachingDrivers[0].driverData!.plateNumber}'
-          '${station.approachingDrivers.length > 1 ?
-      " with ${station.approachingDrivers.length - 1} other drivers" : ''}';
+              ' ${station.approachingDrivers[0].driverData!.carColor} '
+              '${station.approachingDrivers[0].driverData!.carManufacturer}'
+              ' with plate number ${station.approachingDrivers[0].driverData!.plateNumber}'
+              '${station.approachingDrivers.length > 1 ? " with ${station.approachingDrivers.length - 1} other drivers" : ''}';
 
       return Container(
         decoration: BoxDecoration(

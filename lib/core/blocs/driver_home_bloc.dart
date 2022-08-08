@@ -66,6 +66,16 @@ class DriverHomeBloc extends Bloc<DriverHomeEvent, DriverHomeState> {
         emit(DriverIdleState(completedSession: true));
       },
     );
+    on<DriverUIUpdateEvent>((event, emit){
+      selectedStation = event.station;
+      if(state is DriverStationDetailState){
+        return emit(DriverStationDetailState(event.station));
+      } else if (state is DriverEnrouteState){
+        return emit(DriverEnrouteState());
+      } else {
+        return emit(state);
+      }
+    });
   }
 
   void listenToStationEvents(Station station) {
@@ -77,13 +87,10 @@ class DriverHomeBloc extends Bloc<DriverHomeEvent, DriverHomeState> {
 
       Station stationUpdate = Station.fromFirebaseSnapshot(event);
 
-      /// Checks if current user has joined waiting list
-      if (stationUpdate.waitingPassengers
-          .contains(SessionManager.user!.userData)) {
-        add(DriverFetchStationDetailEvent(stationUpdate));
+      /// Check changes in remote data
+      if (stationUpdate != selectedStation) {
+        add(DriverUIUpdateEvent(stationUpdate));
       }
-
-      selectedStation = stationUpdate;
     });
   }
 }
@@ -116,6 +123,11 @@ class DriverPickupEvent extends DriverHomeEvent {
 class DriverCompleteEvent extends DriverHomeEvent {
   final Station? station;
   DriverCompleteEvent([this.station]);
+}
+
+class DriverUIUpdateEvent extends DriverHomeEvent {
+  final Station station;
+  DriverUIUpdateEvent(this.station);
 }
 
 //states

@@ -101,7 +101,7 @@ class SelectedStationFragment extends StatelessWidget {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.all(Radius.circular(12)),
                           ),
-                          builder: (context) => StationDetailScreen(station, userRole: UserType.DRIVER),
+                          builder: (context) => StationDetailScreen(station, bloc, userRole: UserType.DRIVER),
                         );
                       },
                     ),

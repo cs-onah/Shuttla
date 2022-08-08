@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shuttla/constants/user_type_enum.dart';
 import 'package:shuttla/core/blocs/passenger_home_bloc.dart';
 import 'package:shuttla/core/blocs/station_cubit.dart';
 import 'package:shuttla/core/data_models/station.dart';
@@ -28,13 +29,15 @@ class _SelectStationFragmentState extends State<SelectStationFragment> {
         .read<StationCubit>()
         .getStations(showLoader: true)
         .then((value) async {
+      if (SessionManager.user!.userData.userType !=
+          UserType.PASSENGER.getString) return;
 
-          /// Checks if logged in user is in any station
+      /// Checks if logged in user is in any station
       List<Station> result = value
           .where((e) =>
               e.waitingPassengers.contains(SessionManager.user!.userData))
           .toList();
-      if (result.isNotEmpty){
+      if (result.isNotEmpty) {
         context.read<PassengerHomeBloc>().setupStationAndJoinWait(result.first);
       }
     });
