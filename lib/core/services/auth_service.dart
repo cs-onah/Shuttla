@@ -52,6 +52,11 @@ class AuthService {
     return appUser;
   }
 
+  Future<bool> updateDriver(AppUser updatedDriver) async {
+    await _userCollection.doc(updatedDriver.userData.userId).update(updatedDriver.toMap());
+    return true;
+  }
+
   Future<AppUser?> registerDriver({
     required String nickName,
     required String email,

@@ -48,6 +48,8 @@ class StationCubit extends Cubit<StationState> {
       emit(LoadedStationState(stations));
       return stations;
     } catch (e, s){
+      print(e);
+      print(s);
       emit(ErrorStationState(e.toString()));
       return [];
     }

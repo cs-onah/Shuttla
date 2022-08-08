@@ -31,7 +31,8 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> with UiKit{
           if(state is DriverErrorState)
             showToastMessage(context, state.errorMessage);
           if (state is DriverEnrouteState){
-            homeModel.showNavigationLines(state.station);
+            // homeModel.showNavigationLines(state.station);
+            homeModel.initiateOnRouteMap(state.station);
             showBottomSheet(
               context: ctx,
               backgroundColor: Colors.transparent,
@@ -46,6 +47,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> with UiKit{
             );
           if (state is DriverIdleState){
             homeModel.clearPolylines();
+            homeModel.startLocationStream();
 
             if(state.completedSession)
               await showDialog(
