@@ -30,12 +30,14 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> with UiKit{
         listener: (ctx, state) async {
           if(state is DriverErrorState)
             showToastMessage(context, state.errorMessage);
-          if (state is DriverEnrouteState)
+          if (state is DriverEnrouteState){
+            homeModel.showNavigationLines(state.station);
             showBottomSheet(
               context: ctx,
               backgroundColor: Colors.transparent,
               builder: (ctx) => DriverEnrouteFragment(),
             );
+          }
           if (state is DriverPickupState)
             showBottomSheet(
               context: ctx,
@@ -43,6 +45,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> with UiKit{
               builder: (ctx) => DriverCompleteFragment(),
             );
           if (state is DriverIdleState && state.completedSession){
+            homeModel.clearPolylines();
             await showDialog(
               context: context,
               builder: (context) {

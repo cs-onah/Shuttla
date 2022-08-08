@@ -1,11 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shuttla/core/blocs/shuttla_home_bloc_contract.dart';
 import 'package:shuttla/core/data_models/station.dart';
 import 'package:shuttla/core/services/session_manager.dart';
 import 'package:shuttla/core/services/station_service.dart';
 
-class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState> {
+class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState> implements ShuttlaHomeBloc{
   StreamSubscription? stationStream;
   Station? selectedStation;
 

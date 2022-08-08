@@ -1,11 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shuttla/core/blocs/shuttla_home_bloc_contract.dart';
 import 'package:shuttla/core/data_models/station.dart';
 import 'package:shuttla/core/services/session_manager.dart';
 import 'package:shuttla/core/services/station_service.dart';
 
-class DriverHomeBloc extends Bloc<DriverHomeEvent, DriverHomeState> {
+class DriverHomeBloc extends Bloc<DriverHomeEvent, DriverHomeState> implements ShuttlaHomeBloc{
   Station? selectedStation;
   StreamSubscription? stationStream;
 
@@ -29,7 +30,7 @@ class DriverHomeBloc extends Bloc<DriverHomeEvent, DriverHomeState> {
         } catch (e, s) {
           return emit(DriverErrorState(e.toString()));
         }
-        return emit(DriverEnrouteState());
+        return emit(DriverEnrouteState(event.station));
       },
     );
 
@@ -71,7 +72,7 @@ class DriverHomeBloc extends Bloc<DriverHomeEvent, DriverHomeState> {
       if(state is DriverStationDetailState){
         return emit(DriverStationDetailState(event.station));
       } else if (state is DriverEnrouteState){
-        return emit(DriverEnrouteState());
+        return emit(DriverEnrouteState(event.station));
       } else {
         return emit(state);
       }
@@ -126,8 +127,8 @@ class DriverCancelEvent extends DriverHomeEvent {
 }
 
 class DriverEnrouteEvent extends DriverHomeEvent {
-  final Station? station;
-  DriverEnrouteEvent([this.station]);
+  final Station station;
+  DriverEnrouteEvent(this.station);
 }
 
 class DriverPickupEvent extends DriverHomeEvent {
@@ -164,7 +165,8 @@ class DriverPickupState extends DriverHomeState {
 }
 
 class DriverEnrouteState extends DriverHomeState {
-  DriverEnrouteState();
+  final Station station;
+  DriverEnrouteState(this.station);
 }
 
 class DriverErrorState extends DriverHomeState {

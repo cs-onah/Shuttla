@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:shuttla/constants/user_type_enum.dart';
 import 'package:shuttla/core/blocs/driver_home_bloc.dart';
 import 'package:shuttla/core/blocs/passenger_home_bloc.dart';
+import 'package:shuttla/core/blocs/shuttla_home_bloc_contract.dart';
 import 'package:shuttla/core/data_models/app_user.dart';
 import 'package:shuttla/core/data_models/station.dart';
 import 'package:shuttla/core/services/location_service.dart';
@@ -20,7 +21,7 @@ import '../onboarding/select_user_screen.dart';
 class StationDetailScreen extends StatefulWidget {
   final Station station;
   final UserType userRole;
-  final dynamic bloc;
+  final ShuttlaHomeBloc bloc;
   const StationDetailScreen(this.station, this.bloc, {this.userRole = UserType.PASSENGER});
 
   @override
@@ -153,9 +154,8 @@ class _StationDetailScreenState extends State<StationDetailScreen> {
       text: "SELECT STATION",
       onPressed: () {
         context.read<DriverHomeBloc>().add(
-              DriverEnrouteEvent(),
+              DriverEnrouteEvent(widget.station),
             );
-        Provider.of<HomeViewmodel>(context).showNavigationLines(widget.bloc.station);
         Navigator.pop(context);
       },
     );
