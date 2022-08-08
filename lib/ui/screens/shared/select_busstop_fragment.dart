@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shuttla/constants/user_type_enum.dart';
+import 'package:shuttla/core/blocs/driver_home_bloc.dart';
 import 'package:shuttla/core/blocs/passenger_home_bloc.dart';
 import 'package:shuttla/core/blocs/station_cubit.dart';
 import 'package:shuttla/core/data_models/station.dart';
@@ -30,17 +31,30 @@ class _SelectStationFragmentState extends State<SelectStationFragment> {
         .read<StationCubit>()
         .getStations(showLoader: true)
         .then((value) async {
-          context.read<HomeViewmodel>().setupBusStationMarkers(value);
-      if (SessionManager.user!.userData.userType !=
-          UserType.PASSENGER.getString) return;
+      context.read<HomeViewmodel>().setupBusStationMarkers(value);
 
-      /// Checks if logged in user is in any station
-      List<Station> result = value
-          .where((e) =>
-              e.waitingPassengers.contains(SessionManager.user!.userData))
-          .toList();
-      if (result.isNotEmpty) {
-        context.read<PassengerHomeBloc>().setupStationAndJoinWait(result.first);
+      if (SessionManager.user!.userData.userType == UserType.DRIVER.getString) {
+        /// Checks if logged in driver is approaching any station
+        List<Station> result = value
+            .where((e) => e.approachingDrivers.contains(SessionManager.user))
+            .toList();
+        if (result.isNotEmpty)
+          context
+              .read<DriverHomeBloc>()
+              .setupStationAndDriverEnroute(result.first);
+      }
+
+      if (SessionManager.user!.userData.userType ==
+          UserType.PASSENGER.getString) {
+        /// Checks if logged in user is in any station
+        List<Station> result = value
+            .where((e) =>
+                e.waitingPassengers.contains(SessionManager.user!.userData))
+            .toList();
+        if (result.isNotEmpty)
+          context
+              .read<PassengerHomeBloc>()
+              .setupStationAndJoinWait(result.first);
       }
     });
   }

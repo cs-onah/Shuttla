@@ -21,6 +21,7 @@ class DriverHomeBloc extends Bloc<DriverHomeEvent, DriverHomeState> implements S
 
     on<DriverEnrouteEvent>(
       (event, emit) {
+        selectedStation = event.station;
         //Add driver to approachingDrivers list
         try {
           StationService().driverSelectStation(
@@ -32,6 +33,10 @@ class DriverHomeBloc extends Bloc<DriverHomeEvent, DriverHomeState> implements S
         }
         return emit(DriverEnrouteState(event.station));
       },
+    );
+
+    on<DriverAlreadyOnTripEvent>(
+          (event, emit) => emit(DriverEnrouteState(event.station)),
     );
 
     on<DriverCancelEvent>(
@@ -91,6 +96,11 @@ class DriverHomeBloc extends Bloc<DriverHomeEvent, DriverHomeState> implements S
     selectedStation = null;
   }
 
+  void setupStationAndDriverEnroute(Station station) {
+    add(DriverFetchStationDetailEvent(station));
+    add(DriverAlreadyOnTripEvent(station));
+  }
+
   void listenToStationEvents(Station station) {
     //Station stream
     stationStream?.cancel();
@@ -129,6 +139,11 @@ class DriverCancelEvent extends DriverHomeEvent {
 class DriverEnrouteEvent extends DriverHomeEvent {
   final Station station;
   DriverEnrouteEvent(this.station);
+}
+
+class DriverAlreadyOnTripEvent extends DriverHomeEvent {
+  final Station station;
+  DriverAlreadyOnTripEvent(this.station);
 }
 
 class DriverPickupEvent extends DriverHomeEvent {
