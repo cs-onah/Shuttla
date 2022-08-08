@@ -113,6 +113,7 @@ class HomeViewmodel extends ChangeNotifier {
     approachingDriverLocationSubscription?.clear();
     mapMarkers = {};
     if(_deviceMarker != null) mapMarkers.add(_deviceMarker!);
+    notifyListeners();
     print("Discarded all driver location streams");
   }
 
