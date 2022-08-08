@@ -2,8 +2,10 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:flutter/services.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:shuttla/constants/app_keys.dart';
 
 class LocationService {
   /// Default location
@@ -42,7 +44,7 @@ class LocationService {
   }
 
   static double? distanceFromDevice(LatLng location) {
-    if(devicePosition == null) return null;
+    if (devicePosition == null) return null;
     return Geolocator.distanceBetween(
       devicePosition!.latitude,
       devicePosition!.longitude,
@@ -80,8 +82,8 @@ class LocationService {
       );
 
   /// Generates [BitmapDescriptor] for device position.
-  static Future<BitmapDescriptor> initDeviceLocationBitmap() async{
-    if(devicePositionBitmap != null) return devicePositionBitmap!;
+  static Future<BitmapDescriptor> initDeviceLocationBitmap() async {
+    if (devicePositionBitmap != null) return devicePositionBitmap!;
     final bytes = await getBytesFromAsset('images/marker.png');
     devicePositionBitmap = BitmapDescriptor.fromBytes(bytes);
     return devicePositionBitmap!;
@@ -93,13 +95,31 @@ class LocationService {
   /// ```dart
   /// imageData = await getBytesFromAsset('images/marker.png', 50);
   /// ```
-  static Future<Uint8List> getBytesFromAsset(String path, {int width = 50}) async {
+  static Future<Uint8List> getBytesFromAsset(String path,
+      {int width = 50}) async {
     ByteData data = await rootBundle.load(path);
     ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
         targetWidth: width);
     ui.FrameInfo fi = await codec.getNextFrame();
-    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!.buffer
+    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!
+        .buffer
         .asUint8List();
+  }
+
+  static Future<List<LatLng>> polylineBetween(
+      {LatLng? source, required LatLng destination}) async {
+    source ??= devicePosition?.latLng;
+    if (source == null) return [];
+    PolylinePoints polylinePoints = PolylinePoints();
+
+    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+      AppKeys.MAP_KEY,
+      PointLatLng(source.latitude, source.longitude),
+      PointLatLng(destination.latitude, destination.longitude),
+      travelMode: TravelMode.driving,
+    );
+
+    return result.points.map((e) => LatLng(e.latitude, e.longitude)).toList();
   }
 }
 

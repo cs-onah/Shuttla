@@ -13,6 +13,7 @@ import '../../app.dart';
 class HomeViewmodel extends ChangeNotifier {
   late GoogleMapController map;
   late StreamSubscription logOutListener;
+
   StreamSubscription? locationSubscription;
 
   Marker _locationMarker(LatLng location) => Marker(
@@ -20,6 +21,8 @@ class HomeViewmodel extends ChangeNotifier {
     position: location,
     icon: BitmapDescriptor.defaultMarker,
   );
+
+  Set<Polyline> polylineList = {};
 
   Set<Marker> mapMarkers = {};
 
@@ -79,6 +82,21 @@ class HomeViewmodel extends ChangeNotifier {
 
   removeLocationMarkers(){
     mapMarkers.clear();
+    notifyListeners();
+  }
+
+  void showNavigationLines(Station station) async {
+    List<LatLng> routing = await LocationService.polylineBetween(destination: station.latLng);
+    Polyline polyline = Polyline(polylineId: PolylineId("driver_navigation"),
+      color: Colors.blue,
+      points: routing,
+    );
+    polylineList.add(polyline);
+    notifyListeners();
+  }
+
+  void clearPolylines() {
+    polylineList.clear();
     notifyListeners();
   }
 }

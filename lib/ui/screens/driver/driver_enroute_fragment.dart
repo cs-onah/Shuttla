@@ -46,8 +46,13 @@ class DriverEnrouteFragment extends StatelessWidget {
                         fontSize: 14,
                     ),
                 ),
-                Text(
-                  '${bloc.selectedStation!.waitingPassengers.length} passengers waiting.',
+                SizedBox(height: 10),
+                RichText(
+                  text: TextSpan(text: '${bloc.selectedStation!.waitingPassengers.length}', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                    children: [
+                      TextSpan(text: " passengers waiting.", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.black)),
+                    ]
+                  ),
                 ),
                 SizedBox(height: 20),
                 SizedBox(
