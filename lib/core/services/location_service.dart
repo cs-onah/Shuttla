@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -111,13 +112,19 @@ class LocationService {
     source ??= devicePosition?.latLng;
     if (source == null) return [];
     PolylinePoints polylinePoints = PolylinePoints();
+    PolylineResult result;
 
-    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-      AppKeys.MAP_KEY,
-      PointLatLng(source.latitude, source.longitude),
-      PointLatLng(destination.latitude, destination.longitude),
-      travelMode: TravelMode.driving,
-    );
+    try{
+      result = await polylinePoints.getRouteBetweenCoordinates(
+        AppKeys.secretMapKey,
+        PointLatLng(source.latitude, source.longitude),
+        PointLatLng(destination.latitude, destination.longitude),
+        travelMode: TravelMode.driving,
+      );
+    } catch(e){
+      print("$e");
+      return [];
+    }
 
     return result.points.map((e) => LatLng(e.latitude, e.longitude)).toList();
   }

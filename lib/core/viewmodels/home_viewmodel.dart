@@ -90,6 +90,8 @@ class HomeViewmodel extends ChangeNotifier {
     Polyline polyline = Polyline(polylineId: PolylineId("driver_navigation"),
       color: Colors.blue,
       points: routing,
+      endCap: Cap.roundCap,
+      width: 6,
     );
     polylineList.add(polyline);
     notifyListeners();

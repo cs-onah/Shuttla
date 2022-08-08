@@ -44,26 +44,28 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> with UiKit{
               backgroundColor: Colors.transparent,
               builder: (ctx) => DriverCompleteFragment(),
             );
-          if (state is DriverIdleState && state.completedSession){
+          if (state is DriverIdleState){
             homeModel.clearPolylines();
-            await showDialog(
-              context: context,
-              builder: (context) {
-                return AlertDialog(
-                  title: Text("Success"),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(16))),
-                  content: Text("Successfully completed session"),
-                  actionsPadding: EdgeInsets.symmetric(horizontal: 10),
-                  actions: [
-                    BoxButton.rounded(
-                      text: "Okay",
-                      backgroundColor: Theme.of(context).primaryColorDark,
-                      onPressed: () => Navigator.pop(context),
-                    )
-                  ],
-                );
-              },
-            );
+
+            if(state.completedSession)
+              await showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: Text("Success"),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(16))),
+                    content: Text("Successfully completed session"),
+                    actionsPadding: EdgeInsets.symmetric(horizontal: 10),
+                    actions: [
+                      BoxButton.rounded(
+                        text: "Okay",
+                        backgroundColor: Theme.of(context).primaryColorDark,
+                        onPressed: () => Navigator.pop(context),
+                      )
+                    ],
+                  );
+                },
+              );
           }
 
         },
@@ -84,7 +86,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> with UiKit{
                 },
                 markers: homeModel.mapMarkers,
                 circles: {},
-                polylines: {},
+                polylines: homeModel.polylineList,
               ),
               Container(
                 decoration: BoxDecoration(
