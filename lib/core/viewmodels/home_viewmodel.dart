@@ -19,6 +19,8 @@ class HomeViewmodel extends ChangeNotifier {
   late GoogleMapController map;
   late StreamSubscription logOutListener;
 
+  Marker? _deviceMarker;
+
   StreamSubscription? locationSubscription;
   List<StreamSubscription>? approachingDriverLocationSubscription;
 
@@ -61,7 +63,7 @@ class HomeViewmodel extends ChangeNotifier {
       locationSubscription =
           LocationService.positionStream().listen((event) async {
         LocationService.devicePosition = event;
-        final deviceMarker = Marker(
+        _deviceMarker ??= Marker(
           markerId: MarkerId("device_location"),
           position: event.latLng,
           icon: bitmap,
@@ -94,7 +96,7 @@ class HomeViewmodel extends ChangeNotifier {
             zoom: 16,
           ),
         ));
-        mapMarkers.add(deviceMarker);
+        mapMarkers.add(_deviceMarker!);
         notifyListeners();
       });
     }
@@ -110,6 +112,7 @@ class HomeViewmodel extends ChangeNotifier {
     approachingDriverLocationSubscription?.map((e) => e.cancel());
     approachingDriverLocationSubscription?.clear();
     mapMarkers = {};
+    if(_deviceMarker != null) mapMarkers.add(_deviceMarker!);
     print("Discarded all driver location streams");
   }
 
