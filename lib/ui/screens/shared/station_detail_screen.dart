@@ -27,7 +27,8 @@ class StationDetailScreen extends StatefulWidget {
 class _StationDetailScreenState extends State<StationDetailScreen> {
   @override
   Widget build(BuildContext context) {
-    final passengerBloc = BlocProvider.of<PassengerHomeBloc>(context, listen: true);
+    final passengerBloc =
+        BlocProvider.of<PassengerHomeBloc>(context, listen: true);
     return Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(12)),
@@ -65,14 +66,16 @@ class _StationDetailScreenState extends State<StationDetailScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          passengerBloc.selectedStation?.stationName ?? widget.station.stationName,
+                          passengerBloc.selectedStation?.stationName ??
+                              widget.station.stationName,
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         SizedBox(height: 10),
-                        Text(passengerBloc.selectedStation?.description ?? "N/A"),
+                        Text(passengerBloc.selectedStation?.description ??
+                            "N/A"),
                       ],
                     ),
                   ),
@@ -106,7 +109,8 @@ class _StationDetailScreenState extends State<StationDetailScreen> {
                 iconBgColor: Colors.blueAccent,
               ),
               Divider(),
-              DriverStatusTile(passengerBloc.selectedStation?.approachingDrivers ?? []),
+              DriverStatusTile(
+                  passengerBloc.selectedStation?.approachingDrivers ?? []),
               Divider(),
               SizedBox(height: 40),
               Builder(
@@ -205,48 +209,52 @@ class DriverStatusTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.symmetric(vertical: 15),
-        child: drivers.isNotEmpty
-            ? Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Driver(s) Approaching",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 10),
-                  ...drivers.map(
-                    (e) => Container(
-                      padding: EdgeInsets.symmetric(horizontal: 0, vertical: 5),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CircleAvatar(
-                              foregroundImage:
-                                  AssetImage(e.userData.imageResourcePath)),
-                          SizedBox(width: 15),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "${e.userData.nickname}",
-                                style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold,
-                                ),
+      padding: EdgeInsets.symmetric(vertical: 15),
+      child: drivers.isNotEmpty
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Driver(s) Approaching",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 10),
+                ...drivers.map(
+                  (e) => Container(
+                    padding: EdgeInsets.symmetric(horizontal: 0, vertical: 5),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CircleAvatar(
+                            foregroundImage:
+                                AssetImage(e.userData.imageResourcePath)),
+                        SizedBox(width: 15),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "${e.userData.nickname}",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
                               ),
-                              SizedBox(height: 5),
-                              Text("${e.driverData!.carManufacturer}, ${e.driverData!.carModel}"),
-                              SizedBox(height: 10),
-                              Text("${e.driverData!.plateNumber}"),
-                            ],
-                          ),
-                        ],
-                      ),
+                            ),
+                            SizedBox(height: 5),
+                            Text(
+                                "${e.driverData!.carManufacturer}, ${e.driverData!.carModel}"),
+                            SizedBox(height: 10),
+                            Text("${e.driverData!.plateNumber}"),
+                          ],
+                        ),
+                      ],
                     ),
-                  )
-                ],
-              )
-            : Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  ),
+                )
+              ],
+            )
+          : Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                 Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(12)),
@@ -260,25 +268,28 @@ class DriverStatusTile extends StatelessWidget {
                 SizedBox(width: 10),
                 Expanded(
                   child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Driver Status',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                          ),
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Driver Status',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
                         ),
-                        SizedBox(height: 25),
-                        Text(
-                          'No driver approaching at the moment.',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontStyle: FontStyle.italic,
-                          ),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        'No driver approaching at the moment.',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontStyle: FontStyle.italic,
                         ),
-                      ]),
+                      ),
+                    ],
+                  ),
                 ),
-              ]));
+              ],
+            ),
+    );
   }
 }

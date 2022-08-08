@@ -256,73 +256,86 @@ class PassengerWaitingWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bloc = BlocProvider.of<PassengerHomeBloc>(context);
-    int totalPassengerCount =
-        bloc.selectedStation?.waitingPassengers.length ?? 1;
-    int otherPassengerCount = totalPassengerCount - 1;
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.all(Radius.circular(12)),
-      ),
-      padding: EdgeInsets.all(16),
-      margin: EdgeInsets.all(22),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '${bloc.selectedStation?.stationName ?? 'N/A'}',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+    return BlocBuilder<PassengerHomeBloc, PassengerHomeState>(
+        builder: (context, state) {
+      int totalPassengerCount =
+          bloc.selectedStation?.waitingPassengers.length ?? 1;
+      int otherPassengerCount = totalPassengerCount - 1;
+      Station station = bloc.selectedStation!;
+
+      String driverComingText = station.approachingDrivers.isEmpty
+          ? 'No Driver is approaching yet.'
+          : 'Driver ${station.approachingDrivers[0].userData.nickname} in a'
+          ' ${station.approachingDrivers[0].driverData!.carColor} '
+          '${station.approachingDrivers[0].driverData!.carManufacturer}'
+          ' with plate number ${station.approachingDrivers[0].driverData!.plateNumber}'
+          '${station.approachingDrivers.length > 1 ?
+      " with ${station.approachingDrivers.length - 1} other drivers" : ''}';
+
+      return Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(12)),
+        ),
+        padding: EdgeInsets.all(16),
+        margin: EdgeInsets.all(22),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${station.stationName}',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 5),
-                    Text(
-                        "${bloc.selectedStation?.description ?? 'No description'}"),
-                  ],
+                      SizedBox(height: 5),
+                      Text("${station.description ?? 'No description'}"),
+                    ],
+                  ),
                 ),
-              ),
-              SizedBox(width: 40),
-              Icon(Icons.bus_alert,
-                  size: 30, color: Theme.of(context).accentColor)
-            ],
-          ),
-          SizedBox(height: 10),
-          Divider(),
-          SizedBox(height: 10),
-          Text(
-            otherPassengerCount < 1
-                ? "You are the only passenger waiting in this station."
-                : 'You are waiting with $otherPassengerCount other passengers.',
-            style: TextStyle(fontSize: 14),
-          ),
-          SizedBox(height: 10),
-          Text(
-            'Driver is approaching.',
-            style: TextStyle(fontSize: 14),
-          ),
-          SizedBox(height: 20),
-          SizedBox(
-            width: double.infinity,
-            child: BoxButton(
-              text: "LEAVE",
-              backgroundColor: Colors.red,
-              onPressed: () {
-                BlocProvider.of<PassengerHomeBloc>(context).add(
-                  PassengerLeaveStationEvent(),
-                );
-              },
+                SizedBox(width: 40),
+                Icon(Icons.bus_alert,
+                    size: 30, color: Theme.of(context).accentColor)
+              ],
             ),
-          )
-        ],
-      ),
-    );
+            SizedBox(height: 10),
+            Divider(),
+            SizedBox(height: 10),
+            Text(
+              otherPassengerCount < 1
+                  ? "You are the only passenger waiting in this station."
+                  : 'You are waiting with $otherPassengerCount other passengers.',
+              style: TextStyle(fontSize: 14),
+            ),
+            SizedBox(height: 10),
+            Text(
+              driverComingText,
+              style: TextStyle(fontSize: 14),
+            ),
+            SizedBox(height: 20),
+            SizedBox(
+              width: double.infinity,
+              child: BoxButton(
+                text: "LEAVE",
+                backgroundColor: Colors.red,
+                onPressed: () {
+                  BlocProvider.of<PassengerHomeBloc>(context).add(
+                    PassengerLeaveStationEvent(),
+                  );
+                },
+              ),
+            )
+          ],
+        ),
+      );
+    });
   }
 }

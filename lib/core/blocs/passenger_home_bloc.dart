@@ -36,12 +36,12 @@ class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState> {
 
     on<PassengerLeaveStationEvent>(
       (event, emit) {
-        stopStationStream();
         try {
           StationService().leaveStation(
             user: SessionManager.user!.userData,
             station: event.station ?? selectedStation!,
           );
+          resetPassengerHomeBloc();
         } catch (e) {
           return emit(PassengerErrorState(e.toString()));
         }
@@ -49,19 +49,18 @@ class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState> {
       },
     );
 
-    on<DriverComingEvent>(
-      (event, emit) => emit(PassengerStationDetailState(event.station)),
-    );
-
     on<PassengerResetEvent>(
       (event, emit) {
-        stopStationStream();
+        resetPassengerHomeBloc();
         return emit(PassengerIdleState());
       },
     );
 
-    on<UserJoinSuccessfulEvent>(
-      (event, emit) => emit(PassengerWaitingState()),
+    on<PassengerJoinSuccessfulEvent>(
+      (event, emit) {
+        selectedStation = event.station;
+        return emit(PassengerWaitingState());
+      },
     );
 
     on<DriverPickedPassengerEvent>(
@@ -69,14 +68,15 @@ class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState> {
     );
   }
 
-  void stopStationStream() {
+  void resetPassengerHomeBloc() {
     stationStream?.cancel();
     stationStream = null;
+    selectedStation = null;
   }
 
   void setupStationAndJoinWait(Station station) {
     add(PassengerFetchStationDetailEvent(station, showStationDetailsUI: false));
-    add(PassengerJoinStationEvent(station));
+    add(PassengerJoinSuccessfulEvent(station));
   }
 
   void listenToStationEvents(PassengerFetchStationDetailEvent event) {
@@ -88,32 +88,29 @@ class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState> {
 
       Station stationUpdate = Station.fromFirebaseSnapshot(event);
 
-      ///Check if New driver is assigned to station
-      if (selectedStation!.approachingDrivers.length !=
-          stationUpdate.approachingDrivers.length) {
-        add(DriverComingEvent(stationUpdate));
-      }
-
-      ///TODO: On passenger leave
-      ///add PassengerLeaveStationEvent from Button
-
-      /// Checks if current user has joined waiting list
-      if (stationUpdate.waitingPassengers
-          .contains(SessionManager.user!.userData)) {
-        add(UserJoinSuccessfulEvent(stationUpdate));
-      }
-
-      /// Checks if driver has picked passengers
-      if (selectedStation!.lastPickupTime != null) {
-        if (stationUpdate.lastPickupTime!
-            .isAfter(selectedStation!.lastPickupTime!)) {
-          add(DriverPickedPassengerEvent(stationUpdate));
-        }
-      }
-
       ///Check if station data is updated
       if (selectedStation != stationUpdate) {
         print("station data changed");
+
+        ///Check if New driver is assigned to station
+        if (selectedStation!.approachingDrivers.length <
+            stationUpdate.approachingDrivers.length) {
+          print("New driver coming");
+        }
+
+        /// Checks if current user has joined waiting list
+        if (stationUpdate.waitingPassengers
+            .contains(SessionManager.user!.userData)) {
+          add(PassengerJoinSuccessfulEvent(stationUpdate));
+        }
+
+        /// Checks if driver has picked passengers from station since last update
+        if (selectedStation!.lastPickupTime != null) {
+          if (stationUpdate.lastPickupTime!
+              .isAfter(selectedStation!.lastPickupTime!)) {
+            add(DriverPickedPassengerEvent(stationUpdate));
+          }
+        }
 
         /// Add Event to update UI
         ///
@@ -124,8 +121,11 @@ class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState> {
         } else if (state is PassengerWaitingState &&
             stationUpdate.waitingPassengers
                 .contains(SessionManager.user!.userData)) {
-          add(UserJoinSuccessfulEvent(stationUpdate));
+          add(PassengerJoinSuccessfulEvent(stationUpdate));
         }
+
+        ///Passively update local station details
+
       }
     });
   }
@@ -158,14 +158,9 @@ class PassengerJoinStationEvent extends AppTriggeredHomeEvent {
 ///Firebase Triggered Events
 abstract class FirebaseTriggeredHomeEvent extends PassengerHomeEvent {}
 
-class DriverComingEvent extends FirebaseTriggeredHomeEvent {
+class PassengerJoinSuccessfulEvent extends FirebaseTriggeredHomeEvent {
   final Station station;
-  DriverComingEvent(this.station);
-}
-
-class UserJoinSuccessfulEvent extends FirebaseTriggeredHomeEvent {
-  final Station station;
-  UserJoinSuccessfulEvent(this.station);
+  PassengerJoinSuccessfulEvent(this.station);
 }
 
 class DriverPickedPassengerEvent extends FirebaseTriggeredHomeEvent {
@@ -173,7 +168,7 @@ class DriverPickedPassengerEvent extends FirebaseTriggeredHomeEvent {
   DriverPickedPassengerEvent(this.station);
 }
 
-//states
+//UI States
 abstract class PassengerHomeState {}
 
 class PassengerIdleState extends PassengerHomeState {

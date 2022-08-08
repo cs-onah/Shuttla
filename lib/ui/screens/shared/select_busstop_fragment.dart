@@ -28,12 +28,15 @@ class _SelectStationFragmentState extends State<SelectStationFragment> {
         .read<StationCubit>()
         .getStations(showLoader: true)
         .then((value) async {
+
+          /// Checks if logged in user is in any station
       List<Station> result = value
           .where((e) =>
               e.waitingPassengers.contains(SessionManager.user!.userData))
           .toList();
-      if (result.isNotEmpty)
+      if (result.isNotEmpty){
         context.read<PassengerHomeBloc>().setupStationAndJoinWait(result.first);
+      }
     });
   }
 
