@@ -77,7 +77,7 @@ class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState> imp
 
   void setupStationAndJoinWait(Station station) {
     add(PassengerFetchStationDetailEvent(station, showStationDetailsUI: false));
-    add(PassengerJoinSuccessfulEvent(station));
+    add(PassengerJoinStationEvent(station));
   }
 
   void listenToStationEvents(PassengerFetchStationDetailEvent event) {

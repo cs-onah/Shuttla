@@ -29,6 +29,7 @@ class LocationService {
   static Position? devicePosition;
 
   static BitmapDescriptor? devicePositionBitmap;
+  static BitmapDescriptor? driverPositionBitmap;
 
   /// Returns current device Location
   static Future<Position?> getCurrentLocation() async {
@@ -88,6 +89,14 @@ class LocationService {
     final bytes = await getBytesFromAsset('images/marker.png');
     devicePositionBitmap = BitmapDescriptor.fromBytes(bytes);
     return devicePositionBitmap!;
+  }
+
+  /// Generates [BitmapDescriptor] for driver position.
+  static Future<BitmapDescriptor> initDriverLocationBitmap() async {
+    if (driverPositionBitmap != null) return driverPositionBitmap!;
+    final bytes = await getBytesFromAsset('images/bus_marker.png', width: 100);
+    driverPositionBitmap = BitmapDescriptor.fromBytes(bytes, );
+    return driverPositionBitmap!;
   }
 
   /// Generate Uint8List from image

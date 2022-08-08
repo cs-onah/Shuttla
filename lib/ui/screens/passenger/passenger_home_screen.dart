@@ -98,7 +98,12 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> with UiKit {
                     showToastMessage(context, state.errorMessage);
                   }
 
+                  if (state is PassengerWaitingState){
+                    homeModel.listenToApproachingDrivers(passengerBloc.selectedStation!);
+                  }
+
                   if (state is PassengerStationDetailState && state.showUI) {
+                    homeModel.listenToApproachingDrivers(state.station);
                     showModalBottomSheet(
                       context: context,
                       useRootNavigator: true,
@@ -111,6 +116,11 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> with UiKit {
                         return StationDetailScreen(state.station, passengerBloc);
                       },
                     );
+                  }
+
+                  if (state is PassengerIdleState){
+                    homeModel.cancelApproachingDriverSubscriptions();
+                    homeModel.startLocationStream();
                   }
                 },
                 listenWhen: (oldState, newState) =>

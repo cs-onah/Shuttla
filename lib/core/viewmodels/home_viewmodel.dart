@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:shuttla/constants/collection_names.dart';
 import 'package:shuttla/constants/route_names.dart';
 import 'package:shuttla/core/data_models/app_user.dart';
 import 'package:shuttla/core/data_models/station.dart';
@@ -18,6 +20,7 @@ class HomeViewmodel extends ChangeNotifier {
   late StreamSubscription logOutListener;
 
   StreamSubscription? locationSubscription;
+  List<StreamSubscription>? approachingDriverLocationSubscription;
 
   Marker _locationMarker(LatLng location) => Marker(
         markerId: MarkerId("location_marker"),
@@ -81,7 +84,7 @@ class HomeViewmodel extends ChangeNotifier {
             AppUser driver = SessionManager.user!;
             AuthService().updateDriver(driver.copyWith(
                 driverData: driver.driverData!.copyWith(
-              lastKnownLocation: [event.latitude, event.longitude],
+              lastKnownLocation: [event.latitude, event.longitude, event.heading],
             )));
           } catch (e) {}
         }
@@ -100,6 +103,14 @@ class HomeViewmodel extends ChangeNotifier {
   void disposeDisposables() {
     logOutListener.cancel();
     locationSubscription?.cancel();
+    cancelApproachingDriverSubscriptions();
+  }
+
+  void cancelApproachingDriverSubscriptions(){
+    approachingDriverLocationSubscription?.map((e) => e.cancel());
+    approachingDriverLocationSubscription?.clear();
+    mapMarkers = {};
+    print("Discarded all driver location streams");
   }
 
   void showStationOnMap(Station station) {
@@ -138,5 +149,30 @@ class HomeViewmodel extends ChangeNotifier {
   void clearPolylines() {
     polylineList.clear();
     notifyListeners();
+  }
+
+  List<AppUser> approachingDrivers = [];
+  void listenToApproachingDrivers(Station selectedStation) async {
+    if(selectedStation.approachingDrivers.length == approachingDrivers.length) return;
+    if(approachingDriverLocationSubscription?.isNotEmpty ?? false) cancelApproachingDriverSubscriptions();
+    BitmapDescriptor driverBitmap = await LocationService.initDriverLocationBitmap();
+    approachingDrivers = selectedStation.approachingDrivers;
+    cancelApproachingDriverSubscriptions();
+    if(selectedStation.approachingDrivers.isEmpty) return;
+    approachingDriverLocationSubscription = selectedStation.approachingDrivers.map((e) =>
+        FirebaseFirestore.instance.collection(CollectionName.USERS).doc(e.userData.userId).snapshots().listen((event) {
+          AppUser driver = AppUser.fromMap(event.data()!);
+          if(driver.driverData!.lastKnownLocation.isEmpty) return;
+          mapMarkers.add(
+              Marker(
+                markerId: MarkerId("${e.userData.userId}"),
+                position: driver.driverData!.latLng,
+                icon: driverBitmap,
+                rotation: driver.driverData!.lastKnownLocation[2],
+              )
+          );
+          notifyListeners();
+        }),
+    ).toList();
   }
 }
