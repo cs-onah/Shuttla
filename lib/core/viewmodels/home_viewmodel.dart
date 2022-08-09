@@ -25,7 +25,7 @@ class HomeViewmodel extends ChangeNotifier {
   StreamSubscription? locationSubscription;
   List<StreamSubscription>? approachingDriverLocationSubscription;
 
-  Marker _locationMarker(LatLng location) => Marker(
+  Marker _genericMarker(LatLng location) => Marker(
         markerId: MarkerId("location_marker"),
         position: location,
         icon: BitmapDescriptor.defaultMarker,
@@ -54,7 +54,7 @@ class HomeViewmodel extends ChangeNotifier {
   }) async {
     assert(showPolylines && station != null || !showPolylines,
         "Station cannot be null if showPolylines=true");
-    assert(logLastLocation && station != null || !showPolylines,
+    assert(logLastLocation && station != null || !logLastLocation,
         "Station cannot be null if logLastLocation=true");
     locationSubscription?.cancel();
     bool permissionGranted = await LocationService.requestLocationPermission();
@@ -64,45 +64,15 @@ class HomeViewmodel extends ChangeNotifier {
       locationSubscription =
           LocationService.positionStream().listen((event) async {
         LocationService.devicePosition = event;
-        _deviceMarker ??= Marker(
-          markerId: MarkerId("device_location"),
-          position: event.latLng,
-          icon: bitmap,
-          rotation: event.heading,
-        );
-        if (showPolylines) {
-          List<LatLng> routing = await LocationService.polylineBetween(
-              destination: station!.latLng);
-          Polyline polyline = Polyline(
-            polylineId: PolylineId("driver_navigation"),
-            color: Colors.blue,
-            points: routing,
-            endCap: Cap.roundCap,
-            width: 6,
-          );
-          polylineList.add(polyline);
-        }
-        if (logLastLocation) {
-          try {
-            AppUser driver = SessionManager.user!;
-            AuthService().updateDriver(driver.copyWith(
-                driverData: driver.driverData!.copyWith(
-              lastKnownLocation: [
-                event.latitude,
-                event.longitude,
-                event.heading
-              ],
-            )));
-          } catch (e) {}
-        }
+        updateUserLocationMarker(event, bitmap);
+        if (showPolylines) showNavigationLines(station!);
+        if (logLastLocation) updateDriverLocation(event);
         await map.animateCamera(CameraUpdate.newCameraPosition(
           CameraPosition(
             target: LatLng(event.latitude, event.longitude),
             zoom: 16,
           ),
         ));
-        mapMarkers.add(_deviceMarker!);
-        notifyListeners();
       });
     }
   }
@@ -124,17 +94,12 @@ class HomeViewmodel extends ChangeNotifier {
   }
 
   void showStationOnMap(Station station) {
-    //Stop location stream
     locationSubscription?.cancel();
-
-    //show location on map
     map.animateCamera(CameraUpdate.newLatLng(station.latLng));
-
-    mapMarkers.add(_locationMarker(station.latLng));
     notifyListeners();
   }
 
-  removeLocationMarkers() {
+  resetLocationMarkers() {
     mapMarkers.clear();
     notifyListeners();
   }
@@ -163,15 +128,19 @@ class HomeViewmodel extends ChangeNotifier {
 
   List<AppUser> approachingDrivers = [];
   void listenToApproachingDrivers(Station selectedStation) async {
+    //Check if driver number changed
     if (selectedStation.approachingDrivers.length == approachingDrivers.length)
       return;
+    //cancel existing driver location streams
     if (approachingDriverLocationSubscription?.isNotEmpty ?? false)
       cancelApproachingDriverSubscriptions();
+    //return if there are no drivers to track
+    if (selectedStation.approachingDrivers.isEmpty) return;
+    approachingDrivers = selectedStation.approachingDrivers;
+
     BitmapDescriptor driverBitmap =
         await LocationService.initDriverLocationBitmap();
-    approachingDrivers = selectedStation.approachingDrivers;
-    cancelApproachingDriverSubscriptions();
-    if (selectedStation.approachingDrivers.isEmpty) return;
+
     approachingDriverLocationSubscription = selectedStation.approachingDrivers
         .map(
           (e) => FirebaseFirestore.instance
@@ -204,5 +173,32 @@ class HomeViewmodel extends ChangeNotifier {
         ),
       ),
     );
+    mapMarkers.addAll(busStationMarkers);
+    notifyListeners();
+  }
+
+  void updateDriverLocation(Position newPosition) {
+    try {
+      AppUser driver = SessionManager.user!;
+      AuthService().updateDriver(driver.copyWith(
+          driverData: driver.driverData!.copyWith(
+            lastKnownLocation: [
+              newPosition.latitude,
+              newPosition.longitude,
+              newPosition.heading
+            ],
+          ),),);
+    } catch (e) {}
+  }
+
+  void updateUserLocationMarker(Position event, BitmapDescriptor bitmap) {
+    _deviceMarker = Marker(
+      markerId: MarkerId("device_location"),
+      position: event.latLng,
+      icon: bitmap,
+      rotation: event.heading,
+    );
+    mapMarkers.add(_deviceMarker!);
+    notifyListeners();
   }
 }

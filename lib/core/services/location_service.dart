@@ -103,8 +103,8 @@ class LocationService {
   /// Generates [BitmapDescriptor] for driver position.
   static Future<BitmapDescriptor> initStationLocationBitmap() async {
     if (stationPositionBitmap != null) return stationPositionBitmap!;
-    final bytes = await getBytesFromAsset('images/station_marker.png');
-    stationPositionBitmap = BitmapDescriptor.fromBytes(bytes, );
+    final bytes = await getBytesFromAsset('images/station_marker.png', width: 80);
+    stationPositionBitmap = BitmapDescriptor.fromBytes(bytes);
     return stationPositionBitmap!;
   }
 

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shuttla/constants/user_type_enum.dart';
 import 'package:shuttla/core/blocs/driver_home_bloc.dart';
 import 'package:shuttla/core/data_models/station.dart';
+import 'package:shuttla/core/services/station_service.dart';
 import 'package:shuttla/core/viewmodels/home_viewmodel.dart';
 import 'package:shuttla/ui/screens/shared/station_detail_screen.dart';
 import 'package:shuttla/ui/size_config/size_config.dart';
@@ -77,7 +78,6 @@ class SelectedStationFragment extends StatelessWidget {
                     text: "Cancel",
                     backgroundColor: Colors.grey[500],
                     onPressed: () {
-                      homeModel.removeLocationMarkers();
                       homeModel.startLocationStream();
                       Navigator.pop(context);
                     },
@@ -89,7 +89,6 @@ class SelectedStationFragment extends StatelessWidget {
                       text: "Continue",
                       backgroundColor: Theme.of(context).primaryColorDark,
                       onPressed: () {
-                        homeModel.removeLocationMarkers();
                         homeModel.startLocationStream();
                         bloc.add(DriverFetchStationDetailEvent(station));
                         Navigator.pop(context);
