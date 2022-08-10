@@ -4,6 +4,7 @@ import 'package:shuttla/constants/collection_names.dart';
 import 'package:shuttla/core/data_models/app_user.dart';
 import 'package:shuttla/core/data_models/station.dart';
 import 'package:shuttla/core/data_models/user_data.dart';
+import 'package:shuttla/core/services/session_manager.dart';
 
 class StationService {
   late FirebaseFirestore _firestore;
@@ -110,11 +111,16 @@ class StationService {
     required AppUser driver,
     required Station station,
   }) async {
-    if (!station.approachingDrivers.contains(driver))
+    List<String> driverIds =
+        station.approachingDrivers.map((e) => e.userData.userId).toList();
+    String currentUserId = SessionManager.user!.userData.userId;
+
+    if (!driverIds.contains(currentUserId))
       return Future.error("You have not selected this station for pickup.");
 
     //Remove driver from approaching list
-    station.approachingDrivers.remove(driver);
+    station.approachingDrivers.removeWhere(
+        (e) => e.userData.userId == currentUserId);
 
     //Clear passenger list
     station.waitingPassengers = [];

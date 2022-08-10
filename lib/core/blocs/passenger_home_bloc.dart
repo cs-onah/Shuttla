@@ -90,8 +90,8 @@ class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState> imp
       Station stationUpdate = Station.fromFirebaseSnapshot(event);
 
       /// Checks if current user has joined waiting list
-      if (stationUpdate.waitingPassengers
-          .contains(SessionManager.user!.userData)) {
+      if (stationUpdate.waitingPassengers.map((e) => e.userId)
+          .contains(SessionManager.user!.userData.userId)) {
         return add(PassengerJoinSuccessfulEvent(stationUpdate));
       }
 

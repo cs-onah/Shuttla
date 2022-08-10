@@ -36,7 +36,9 @@ class _SelectStationFragmentState extends State<SelectStationFragment> {
       if (SessionManager.user!.userData.userType == UserType.DRIVER.getString) {
         /// Checks if logged in driver is approaching any station
         List<Station> result = value
-            .where((e) => e.approachingDrivers.contains(SessionManager.user))
+            .where((e) => e.approachingDrivers
+                .map((e) => e.userData.userId)
+                .contains(SessionManager.user!.userData.userId))
             .toList();
         if (result.isNotEmpty)
           context
@@ -48,8 +50,9 @@ class _SelectStationFragmentState extends State<SelectStationFragment> {
           UserType.PASSENGER.getString) {
         /// Checks if logged in user is in any station
         List<Station> result = value
-            .where((e) =>
-                e.waitingPassengers.contains(SessionManager.user!.userData))
+            .where((e) => e.waitingPassengers
+                .map((e) => e.userId)
+                .contains(SessionManager.user!.userData.userId))
             .toList();
         if (result.isNotEmpty)
           context
