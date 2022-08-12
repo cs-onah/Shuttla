@@ -26,142 +26,149 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> with UiKit {
   Widget build(BuildContext context) {
     final authBloc = context.read<AuthenticationBloc>();
     final homeModel = Provider.of<HomeViewmodel>(context);
-    final passengerBloc = Provider.of<PassengerHomeBloc>(context);
-    return SafeArea(
-      child: Scaffold(
-        body: Stack(
-          children: [
-            GoogleMap(
-              initialCameraPosition:
-                  CameraPosition(target: LatLng(5.377232, 7.000225), zoom: 16),
-              myLocationButtonEnabled: false,
-              compassEnabled: false,
-              zoomControlsEnabled: false,
-              tiltGesturesEnabled: false,
-              mapType: MapType.normal,
-              onMapCreated: (GoogleMapController controller) {
-                homeModel.map = controller;
-                homeModel.startLocationStream();
-              },
-              markers: homeModel.mapMarkers,
-              circles: {},
-              polylines: {},
-            ),
+    return BlocProvider(
+      create: (context)=> PassengerHomeBloc(),
+      child: Builder(
+        builder: (context) {
+          final passengerBloc = Provider.of<PassengerHomeBloc>(context);
+          return SafeArea(
+            child: Scaffold(
+              body: Stack(
+                children: [
+                  GoogleMap(
+                    initialCameraPosition:
+                        CameraPosition(target: LatLng(5.377232, 7.000225), zoom: 16),
+                    myLocationButtonEnabled: false,
+                    compassEnabled: false,
+                    zoomControlsEnabled: false,
+                    tiltGesturesEnabled: false,
+                    mapType: MapType.normal,
+                    onMapCreated: (GoogleMapController controller) {
+                      homeModel.map = controller;
+                      homeModel.startLocationStream();
+                    },
+                    markers: homeModel.mapMarkers,
+                    circles: {},
+                    polylines: {},
+                  ),
 
-            //Header
-            Align(
-              alignment: Alignment.topLeft,
-              child: Container(
-                margin: EdgeInsets.symmetric(
-                    vertical: 20, horizontal: SizeConfig.widthOf(5)),
-                padding: EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(100)),
-                ),
-                child: FutureBuilder(
-                    future: authBloc.currentUser(),
-                    builder: (BuildContext context,
-                        AsyncSnapshot<AppUser?> snapshot) {
-                      if (!snapshot.hasData) return Container();
-                      return GestureDetector(
-                        // onTap: () => authBloc.add(AuthUserLogout()),
-                        onTap: () => SessionManager.logout(),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            CircleAvatar(
-                              foregroundImage: AssetImage(
-                                  snapshot.data!.userData.imageResourcePath),
-                              radius: 25,
-                            ),
-                            SizedBox(width: 10),
-                            Text(
-                              'Hi ${snapshot.data?.userData.nickname ?? ""} 👋',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                  //Header
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Container(
+                      margin: EdgeInsets.symmetric(
+                          vertical: 20, horizontal: SizeConfig.widthOf(5)),
+                      padding: EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(100)),
+                      ),
+                      child: FutureBuilder(
+                          future: authBloc.currentUser(),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<AppUser?> snapshot) {
+                            if (!snapshot.hasData) return Container();
+                            return GestureDetector(
+                              // onTap: () => authBloc.add(AuthUserLogout()),
+                              onTap: () => SessionManager.logout(),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  CircleAvatar(
+                                    foregroundImage: AssetImage(
+                                        snapshot.data!.userData.imageResourcePath),
+                                    radius: 25,
+                                  ),
+                                  SizedBox(width: 10),
+                                  Text(
+                                    'Hi ${snapshot.data?.userData.nickname ?? ""} 👋',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
                               ),
+                            );
+                          }),
+                    ),
+                  ),
+
+                  //BottomSheet section
+                  BlocConsumer(
+                      bloc: passengerBloc,
+                      listener: (context, state) {
+                        if (state is PassengerErrorState) {
+                          showToastMessage(context, state.errorMessage);
+                        }
+
+                        if (state is PassengerWaitingState){
+                          homeModel.listenToApproachingDrivers(passengerBloc.selectedStation!);
+                        }
+
+                        if (state is PassengerStationDetailState && state.showUI) {
+                          homeModel.listenToApproachingDrivers(state.station);
+                          showModalBottomSheet(
+                            context: context,
+                            useRootNavigator: true,
+                            isScrollControlled: true,
+                            enableDrag: true,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(12)),
                             ),
-                          ],
-                        ),
-                      );
-                    }),
+                            builder: (context) {
+                              return StationDetailScreen(state.station, passengerBloc);
+                            },
+                          );
+                        }
+
+                        if (state is PassengerIdleState){
+                          homeModel.cancelApproachingDriverSubscriptions();
+                          homeModel.startLocationStream();
+                        }
+                      },
+                      listenWhen: (oldState, newState) =>
+                          oldState.runtimeType != newState.runtimeType,
+                      buildWhen: (oldState, newState) =>
+                          newState is PassengerWaitingState ||
+                          newState is PassengerIdleState ||
+                          newState is PassengerPickupState,
+                      builder: (context, state) {
+                        if (state is PassengerWaitingState)
+                          return Align(
+                            alignment: Alignment.bottomCenter,
+                            child: PassengerWaitingWidget(),
+                          );
+
+                        if (state is PassengerPickupState)
+                          return Align(
+                            alignment: Alignment.bottomCenter,
+                            child: PassengerPickupCompleteFragment(
+                              station: state.station,
+                            ),
+                          );
+
+                        return DraggableScrollableSheet(
+                          initialChildSize: 0.3,
+                          maxChildSize: 0.8,
+                          minChildSize: 0.3,
+                          builder: (context, controller) => SelectStationFragment(
+                            controller,
+                            title: "Select Station",
+                            description: "Select where you want to be picked from",
+                            itemSelectAction: (Station station) {
+                              context
+                                  .read<PassengerHomeBloc>()
+                                  .add(PassengerFetchStationDetailEvent(station));
+                            },
+                          ),
+                        );
+                      })
+                ],
               ),
             ),
-
-            //BottomSheet section
-            BlocConsumer(
-                bloc: passengerBloc,
-                listener: (context, state) {
-                  if (state is PassengerErrorState) {
-                    showToastMessage(context, state.errorMessage);
-                  }
-
-                  if (state is PassengerWaitingState){
-                    homeModel.listenToApproachingDrivers(passengerBloc.selectedStation!);
-                  }
-
-                  if (state is PassengerStationDetailState && state.showUI) {
-                    homeModel.listenToApproachingDrivers(state.station);
-                    showModalBottomSheet(
-                      context: context,
-                      useRootNavigator: true,
-                      isScrollControlled: true,
-                      enableDrag: true,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12)),
-                      ),
-                      builder: (context) {
-                        return StationDetailScreen(state.station, passengerBloc);
-                      },
-                    );
-                  }
-
-                  if (state is PassengerIdleState){
-                    homeModel.cancelApproachingDriverSubscriptions();
-                    homeModel.startLocationStream();
-                  }
-                },
-                listenWhen: (oldState, newState) =>
-                    oldState.runtimeType != newState.runtimeType,
-                buildWhen: (oldState, newState) =>
-                    newState is PassengerWaitingState ||
-                    newState is PassengerIdleState ||
-                    newState is PassengerPickupState,
-                builder: (context, state) {
-                  if (state is PassengerWaitingState)
-                    return Align(
-                      alignment: Alignment.bottomCenter,
-                      child: PassengerWaitingWidget(),
-                    );
-
-                  if (state is PassengerPickupState)
-                    return Align(
-                      alignment: Alignment.bottomCenter,
-                      child: PassengerPickupCompleteFragment(
-                        station: state.station,
-                      ),
-                    );
-
-                  return DraggableScrollableSheet(
-                    initialChildSize: 0.3,
-                    maxChildSize: 0.8,
-                    minChildSize: 0.3,
-                    builder: (context, controller) => SelectStationFragment(
-                      controller,
-                      title: "Select Station",
-                      description: "Select where you want to be picked from",
-                      itemSelectAction: (Station station) {
-                        context
-                            .read<PassengerHomeBloc>()
-                            .add(PassengerFetchStationDetailEvent(station));
-                      },
-                    ),
-                  );
-                })
-          ],
-        ),
+          );
+        }
       ),
     );
   }
