@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
@@ -26,6 +27,7 @@ class _CreateStationScreenState extends State<CreateStationScreen> with UiKit {
   final stationName = TextEditingController();
   final stationDescription = TextEditingController();
   ShuttlaLocation? selectedLocation;
+  bool isOpen = true;
 
   bool get isEdit => widget.station != null;
 
@@ -36,6 +38,7 @@ class _CreateStationScreenState extends State<CreateStationScreen> with UiKit {
       Station s = widget.station!;
       stationName.text = s.stationName;
       stationDescription.text = s.description ?? "";
+      isOpen = !s.isClosed;
       selectedLocation = ShuttlaLocation(
         latitude: s.coordinates[0],
         longitude: s.coordinates[1],
@@ -124,9 +127,24 @@ class _CreateStationScreenState extends State<CreateStationScreen> with UiKit {
               validator: (value) =>
               value!.length < 3 ? "Characters must be more than 3" : null,
             ),
+            SizedBox(height: 20),
+            Row(
+              children: [
+                CupertinoSwitch(value: isOpen, onChanged: (val)=> setState(() {
+                  isOpen = val;
+                })),
+                SizedBox(width: 10),
+                Text(
+                  isOpen ? "OPEN" : "CLOSED",
+                  style: TextStyle(color: isOpen ? Colors.green : Colors.red, fontSize: 16),
+                )
+              ],
+            ),
+
+
             SizedBox(height: 30),
             BoxButton.rounded(
-              text: isEdit ? "Edit" : "Create",
+              text: isEdit ? "SAVE" : "Create",
               onPressedWithNotifier: (notifier) async {
                 print(isEdit);
                 if (selectedLocation == null)
@@ -141,6 +159,7 @@ class _CreateStationScreenState extends State<CreateStationScreen> with UiKit {
                     widget.station!.copyWith(
                       stationName: stationName.text,
                       description: stationDescription.text,
+                      isClosed: !isOpen,
                       coordinates: [
                         selectedLocation!.latitude!,
                         selectedLocation!.longitude!,

@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:shuttla/core/data_models/station.dart';
+import 'package:shuttla/ui/screens/shared/ui_kit.dart';
 
-class BusstopTile extends StatelessWidget {
+class BusstopTile extends StatelessWidget with UiKit {
   final Function(Station)? onClicked;
   final Station station;
   final bool isSuggested;
   const BusstopTile({
     Key? key,
     this.onClicked,
-    required this.station, this.isSuggested = false,
+    required this.station,
+    this.isSuggested = false,
   }) : super(key: key);
 
   @override
@@ -17,6 +19,14 @@ class BusstopTile extends StatelessWidget {
       margin: EdgeInsets.only(top: 20),
       child: InkWell(
         onTap: () {
+          if (station.isClosed) {
+            showToastMessage(
+              context,
+              "This station is closed and cant be accessed.",
+              duration: Duration(seconds: 1),
+            );
+            return;
+          }
           if (onClicked != null) onClicked!(station);
         },
         child: Column(
@@ -54,14 +64,38 @@ class BusstopTile extends StatelessWidget {
                   ),
                 ),
                 if (isSuggested) SizedBox(width: 5),
-                if(isSuggested) Text(
-                  "Suggested",
-                  style: TextStyle(
-                    color: Colors.green,
-                    fontSize: 12,
-                    fontStyle: FontStyle.italic,
-                    fontWeight: FontWeight.bold,
-                  ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    if (isSuggested)
+                      Text(
+                        "Suggested",
+                        style: TextStyle(
+                          color: Colors.green,
+                          fontSize: 12,
+                          fontStyle: FontStyle.italic,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    SizedBox(height: 15),
+                    if (station.isClosed)
+                      Container(
+                        padding:
+                            EdgeInsets.symmetric(vertical: 4, horizontal: 10),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                        ),
+                        child: Text(
+                          "CLOSED",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                          ),
+                        ),
+                      )
+                  ],
                 )
               ],
             ),

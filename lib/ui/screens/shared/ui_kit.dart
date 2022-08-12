@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 mixin UiKit{
 
-  showToastMessage(BuildContext context, String message){
+  showToastMessage(BuildContext context, String message, {Duration? duration}){
     final snackBar = SnackBar(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       backgroundColor: Colors.red,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
       elevation: 5,
-      duration: Duration(seconds: 5),
+      duration: duration ?? Duration(seconds: 5),
       dismissDirection: DismissDirection.endToStart,
       content: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

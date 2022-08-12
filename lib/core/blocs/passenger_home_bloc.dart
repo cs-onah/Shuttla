@@ -96,6 +96,7 @@ class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState>
       }
 
       /// Checks if driver has picked passengers from station since last update
+      /// [DriverPickedPassengerEvent] is triggered if current user is a [Station.waitingPassenger]
       if (selectedStation!.lastPickupTime != null) {
         if (stationUpdate.lastPickupTime!
                 .isAfter(selectedStation!.lastPickupTime!) && stationContainsCurrentUser(stationUpdate)) {

@@ -96,12 +96,15 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                     ),
                   );
 
-                return Center(child: Column(
+                return Center(
+                    child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text("No Station Found!"),
                     SizedBox(height: 10),
-                    TextButton(onPressed: ()=> bloc.getStations(), child: Text("Refresh")),
+                    TextButton(
+                        onPressed: () => bloc.getStations(),
+                        child: Text("Refresh")),
                   ],
                 ));
               },
@@ -184,20 +187,45 @@ class StationTile extends StatelessWidget {
               ],
             ),
           ),
-          IconButton(
-              onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => CreateStationScreen(
-                      station: station,
-                    ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Row(
+                children: [
+                  IconButton(
+                      onPressed: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CreateStationScreen(
+                                station: station,
+                              ),
+                            ),
+                          ),
+                      icon: Icon(Icons.edit)),
+                  IconButton(
+                      onPressed: () => bloc.deleteStation(station),
+                      icon: Icon(Icons.delete),
+                      color: Colors.red),
+                ],
+              ),
+              SizedBox(height: 20),
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                decoration: BoxDecoration(
+                  color: station.isClosed ? Colors.red : Colors.green,
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ),
+                child: Text(
+                  station.isClosed ? "CLOSED" : "OPEN",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-              icon: Icon(Icons.edit)),
-          IconButton(
-              onPressed: () => bloc.deleteStation(station),
-              icon: Icon(Icons.delete),
-              color: Colors.red),
+              )
+            ],
+          ),
         ],
       ),
     );

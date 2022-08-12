@@ -20,6 +20,7 @@ class Station extends Equatable {
     required this.createdDate,
     required this.stationId,
     required this.reference,
+    required this.isClosed,
     this.lastPickupTime,
     this.waitingPassengers = const [],
     this.approachingDrivers = const [],
@@ -30,6 +31,7 @@ class Station extends Equatable {
   DocumentReference reference;
   String stationName;
   String? description;
+  bool isClosed;
 
   ///format: LatLng
   List<double> coordinates;
@@ -51,6 +53,7 @@ class Station extends Equatable {
     DateTime? createdDate,
     List<UserData>? waitingPassengers,
     List<AppUser>? approachingDrivers,
+    bool? isClosed,
   }) =>
       Station(
         stationName: stationName ?? this.stationName,
@@ -61,6 +64,7 @@ class Station extends Equatable {
         approachingDrivers: approachingDrivers ?? this.approachingDrivers,
         reference: this.reference,
         stationId: this.stationId,
+        isClosed: isClosed ?? this.isClosed,
       );
 
   // factory Station.fromJson(String str) => Station.fromMap(json.decode(str));
@@ -98,6 +102,7 @@ class Station extends Equatable {
                 .data()?["approachingDrivers"]
                 .map((x) => AppUser.fromMap(x))),
         description: doc.data()?["description"],
+    isClosed: doc.data()?["isClosed"] ?? false,
       );
 
   Map<String, dynamic> toMap() => {
@@ -110,6 +115,7 @@ class Station extends Equatable {
             approachingDrivers.map((x) => x.toMap())),
         "created_date": createdDate.toString(),
         "lastPickupTime": lastPickupTime?.toString(),
+    "isClosed" : isClosed,
       };
 
   @override
@@ -121,5 +127,6 @@ class Station extends Equatable {
         approachingDrivers,
         createdDate,
         lastPickupTime,
+    isClosed,
       ];
 }
