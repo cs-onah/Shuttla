@@ -10,6 +10,8 @@ import 'package:shuttla/core/services/session_manager.dart';
 import 'package:shuttla/core/utilities/global_events.dart';
 import 'package:shuttla/ui/screens/admin/create_station_screen.dart';
 
+import 'admin_station_detail_screen.dart';
+
 class AdminHomeScreen extends StatefulWidget {
   const AdminHomeScreen({Key? key}) : super(key: key);
   @override
@@ -157,76 +159,85 @@ class StationTile extends StatelessWidget {
       ),
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       margin: EdgeInsets.only(bottom: 16),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  station.stationName,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                ),
-                SizedBox(height: 10),
-                Row(
-                  children: [
-                    Icon(Icons.location_on_outlined),
-                    SizedBox(width: 5),
-                    Text(
-                        "${station.coordinates[0].toStringAsFixed(5)}, ${station.coordinates[1].toStringAsFixed(5)}")
-                  ],
-                ),
-                Row(
-                  children: [
-                    Icon(Icons.person_outline),
-                    SizedBox(width: 5),
-                    Text("${station.waitingPassengers.length} waiting")
-                  ],
-                ),
-              ],
-            ),
+      child: InkWell(
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => AdminStationDetatilScreen(station),
+            fullscreenDialog: true,
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Row(
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  IconButton(
-                      onPressed: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CreateStationScreen(
-                                station: station,
-                              ),
-                            ),
-                          ),
-                      icon: Icon(Icons.edit)),
-                  IconButton(
-                      onPressed: () => bloc.deleteStation(station),
-                      icon: Icon(Icons.delete),
-                      color: Colors.red),
+                  Text(
+                    station.stationName,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
+                  SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Icon(Icons.location_on_outlined),
+                      SizedBox(width: 5),
+                      Text(
+                          "${station.coordinates[0].toStringAsFixed(5)}, ${station.coordinates[1].toStringAsFixed(5)}")
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Icon(Icons.person_outline),
+                      SizedBox(width: 5),
+                      Text("${station.waitingPassengers.length} waiting")
+                    ],
+                  ),
                 ],
               ),
-              SizedBox(height: 20),
-              Container(
-                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                decoration: BoxDecoration(
-                  color: station.isClosed ? Colors.red : Colors.green,
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Row(
+                  children: [
+                    IconButton(
+                        onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CreateStationScreen(
+                                  station: station,
+                                ),
+                              ),
+                            ),
+                        icon: Icon(Icons.edit)),
+                    IconButton(
+                        onPressed: () => bloc.deleteStation(station),
+                        icon: Icon(Icons.delete),
+                        color: Colors.red),
+                  ],
                 ),
-                child: Text(
-                  station.isClosed ? "CLOSED" : "OPEN",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
+                SizedBox(height: 20),
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  decoration: BoxDecoration(
+                    color: station.isClosed ? Colors.red : Colors.green,
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
                   ),
-                ),
-              )
-            ],
-          ),
-        ],
+                  child: Text(
+                    station.isClosed ? "CLOSED" : "OPEN",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

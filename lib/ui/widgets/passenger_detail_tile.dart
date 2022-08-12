@@ -16,7 +16,7 @@ class PassengerListTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Driver(s) Approaching",
+                  "Waiting Passenger(s):",
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 10),
@@ -24,10 +24,10 @@ class PassengerListTile extends StatelessWidget {
                   (e) => Container(
                     padding: EdgeInsets.symmetric(horizontal: 0, vertical: 5),
                     child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         CircleAvatar(
-                          radius: 10,
+                          radius: 15,
                           foregroundImage: AssetImage(e.imageResourcePath),
                         ),
                         SizedBox(width: 15),

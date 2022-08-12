@@ -111,7 +111,7 @@ class _StationDetailScreenState extends State<StationDetailScreen> {
               DriverStatusTile(
                   widget.bloc.selectedStation?.approachingDrivers ?? []),
               Divider(),
-              SizedBox(height: 40),
+              SizedBox(height: 20),
               Builder(
                 builder: (context) {
                   switch (widget.userRole) {

@@ -1,16 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:shuttla/constants/user_type_enum.dart';
-import 'package:shuttla/core/blocs/driver_home_bloc.dart';
-import 'package:shuttla/core/blocs/passenger_home_bloc.dart';
-import 'package:shuttla/core/blocs/shuttla_home_bloc_contract.dart';
 import 'package:shuttla/core/data_models/station.dart';
 import 'package:shuttla/core/services/station_service.dart';
 import 'package:shuttla/core/utilities/utility.dart';
 import 'package:shuttla/ui/screens/admin/create_station_screen.dart';
 import 'package:shuttla/ui/size_config/size_config.dart';
-import 'package:shuttla/ui/widgets/custom_button.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shuttla/ui/widgets/driver_status_tile.dart';
 import 'package:shuttla/ui/widgets/passenger_detail_tile.dart';
 import 'package:shuttla/ui/widgets/station_detail_file.dart';
@@ -18,12 +12,20 @@ import 'package:shuttla/ui/widgets/station_detail_file.dart';
 class AdminStationDetatilScreen extends StatefulWidget {
   final Station station;
   const AdminStationDetatilScreen(this.station);
-
   @override
-  State<AdminStationDetatilScreen> createState() => _AdminStationDetatilScreenState();
+  State<AdminStationDetatilScreen> createState() =>
+      _AdminStationDetatilScreenState();
 }
 
 class _AdminStationDetatilScreenState extends State<AdminStationDetatilScreen> {
+  late Station station;
+
+  @override
+  void initState() {
+    station = widget.station;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -39,7 +41,7 @@ class _AdminStationDetatilScreenState extends State<AdminStationDetatilScreen> {
             context,
             MaterialPageRoute(
               builder: (context) => CreateStationScreen(
-                station: widget.station,
+                station: station,
               ),
             ),
           ),
@@ -49,21 +51,26 @@ class _AdminStationDetatilScreenState extends State<AdminStationDetatilScreen> {
           backgroundColor: Colors.transparent,
           automaticallyImplyLeading: false,
           actions: [
-            IconButton(
-              onPressed: () => Navigator.pop(context),
-              icon: Icon(Icons.close),
-              iconSize: 30,
-              color: Colors.black,
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: IconButton(
+                onPressed: () => Navigator.pop(context),
+                icon: Icon(Icons.close),
+                iconSize: 40,
+                color: Colors.black,
+              ),
             ),
           ],
         ),
         body: StreamBuilder(
           stream: StationService().getStationDetailStream(widget.station),
-          builder: (BuildContext context,
-              AsyncSnapshot<DocumentSnapshot> state) {
+          builder:
+              (BuildContext context, AsyncSnapshot<DocumentSnapshot> state) {
             if (!state.hasData) return Text("No data found");
 
             final station = Station.fromFirebaseSnapshot(state.data!);
+            this.station = station;
+
             return ListView(
               padding: EdgeInsets.symmetric(
                   vertical: 20, horizontal: SizeConfig.widthOf(6)),
@@ -84,8 +91,19 @@ class _AdminStationDetatilScreenState extends State<AdminStationDetatilScreen> {
                             ),
                           ),
                           SizedBox(height: 10),
-                          Text(station.description ??
-                              "N/A"),
+                          Text(station.description ?? "N/A"),
+                          SizedBox(height: 10),
+                          Row(
+                           children: [ Text("Status:"),
+                            SizedBox(width: 5),
+                            Text(station.isClosed? "CLOSED" : "OPEN",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: station.isClosed ? Colors.red : Colors.green,
+                              ),
+                            )
+                           ]
+                          )
                         ],
                       ),
                     ),
@@ -94,29 +112,21 @@ class _AdminStationDetatilScreenState extends State<AdminStationDetatilScreen> {
                   ],
                 ),
                 SizedBox(height: 20),
-                Divider(
-                  height: 20,
-                  color: Colors.black,
-                ),
+                Divider(height: 20, color: Colors.black),
                 StationDetailTile(
                   iconData: Icons.person,
                   text:
-                  "${station.waitingPassengers
-                      .length} passengers are currently waiting",
-                  iconBgColor: Theme
-                      .of(context)
-                      .accentColor,
+                      "${station.waitingPassengers.length} passengers are currently waiting",
+                  iconBgColor: Theme.of(context).accentColor,
                 ),
                 StationDetailTile(
                   iconData: Icons.schedule,
                   text:
-                  "Station created ${ShuttlaUtility.formatReadableDateTime(
-                      widget.station.createdDate, timeInclusive: false)}",
+                      "Station created ${ShuttlaUtility.formatReadableDateTime(station.createdDate, timeInclusive: false)}",
                   iconBgColor: Colors.blueAccent,
                 ),
                 Divider(),
-                DriverStatusTile(
-                    station.approachingDrivers),
+                DriverStatusTile(station.approachingDrivers),
                 Divider(),
                 PassengerListTile(station.waitingPassengers),
                 SizedBox(height: 40),
