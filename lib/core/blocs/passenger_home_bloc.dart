@@ -6,7 +6,8 @@ import 'package:shuttla/core/data_models/station.dart';
 import 'package:shuttla/core/services/session_manager.dart';
 import 'package:shuttla/core/services/station_service.dart';
 
-class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState> implements ShuttlaHomeBloc{
+class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState>
+    implements ShuttlaHomeBloc {
   StreamSubscription? stationStream;
   Station? selectedStation;
 
@@ -90,15 +91,14 @@ class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState> imp
       Station stationUpdate = Station.fromFirebaseSnapshot(event);
 
       /// Checks if current user has joined waiting list
-      if (stationUpdate.waitingPassengers.map((e) => e.userId)
-          .contains(SessionManager.user!.userData.userId)) {
+      if (stationContainsCurrentUser(stationUpdate)) {
         return add(PassengerJoinSuccessfulEvent(stationUpdate));
       }
 
       /// Checks if driver has picked passengers from station since last update
       if (selectedStation!.lastPickupTime != null) {
         if (stationUpdate.lastPickupTime!
-            .isAfter(selectedStation!.lastPickupTime!)) {
+                .isAfter(selectedStation!.lastPickupTime!) && stationContainsCurrentUser(stationUpdate)) {
           return add(DriverPickedPassengerEvent(stationUpdate));
         }
       }
@@ -127,6 +127,9 @@ class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState> imp
       }
     });
   }
+
+  bool stationContainsCurrentUser(Station station) => station.waitingPassengers.map((e) => e.userId)
+      .contains(SessionManager.user!.userData.userId);
 }
 
 //Events

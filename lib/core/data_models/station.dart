@@ -10,6 +10,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shuttla/core/data_models/app_user.dart';
 import 'package:shuttla/core/data_models/user_data.dart';
 import 'package:shuttla/core/services/location_service.dart';
+import 'package:shuttla/core/services/session_manager.dart';
 import 'package:shuttla/core/utilities/utility.dart';
 
 class Station extends Equatable {
