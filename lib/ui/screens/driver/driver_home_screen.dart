@@ -25,111 +25,114 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> with UiKit{
   @override
   Widget build(BuildContext context) {
     final homeModel = Provider.of<HomeViewmodel>(context);
-    return Scaffold(
-      body: BlocListener<DriverHomeBloc, DriverHomeState>(
-        listener: (ctx, state) async {
-          if(state is DriverErrorState)
-            showToastMessage(context, state.errorMessage);
-          if (state is DriverEnrouteState){
-            // homeModel.showNavigationLines(state.station);
-            homeModel.initiateOnRouteMap(state.station);
-            showBottomSheet(
-              context: ctx,
-              backgroundColor: Colors.transparent,
-              builder: (ctx) => DriverEnrouteFragment(),
-            );
-          }
-          if (state is DriverPickupState)
-            showBottomSheet(
-              context: ctx,
-              backgroundColor: Colors.transparent,
-              builder: (ctx) => DriverCompleteFragment(),
-            );
-          if (state is DriverIdleState){
-            homeModel.clearPolylines();
-            homeModel.startLocationStream();
+    return BlocProvider(
+      create: (context)=> DriverHomeBloc(),
+      child: Scaffold(
+        body: BlocListener<DriverHomeBloc, DriverHomeState>(
+          listener: (ctx, state) async {
+            if(state is DriverErrorState)
+              showToastMessage(context, state.errorMessage);
+            if (state is DriverEnrouteState){
+              // homeModel.showNavigationLines(state.station);
+              homeModel.initiateOnRouteMap(state.station);
+              showBottomSheet(
+                context: ctx,
+                backgroundColor: Colors.transparent,
+                builder: (ctx) => DriverEnrouteFragment(),
+              );
+            }
+            if (state is DriverPickupState)
+              showBottomSheet(
+                context: ctx,
+                backgroundColor: Colors.transparent,
+                builder: (ctx) => DriverCompleteFragment(),
+              );
+            if (state is DriverIdleState){
+              homeModel.clearPolylines();
+              homeModel.startLocationStream();
 
-            if(state.completedSession)
-              await showDialog(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    title: Text("Success"),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(16))),
-                    content: Text("Successfully completed session"),
-                    actionsPadding: EdgeInsets.symmetric(horizontal: 10),
-                    actions: [
-                      BoxButton.rounded(
-                        text: "Okay",
-                        backgroundColor: Theme.of(context).primaryColorDark,
-                        onPressed: () => Navigator.pop(context),
+              if(state.completedSession)
+                await showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: Text("Success"),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(16))),
+                      content: Text("Successfully completed session"),
+                      actionsPadding: EdgeInsets.symmetric(horizontal: 10),
+                      actions: [
+                        BoxButton.rounded(
+                          text: "Okay",
+                          backgroundColor: Theme.of(context).primaryColorDark,
+                          onPressed: () => Navigator.pop(context),
+                        )
+                      ],
+                    );
+                  },
+                );
+            }
+
+          },
+          child: SafeArea(
+            child: Stack(
+              children: [
+                GoogleMap(
+                  initialCameraPosition:
+                  CameraPosition(target: LatLng(5.377232, 7.000225), zoom: 16),
+                  myLocationButtonEnabled: false,
+                  compassEnabled: false,
+                  zoomControlsEnabled: false,
+                  tiltGesturesEnabled: false,
+                  mapType: MapType.normal,
+                  onMapCreated: (GoogleMapController controller) {
+                    homeModel.map = controller;
+                    homeModel.startLocationStream();
+                  },
+                  markers: homeModel.mapMarkers,
+                  circles: {},
+                  polylines: homeModel.polylineList,
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.grey.shade300,
+                          offset: Offset(0, 0),
+                          spreadRadius: 3,
+                          blurRadius: 3,
                       )
                     ],
-                  );
-                },
-              );
-          }
-
-        },
-        child: SafeArea(
-          child: Stack(
-            children: [
-              GoogleMap(
-                initialCameraPosition:
-                CameraPosition(target: LatLng(5.377232, 7.000225), zoom: 16),
-                myLocationButtonEnabled: false,
-                compassEnabled: false,
-                zoomControlsEnabled: false,
-                tiltGesturesEnabled: false,
-                mapType: MapType.normal,
-                onMapCreated: (GoogleMapController controller) {
-                  homeModel.map = controller;
-                  homeModel.startLocationStream();
-                },
-                markers: homeModel.mapMarkers,
-                circles: {},
-                polylines: homeModel.polylineList,
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                        color: Colors.grey.shade300,
-                        offset: Offset(0, 0),
-                        spreadRadius: 3,
-                        blurRadius: 3,
-                    )
-                  ],
+                  ),
+                  padding: EdgeInsets.all(2),
+                  margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  child: IconButton(
+                    onPressed: () {
+                      eventBus.fire(LogOutEvent("No time"));
+                    },
+                    icon: Icon(Icons.menu),
+                    color: Colors.black,
+                    iconSize: 30,
+                  ),
                 ),
-                padding: EdgeInsets.all(2),
-                margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                child: IconButton(
-                  onPressed: () {
-                    eventBus.fire(LogOutEvent("No time"));
-                  },
-                  icon: Icon(Icons.menu),
-                  color: Colors.black,
-                  iconSize: 30,
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                    child: Builder(builder: (context) {
+                      return SizedBox(
+                        width: double.infinity,
+                        child: BoxButton.rounded(
+                          text: "See Stations",
+                          onPressed: () => _seeStations(context, homeModel),
+                        ),
+                      );
+                    }),
+                  ),
                 ),
-              ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                  child: Builder(builder: (context) {
-                    return SizedBox(
-                      width: double.infinity,
-                      child: BoxButton.rounded(
-                        text: "See Stations",
-                        onPressed: () => _seeStations(context, homeModel),
-                      ),
-                    );
-                  }),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

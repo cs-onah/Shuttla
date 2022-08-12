@@ -7,6 +7,7 @@ import 'package:shuttla/ui/screens/onboarding/login_screen.dart';
 import 'package:shuttla/ui/screens/passenger/passenger_home_screen.dart';
 import 'package:shuttla/ui/screens/onboarding/select_user_screen.dart';
 import 'package:shuttla/ui/screens/shared/location_select_screen.dart';
+import 'package:shuttla/ui/screens/shared/profile_screen.dart';
 import 'package:shuttla/ui/screens/splash_screen.dart';
 import 'package:shuttla/constants/user_type_enum.dart';
 import 'package:shuttla/core/data_models/app_user.dart';
@@ -24,6 +25,7 @@ class RouteNames {
   static const String adminHomeScreen = 'adminHomeScreen';
   static const String locationSelectScreen = 'locationSelectScreen';
   static const String createStationScreen = 'createStationScreen';
+  static const String profileScreen = 'profileScreen';
 
 
   static Map<String, Widget Function(BuildContext)> routes = {
@@ -37,6 +39,7 @@ class RouteNames {
     adminHomeScreen: (context) => AdminHomeScreen(),
     locationSelectScreen: (context) => LocationSelectScreen(),
     createStationScreen: (context) => CreateStationScreen(),
+    profileScreen: (context) => ProfileScreen(),
   };
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -58,6 +61,8 @@ class RouteNames {
         return MaterialPageRoute(builder: (context) => LocationSelectScreen());
       case createStationScreen:
         return MaterialPageRoute(builder: (context) => CreateStationScreen());
+      case profileScreen:
+        return MaterialPageRoute(builder: (context) => ProfileScreen());
 
     //Default Route is error route
       default:

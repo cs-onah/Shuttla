@@ -24,10 +24,11 @@ class AppProviders {
   static final blocProviders = <BlocProvider>[
     //format for registering providers:
     BlocProvider<BlocA>(create: (BuildContext context) => BlocA()),
-    // BlocProvider<PassengerHomeBloc>(create: (context) => PassengerHomeBloc()),
-    BlocProvider<DriverHomeBloc>(create: (context) => DriverHomeBloc()),
     BlocProvider<AuthenticationBloc>(create: (context) => AuthenticationBloc()),
     BlocProvider<StationCubit>(create: (context) => StationCubit()),
 
+    // These providers have been scoped to their respective home screens
+    // BlocProvider<PassengerHomeBloc>(create: (context) => PassengerHomeBloc()),
+    // BlocProvider<DriverHomeBloc>(create: (context) => DriverHomeBloc()),
   ];
 }

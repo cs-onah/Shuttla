@@ -70,7 +70,8 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> with UiKit {
                             if (!snapshot.hasData) return Container();
                             return GestureDetector(
                               // onTap: () => authBloc.add(AuthUserLogout()),
-                              onTap: () => SessionManager.logout(),
+                              // onTap: () => SessionManager.logout(),
+                              onTap: ()=> Navigator.pushNamed(context, RouteNames.profileScreen),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
