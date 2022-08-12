@@ -38,6 +38,7 @@ class HomeViewmodel extends ChangeNotifier {
   void listenForLogout(BuildContext context,
       {String userType = "Unknown user"}) {
     logOutListener = eventBus.on<LogOutEvent>().listen((event) {
+      resetLocationMarkers();
       print("$userType: Logged out because: ${event.reason}");
       Navigator.pushNamedAndRemoveUntil(
         context,
