@@ -1,22 +1,15 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:shuttla/constants/user_type_enum.dart';
 import 'package:shuttla/core/blocs/driver_home_bloc.dart';
 import 'package:shuttla/core/blocs/passenger_home_bloc.dart';
 import 'package:shuttla/core/blocs/shuttla_home_bloc_contract.dart';
-import 'package:shuttla/core/data_models/app_user.dart';
 import 'package:shuttla/core/data_models/station.dart';
-import 'package:shuttla/core/services/location_service.dart';
-import 'package:shuttla/core/services/station_service.dart';
 import 'package:shuttla/core/utilities/utility.dart';
-import 'package:shuttla/core/viewmodels/home_viewmodel.dart';
 import 'package:shuttla/ui/size_config/size_config.dart';
 import 'package:shuttla/ui/widgets/custom_button.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../onboarding/select_user_screen.dart';
+import 'package:shuttla/ui/widgets/driver_status_tile.dart';
+import 'package:shuttla/ui/widgets/station_detail_file.dart';
 
 class StationDetailScreen extends StatefulWidget {
   final Station station;
@@ -158,144 +151,6 @@ class _StationDetailScreenState extends State<StationDetailScreen> {
             );
         Navigator.pop(context);
       },
-    );
-  }
-}
-
-class StationDetailTile extends StatelessWidget {
-  final IconData? iconData;
-  final Color? iconBgColor;
-  final String text;
-  const StationDetailTile({
-    Key? key,
-    this.iconData,
-    this.text = "",
-    this.iconBgColor,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 15),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          iconData == null
-              ? SizedBox(width: 30)
-              : Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(60)),
-                    color: iconBgColor ?? Colors.black45,
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Icon(iconData, size: 25, color: Colors.white),
-                  )),
-          SizedBox(width: 25),
-          Expanded(
-            child: Text(
-              '$text',
-              style: TextStyle(
-                fontSize: 16,
-                // fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class DriverStatusTile extends StatelessWidget {
-  final List<AppUser> drivers;
-
-  const DriverStatusTile(this.drivers);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 15),
-      child: drivers.isNotEmpty
-          ? Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Driver(s) Approaching",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 10),
-                ...drivers.map(
-                  (e) => Container(
-                    padding: EdgeInsets.symmetric(horizontal: 0, vertical: 5),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CircleAvatar(
-                            foregroundImage:
-                                AssetImage(e.userData.imageResourcePath)),
-                        SizedBox(width: 15),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "${e.userData.nickname}",
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(height: 5),
-                            Text(
-                                "${e.driverData!.carManufacturer}, ${e.driverData!.carModel}"),
-                            SizedBox(height: 10),
-                            Text("${e.driverData!.plateNumber}"),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                )
-              ],
-            )
-          : Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(12)),
-                      color: Colors.black45,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child:
-                          Icon(Icons.bus_alert, size: 25, color: Colors.white),
-                    )),
-                SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Driver Status',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        'No driver approaching at the moment.',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontStyle: FontStyle.italic,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
     );
   }
 }
