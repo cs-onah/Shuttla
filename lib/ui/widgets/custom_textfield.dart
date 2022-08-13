@@ -53,7 +53,7 @@ class _CustomTextFieldState extends State<BoxTextField> {
           borderSide: BorderSide.none,
           borderRadius: BorderRadius.all(Radius.circular(10)),
         ),
-        fillColor: Colors.white,
+        fillColor: (widget.readOnly ?? false)? Colors.grey[100] : Colors.white,
       ),
     );
   }

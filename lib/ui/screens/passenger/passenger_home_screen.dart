@@ -69,26 +69,36 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> with UiKit {
                               AsyncSnapshot<AppUser?> snapshot) {
                             if (!snapshot.hasData) return Container();
                             return GestureDetector(
-                              // onTap: () => authBloc.add(AuthUserLogout()),
-                              // onTap: () => SessionManager.logout(),
-                              onTap: ()=> Navigator.pushNamed(context, RouteNames.profileScreen),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  CircleAvatar(
-                                    foregroundImage: AssetImage(
-                                        snapshot.data!.userData.imageResourcePath),
-                                    radius: 25,
-                                  ),
-                                  SizedBox(width: 10),
-                                  Text(
-                                    'Hi ${snapshot.data?.userData.nickname ?? ""} 👋',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
+                              onTap: () async {
+                                await Navigator.pushNamed(context, RouteNames.profileScreen);
+                                setState(() {});
+                              },
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  maxWidth: 180,
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    CircleAvatar(
+                                      foregroundImage: AssetImage(
+                                          snapshot.data!.userData.imageResourcePath),
+                                      radius: 25,
                                     ),
-                                  ),
-                                ],
+                                    SizedBox(width: 10),
+                                    Expanded(
+                                      flex: 1,
+                                      child: Text(
+                                        'Hi ${snapshot.data?.userData.nickname ?? ""} 👋',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          overflow: TextOverflow.ellipsis
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             );
                           }),
