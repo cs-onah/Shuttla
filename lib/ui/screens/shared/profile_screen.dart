@@ -8,8 +8,6 @@ import 'package:shuttla/ui/screens/shared/ui_kit.dart';
 import 'package:shuttla/ui/size_config/size_config.dart';
 import 'package:shuttla/ui/widgets/custom_button.dart';
 import 'package:shuttla/ui/widgets/custom_textfield.dart';
-import 'package:wheel_chooser/wheel_chooser.dart';
-import 'dart:math';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -47,7 +45,6 @@ class _ProfileScreenState extends State<ProfileScreen> with Validators, UiKit {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: Colors.white,
       appBar: AppBar(
         leading: BackButton(
           color: Colors.black,
