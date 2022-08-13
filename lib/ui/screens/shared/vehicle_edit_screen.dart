@@ -48,55 +48,58 @@ class _VehicleEditScreenState extends State<VehicleEditScreen> with Validators, 
         title: Text("Update Vehicle", style: TextStyle(color: Colors.black)),
         elevation: 0,
       ),
-      body: ListView(
-        padding: EdgeInsets.symmetric(horizontal: SizeConfig.widthOf(6)),
-        children: [
-          Gap(30),
-          Text("Plate Number",
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-          const Gap(10),
-          BoxTextField(
-            hintText: "ABC-XYZ",
-            controller: plateNumberC,
-            validator: (value) => validateName(value!),
-          ),
-          const Gap(30),
-          Text("Car Manufacturer",
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-          const Gap(10),
-          BoxTextField(
-            hintText: "Toyota",
-            controller: carManufacturerC,
-            validator: (value) => validateName(value!),
-          ),
-          const Gap(30),
-          Text("Car Model",
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-          const Gap(10),
-          BoxTextField(
-            hintText: "E-350",
-            controller: carModelC,
-            validator: (value) => validateName(value!),
-          ),
-          const Gap(30),
-          Text("Color",
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-          const Gap(10),
-          BoxTextField(
-            hintText: "Red",
-            controller: carColorC,
-            validator: (value) => validateName(value!),
-          ),
-          Gap(40),
-          SizedBox(
-            width: double.infinity,
-            child: BoxButton.purple(
-              text: "Save",
-              onPressedWithNotifier: updateVehicle,
+      body: Form(
+        key: vehicleFormKey,
+        child: ListView(
+          padding: EdgeInsets.symmetric(horizontal: SizeConfig.widthOf(6)),
+          children: [
+            Gap(50),
+            Text("Plate Number",
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+            const Gap(10),
+            BoxTextField(
+              hintText: "ABC-XYZ",
+              controller: plateNumberC,
+              validator: (value) => validateName(value!),
             ),
-          ),
-          Gap(30),
-        ],
+            const Gap(30),
+            Text("Car Manufacturer",
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+            const Gap(10),
+            BoxTextField(
+              hintText: "Toyota",
+              controller: carManufacturerC,
+              validator: (value) => validateName(value!),
+            ),
+            const Gap(30),
+            Text("Car Model",
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+            const Gap(10),
+            BoxTextField(
+              hintText: "E-350",
+              controller: carModelC,
+              validator: (value) => validateName(value!),
+            ),
+            const Gap(30),
+            Text("Color",
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+            const Gap(10),
+            BoxTextField(
+              hintText: "Red",
+              controller: carColorC,
+              validator: (value) => validateName(value!),
+            ),
+            Gap(40),
+            SizedBox(
+              width: double.infinity,
+              child: BoxButton.purple(
+                text: "Save",
+                onPressedWithNotifier: updateVehicle,
+              ),
+            ),
+            Gap(30),
+          ],
+        ),
       ),
     );
   }
@@ -124,9 +127,8 @@ class _VehicleEditScreenState extends State<VehicleEditScreen> with Validators, 
         );
       }
     } catch (e) {
-      showToastMessage(context, '$e');
-    } finally {
       notifier.value = false;
+      showToastMessage(context, '$e');
     }
   }
 }

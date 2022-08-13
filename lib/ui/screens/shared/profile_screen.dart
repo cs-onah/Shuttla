@@ -174,9 +174,8 @@ class _ProfileScreenState extends State<ProfileScreen> with Validators, UiKit {
         );
       }
     } catch (e) {
-      showToastMessage(context, '$e');
-    } finally {
       notifier.value = false;
+      showToastMessage(context, '$e');
     }
   }
 }

@@ -100,9 +100,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> with Valida
         );
       }
     } catch (e) {
-      showToastMessage(context, '$e');
-    } finally {
       notifier.value = false;
+      showToastMessage(context, '$e');
     }
   }
 }

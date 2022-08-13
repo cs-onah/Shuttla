@@ -100,16 +100,18 @@ class AuthService {
     return appUser;
   }
 
-  Future changePassword(String oldPassword, String newPassword) async {
+  Future<bool> changePassword(String oldPassword, String newPassword) async {
     bool success = false;
     var user = FirebaseAuth.instance.currentUser!;
     final cred =
         EmailAuthProvider.credential(email: user.email!, password: oldPassword);
-    UserCredential userCredential =
-        await _auth.currentUser!.reauthenticateWithCredential(cred);
-    await user.reauthenticateWithCredential(cred).then((value) async =>
-        await user.updatePassword(newPassword).then((value) => success = true));
-
+    UserCredential? userCredential =
+        await _auth.currentUser?.reauthenticateWithCredential(cred);
+    print(userCredential);
+    if(userCredential?.user != null){
+      await user.reauthenticateWithCredential(cred).then((value) async =>
+      await user.updatePassword(newPassword).then((value) => success = true));
+    }
     return success;
   }
 
