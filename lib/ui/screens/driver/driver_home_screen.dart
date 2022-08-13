@@ -5,12 +5,15 @@ import 'package:provider/provider.dart';
 import 'package:shuttla/app.dart';
 import 'package:shuttla/constants/route_names.dart';
 import 'package:shuttla/core/blocs/driver_home_bloc.dart';
+import 'package:shuttla/core/data_models/app_user.dart';
 import 'package:shuttla/core/data_models/station.dart';
+import 'package:shuttla/core/services/session_manager.dart';
 import 'package:shuttla/core/utilities/global_events.dart';
 import 'package:shuttla/core/viewmodels/home_viewmodel.dart';
 import 'package:shuttla/ui/screens/driver/driver_complete_fragment.dart';
 import 'package:shuttla/ui/screens/driver/driver_enroute_fragment.dart';
 import 'package:shuttla/ui/screens/driver/selected_station_fragment.dart';
+import 'package:shuttla/ui/screens/shared/app_drawer.dart';
 import 'package:shuttla/ui/screens/shared/select_busstop_fragment.dart';
 import 'package:shuttla/ui/screens/shared/ui_kit.dart';
 import 'package:shuttla/ui/widgets/custom_button.dart';
@@ -28,6 +31,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> with UiKit{
     return BlocProvider(
       create: (context)=> DriverHomeBloc(),
       child: Scaffold(
+        drawer: AppDrawer(),
         body: BlocListener<DriverHomeBloc, DriverHomeState>(
           listener: (ctx, state) async {
             if(state is DriverErrorState)
@@ -107,13 +111,17 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> with UiKit{
                   ),
                   padding: EdgeInsets.all(2),
                   margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                  child: IconButton(
-                    onPressed: () {
-                      eventBus.fire(LogOutEvent("No time"));
-                    },
-                    icon: Icon(Icons.menu),
-                    color: Colors.black,
-                    iconSize: 30,
+                  child: Builder(
+                    builder: (context) {
+                      return IconButton(
+                        onPressed: () {
+                          Scaffold.of(context).openDrawer();
+                        },
+                        icon: Icon(Icons.menu),
+                        color: Colors.black,
+                        iconSize: 30,
+                      );
+                    }
                   ),
                 ),
                 Align(
