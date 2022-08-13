@@ -114,9 +114,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> with UiKit{
                   child: Builder(
                     builder: (context) {
                       return IconButton(
-                        onPressed: () {
-                          Scaffold.of(context).openDrawer();
-                        },
+                        onPressed: () => Scaffold.of(context).openDrawer(),
                         icon: Icon(Icons.menu),
                         color: Colors.black,
                         iconSize: 30,

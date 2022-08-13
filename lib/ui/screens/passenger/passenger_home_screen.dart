@@ -9,6 +9,7 @@ import 'package:shuttla/core/data_models/app_user.dart';
 import 'package:shuttla/core/data_models/station.dart';
 import 'package:shuttla/core/services/session_manager.dart';
 import 'package:shuttla/core/viewmodels/home_viewmodel.dart';
+import 'package:shuttla/ui/screens/shared/app_drawer.dart';
 import 'package:shuttla/ui/screens/shared/select_busstop_fragment.dart';
 import 'package:shuttla/ui/screens/shared/station_detail_screen.dart';
 import 'package:shuttla/ui/screens/shared/ui_kit.dart';
@@ -33,6 +34,8 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> with UiKit {
           final passengerBloc = Provider.of<PassengerHomeBloc>(context);
           return SafeArea(
             child: Scaffold(
+              drawer: AppDrawer(),
+              onDrawerChanged: (bool)=> setState(() {}),
               body: Stack(
                 children: [
                   GoogleMap(
@@ -69,10 +72,7 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> with UiKit {
                               AsyncSnapshot<AppUser?> snapshot) {
                             if (!snapshot.hasData) return Container();
                             return GestureDetector(
-                              onTap: () async {
-                                await Navigator.pushNamed(context, RouteNames.profileScreen);
-                                setState(() {});
-                              },
+                              onTap: () => Scaffold.of(context).openDrawer(),
                               child: ConstrainedBox(
                                 constraints: BoxConstraints(
                                   maxWidth: 180,

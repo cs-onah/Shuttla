@@ -42,6 +42,15 @@ class _AppDrawerState extends State<AppDrawer> {
                             ),
                             SizedBox(height: 10),
                             Text("${u.userData.email}"),
+                            if(u.driverData != null) ...[
+                              SizedBox(height: 5),
+                              Text("${u.driverData!.carModel} ${u.driverData!.carManufacturer}",
+                                style: TextStyle(fontSize: 10),
+                              ),
+                              Text("${u.driverData!.plateNumber}",
+                                style: TextStyle(fontSize: 10),
+                              ),
+                            ]
                           ],
                         )
                       ],
@@ -64,14 +73,17 @@ class _AppDrawerState extends State<AppDrawer> {
               title: Text("Change Password", style: TextStyle(fontSize: 16)),
               trailing: Icon(Icons.arrow_forward_ios_outlined, size: 20),
               leading: Icon(Icons.lock_outline),
-              onTap: ()=> Navigator.pushNamed(context, RouteNames.changePasswordScreen),
+              onTap: () => Navigator.pushNamed(context, RouteNames.changePasswordScreen),
             ),
             Divider(height: 10),
-            ListTile(
+            if(SessionManager.user?.driverData != null) ListTile(
               title: Text("Update Vehicle", style: TextStyle(fontSize: 16)),
               trailing: Icon(Icons.arrow_forward_ios_outlined, size: 20),
               leading: Icon(Icons.directions_bus_outlined),
-              onTap: ()=> Navigator.pushNamed(context, RouteNames.updateVehicleScreen),
+              onTap: () async {
+                await Navigator.pushNamed(context, RouteNames.updateVehicleScreen);
+                setState(() {});
+              },
             ),
             Divider(height: 10),
             Spacer(),

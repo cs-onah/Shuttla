@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:shuttla/core/blocs/authentication_bloc.dart';
 import 'package:shuttla/core/data_models/app_user.dart';
 import 'package:shuttla/core/services/auth_service.dart';
 import 'package:shuttla/core/services/session_manager.dart';
@@ -8,6 +9,7 @@ import 'package:shuttla/ui/screens/shared/ui_kit.dart';
 import 'package:shuttla/ui/size_config/size_config.dart';
 import 'package:shuttla/ui/widgets/custom_button.dart';
 import 'package:shuttla/ui/widgets/custom_textfield.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
