@@ -22,7 +22,7 @@ class AuthService {
 
   registerAdmin(String nickName, String email, String password) {}
 
-  Future<AppUser?> loginUser(String email, String password) async{
+  Future<AppUser?> loginUser(String email, String password) async {
     UserCredential cred = await _auth.signInWithEmailAndPassword(
       email: email,
       password: password,
@@ -33,7 +33,8 @@ class AuthService {
     return appUser;
   }
 
-  Future<AppUser?> registerPassenger(String nickName, String email, String password) async {
+  Future<AppUser?> registerPassenger(
+      String nickName, String email, String password) async {
     UserCredential cred = await _auth.createUserWithEmailAndPassword(
       email: email,
       password: password,
@@ -53,7 +54,9 @@ class AuthService {
   }
 
   Future<bool> updateDriver(AppUser updatedDriver) async {
-    await _userCollection.doc(updatedDriver.userData.userId).update(updatedDriver.toMap());
+    await _userCollection
+        .doc(updatedDriver.userData.userId)
+        .update(updatedDriver.toMap());
     return true;
   }
 
@@ -97,14 +100,27 @@ class AuthService {
     return appUser;
   }
 
-  Future<bool> logOut() async{
+  Future changePassword(String oldPassword, String newPassword) async {
+    bool success = false;
+    var user = FirebaseAuth.instance.currentUser!;
+    final cred =
+        EmailAuthProvider.credential(email: user.email!, password: oldPassword);
+    UserCredential userCredential =
+        await _auth.currentUser!.reauthenticateWithCredential(cred);
+    await user.reauthenticateWithCredential(cred).then((value) async =>
+        await user.updatePassword(newPassword).then((value) => success = true));
+
+    return success;
+  }
+
+  Future<bool> logOut() async {
     await SessionManager.logout();
     return true;
   }
 
-  Future<AppUser?> getCurrentUser() async{
+  Future<AppUser?> getCurrentUser() async {
     String? uid = _auth.currentUser?.uid;
-    if(uid != null){
+    if (uid != null) {
       DocumentSnapshot snapshot = await _userCollection.doc(uid).get();
       AppUser user = AppUser.fromMap(snapshot.data()!);
       return user;

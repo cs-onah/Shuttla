@@ -230,7 +230,7 @@ class DriverRegistrationFragment extends StatelessWidget with Validators {
               ),
               const Gap(30),
               Text("Repeat Password",
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),),
               const Gap(10),
               BoxTextField(
                 obscureText: true,
