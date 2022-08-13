@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:shuttla/core/data_models/app_user.dart';
 import 'package:shuttla/core/services/auth_service.dart';
 import 'package:shuttla/core/services/session_manager.dart';
 import 'package:shuttla/core/utilities/validators.dart';
@@ -21,6 +22,19 @@ class _VehicleEditScreenState extends State<VehicleEditScreen> with Validators, 
   final carModelC = TextEditingController();
   final carColorC = TextEditingController();
   final vehicleFormKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    //init values
+    if (SessionManager.user?.driverData != null) {
+      AppUser u = SessionManager.user!;
+      plateNumberC.text = u.driverData!.plateNumber;
+      carManufacturerC.text = u.driverData!.carManufacturer;
+      carModelC.text = u.driverData!.carModel;
+      carColorC.text = u.driverData!.carColor;
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
