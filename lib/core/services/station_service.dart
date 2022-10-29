@@ -7,12 +7,11 @@ import 'package:shuttla/core/data_models/user_data.dart';
 import 'package:shuttla/core/services/session_manager.dart';
 
 class StationService {
-  late FirebaseFirestore _firestore;
   late CollectionReference _stationCollection;
 
-  StationService({FirebaseAuth? auth, FirebaseFirestore? firestore}) {
-    _firestore = firestore ?? FirebaseFirestore.instance;
-    _stationCollection = _firestore.collection(CollectionName.STATIONS);
+  StationService([CollectionReference? stationCollection]) {
+    _stationCollection = stationCollection ??
+        FirebaseFirestore.instance.collection(CollectionName.STATIONS);
   }
 
   Future createStation({
