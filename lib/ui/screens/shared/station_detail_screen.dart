@@ -15,7 +15,8 @@ class StationDetailScreen extends StatefulWidget {
   final Station station;
   final UserType userRole;
   final ShuttlaHomeBloc bloc;
-  const StationDetailScreen(this.station, this.bloc, {this.userRole = UserType.PASSENGER});
+  const StationDetailScreen(this.station, this.bloc,
+      {this.userRole = UserType.PASSENGER});
 
   @override
   State<StationDetailScreen> createState() => _StationDetailScreenState();
@@ -39,9 +40,9 @@ class _StationDetailScreenState extends State<StationDetailScreen> {
             IconButton(
               onPressed: () {
                 Navigator.pop(context);
-                if(widget.bloc is DriverHomeBloc)
+                if (widget.bloc is DriverHomeBloc)
                   widget.bloc.add(DriverResetEvent());
-                if(widget.bloc is PassengerHomeBloc)
+                if (widget.bloc is PassengerHomeBloc)
                   widget.bloc.add(PassengerResetEvent());
               },
               icon: Icon(Icons.close),
@@ -73,8 +74,7 @@ class _StationDetailScreenState extends State<StationDetailScreen> {
                           ),
                         ),
                         SizedBox(height: 10),
-                        Text(widget.bloc.selectedStation?.description ??
-                            "N/A"),
+                        Text(widget.bloc.selectedStation?.description ?? "N/A"),
                       ],
                     ),
                   ),
@@ -112,17 +112,17 @@ class _StationDetailScreenState extends State<StationDetailScreen> {
                   widget.bloc.selectedStation?.approachingDrivers ?? []),
               Divider(),
               SizedBox(height: 20),
-              Builder(
-                builder: (context) {
-                  switch (widget.userRole) {
-                    case UserType.DRIVER:
-                      return _driverActionWidget(context);
-                    case UserType.PASSENGER:
-                    default:
-                      return _passengerActionWidget(context);
-                  }
+              BoxButton.purple(
+                text: isPassenger ? "JOIN WAIT" : "SELECT STATION",
+                onPressed: () {
+                  widget.bloc.add(
+                    isPassenger
+                        ? PassengerJoinStationEvent()
+                        : DriverEnrouteEvent(widget.station),
+                  );
+                  Navigator.pop(context);
                 },
-              )
+              ),
             ],
           ),
         ),
@@ -130,27 +130,5 @@ class _StationDetailScreenState extends State<StationDetailScreen> {
     );
   }
 
-  BoxButton _passengerActionWidget(BuildContext context) {
-    return BoxButton.purple(
-      text: "JOIN WAIT",
-      onPressed: () {
-        context.read<PassengerHomeBloc>().add(
-              PassengerJoinStationEvent(),
-            );
-        Navigator.pop(context);
-      },
-    );
-  }
-
-  Widget _driverActionWidget(BuildContext context) {
-    return BoxButton.purple(
-      text: "SELECT STATION",
-      onPressed: () {
-        context.read<DriverHomeBloc>().add(
-              DriverEnrouteEvent(widget.station),
-            );
-        Navigator.pop(context);
-      },
-    );
-  }
+  bool get isPassenger => widget.userRole == UserType.PASSENGER;
 }

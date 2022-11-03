@@ -28,7 +28,7 @@ dependencies:
   geocoding: 2.0.2
   google_maps_flutter: 2.0.9
   google_maps_webservice: 0.0.19
-  flutter_bloc: ^7.1.0
+  flutter_bloc: 7.1.0
   gap: ^2.0.0
   map_picker: ^0.0.3
   flutter_svg: 1.0.0
