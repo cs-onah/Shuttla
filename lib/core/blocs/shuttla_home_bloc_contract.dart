@@ -7,6 +7,7 @@ import 'package:shuttla/core/data_models/station.dart';
 
 abstract class ShuttlaHomeBloc{
   Station? selectedStation;
+  // ignore: cancel_subscriptions
   StreamSubscription? stationStream;
 
   void add(covariant dynamic value);
