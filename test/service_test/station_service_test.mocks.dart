@@ -2,12 +2,14 @@
 // in shuttla/test/service_test/station_service_test.dart.
 // Do not manually edit this file.
 
-import 'package:cloud_firestore/cloud_firestore.dart' as _i2;
-import 'package:google_maps_flutter/google_maps_flutter.dart' as _i3;
+import 'dart:async' as _i3;
+
+import 'package:cloud_firestore/cloud_firestore.dart' as _i5;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:shuttla/core/data_models/app_user.dart' as _i6;
+import 'package:shuttla/core/data_models/app_user.dart' as _i7;
 import 'package:shuttla/core/data_models/station.dart' as _i4;
-import 'package:shuttla/core/data_models/user_data.dart' as _i5;
+import 'package:shuttla/core/data_models/user_data.dart' as _i6;
+import 'package:shuttla/core/services/station_service.dart' as _i2;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -19,124 +21,83 @@ import 'package:shuttla/core/data_models/user_data.dart' as _i5;
 // ignore_for_file: unnecessary_parenthesis
 // ignore_for_file: camel_case_types
 
-
-class _FakeDateTime_1 extends _i1.Fake implements DateTime {}
-
-class _FakeLatLng_2 extends _i1.Fake implements _i3.LatLng {}
-
-class _FakeStation_3 extends _i1.Fake implements _i4.Station {}
-
-/// A class which mocks [Station].
+/// A class which mocks [StationService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockStation extends _i1.Mock implements _i4.Station {
-  MockStation() {
+class MockStationService extends _i1.Mock implements _i2.StationService {
+  MockStationService() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  String get stationId =>
-      (super.noSuchMethod(Invocation.getter(#stationId), returnValue: '')
-          as String);
-  @override
-  set stationId(String? _stationId) =>
-      super.noSuchMethod(Invocation.setter(#stationId, _stationId),
-          returnValueForMissingStub: null);
-  @override
-  set reference(_i2.DocumentReference? _reference) =>
-      super.noSuchMethod(Invocation.setter(#reference, _reference),
-          returnValueForMissingStub: null);
-  @override
-  String get stationName =>
-      (super.noSuchMethod(Invocation.getter(#stationName), returnValue: '')
-          as String);
-  @override
-  set stationName(String? _stationName) =>
-      super.noSuchMethod(Invocation.setter(#stationName, _stationName),
-          returnValueForMissingStub: null);
-  @override
-  set description(String? _description) =>
-      super.noSuchMethod(Invocation.setter(#description, _description),
-          returnValueForMissingStub: null);
-  @override
-  bool get isClosed =>
-      (super.noSuchMethod(Invocation.getter(#isClosed), returnValue: false)
-          as bool);
-  @override
-  set isClosed(bool? _isClosed) =>
-      super.noSuchMethod(Invocation.setter(#isClosed, _isClosed),
-          returnValueForMissingStub: null);
-  @override
-  List<double> get coordinates =>
-      (super.noSuchMethod(Invocation.getter(#coordinates),
-          returnValue: <double>[]) as List<double>);
-  @override
-  set coordinates(List<double>? _coordinates) =>
-      super.noSuchMethod(Invocation.setter(#coordinates, _coordinates),
-          returnValueForMissingStub: null);
-  @override
-  set lastPickupTime(DateTime? _lastPickupTime) =>
-      super.noSuchMethod(Invocation.setter(#lastPickupTime, _lastPickupTime),
-          returnValueForMissingStub: null);
-  @override
-  DateTime get createdDate =>
-      (super.noSuchMethod(Invocation.getter(#createdDate),
-          returnValue: _FakeDateTime_1()) as DateTime);
-  @override
-  set createdDate(DateTime? _createdDate) =>
-      super.noSuchMethod(Invocation.setter(#createdDate, _createdDate),
-          returnValueForMissingStub: null);
-  @override
-  List<_i5.UserData> get waitingPassengers =>
-      (super.noSuchMethod(Invocation.getter(#waitingPassengers),
-          returnValue: <_i5.UserData>[]) as List<_i5.UserData>);
-  @override
-  set waitingPassengers(List<_i5.UserData>? _waitingPassengers) => super
-      .noSuchMethod(Invocation.setter(#waitingPassengers, _waitingPassengers),
-          returnValueForMissingStub: null);
-  @override
-  List<_i6.AppUser> get approachingDrivers =>
-      (super.noSuchMethod(Invocation.getter(#approachingDrivers),
-          returnValue: <_i6.AppUser>[]) as List<_i6.AppUser>);
-  @override
-  set approachingDrivers(List<_i6.AppUser>? _approachingDrivers) => super
-      .noSuchMethod(Invocation.setter(#approachingDrivers, _approachingDrivers),
-          returnValueForMissingStub: null);
-  @override
-  _i3.LatLng get latLng => (super.noSuchMethod(Invocation.getter(#latLng),
-      returnValue: _FakeLatLng_2()) as _i3.LatLng);
-  @override
-  List<Object?> get props =>
-      (super.noSuchMethod(Invocation.getter(#props), returnValue: <Object?>[])
-          as List<Object?>);
-  @override
-  _i4.Station copyWith(
+  _i3.Future<dynamic> createStation(
           {String? stationName,
           String? description,
           List<double>? coordinates,
-          DateTime? lastPickupTime,
-          DateTime? createdDate,
-          List<_i5.UserData>? waitingPassengers,
-          List<_i6.AppUser>? approachingDrivers,
-          bool? isClosed}) =>
+          int? capacity}) =>
       (super.noSuchMethod(
-          Invocation.method(#copyWith, [], {
+          Invocation.method(#createStation, [], {
             #stationName: stationName,
             #description: description,
             #coordinates: coordinates,
-            #lastPickupTime: lastPickupTime,
-            #createdDate: createdDate,
-            #waitingPassengers: waitingPassengers,
-            #approachingDrivers: approachingDrivers,
-            #isClosed: isClosed
+            #capacity: capacity
           }),
-          returnValue: _FakeStation_3()) as _i4.Station);
+          returnValue: Future<dynamic>.value()) as _i3.Future<dynamic>);
   @override
-  String toJson() =>
-      (super.noSuchMethod(Invocation.method(#toJson, []), returnValue: '')
-          as String);
+  _i3.Future<List<_i4.Station>> getStation() =>
+      (super.noSuchMethod(Invocation.method(#getStation, []),
+              returnValue: Future<List<_i4.Station>>.value(<_i4.Station>[]))
+          as _i3.Future<List<_i4.Station>>);
   @override
-  Map<String, dynamic> toMap() =>
-      (super.noSuchMethod(Invocation.method(#toMap, []),
-          returnValue: <String, dynamic>{}) as Map<String, dynamic>);
+  _i3.Future<dynamic> deleteStation(_i5.DocumentReference? stationReference) =>
+      (super.noSuchMethod(Invocation.method(#deleteStation, [stationReference]),
+          returnValue: Future<dynamic>.value()) as _i3.Future<dynamic>);
+  @override
+  _i3.Future<dynamic> editStation(_i4.Station? station) =>
+      (super.noSuchMethod(Invocation.method(#editStation, [station]),
+          returnValue: Future<dynamic>.value()) as _i3.Future<dynamic>);
+  @override
+  _i3.Future<dynamic> joinStation({_i6.UserData? user, _i4.Station? station}) =>
+      (super.noSuchMethod(
+          Invocation.method(#joinStation, [], {#user: user, #station: station}),
+          returnValue: Future<dynamic>.value()) as _i3.Future<dynamic>);
+  @override
+  _i3.Future<dynamic> leaveStation(
+          {_i6.UserData? user, _i4.Station? station}) =>
+      (super.noSuchMethod(
+          Invocation.method(
+              #leaveStation, [], {#user: user, #station: station}),
+          returnValue: Future<dynamic>.value()) as _i3.Future<dynamic>);
+  @override
+  _i3.Stream<_i5.QuerySnapshot> getStationSnapshot() =>
+      (super.noSuchMethod(Invocation.method(#getStationSnapshot, []),
+              returnValue: Stream<_i5.QuerySnapshot>.empty())
+          as _i3.Stream<_i5.QuerySnapshot>);
+  @override
+  _i3.Stream<_i5.DocumentSnapshot> getStationDetailStream(
+          _i4.Station? station) =>
+      (super.noSuchMethod(Invocation.method(#getStationDetailStream, [station]),
+              returnValue: Stream<_i5.DocumentSnapshot>.empty())
+          as _i3.Stream<_i5.DocumentSnapshot>);
+  @override
+  _i3.Future<bool> driverSelectStation(
+          {_i4.Station? station, _i7.AppUser? driver}) =>
+      (super.noSuchMethod(
+          Invocation.method(
+              #driverSelectStation, [], {#station: station, #driver: driver}),
+          returnValue: Future<bool>.value(false)) as _i3.Future<bool>);
+  @override
+  _i3.Future<dynamic> driverCancelStationSelection(
+          {_i7.AppUser? driver, _i4.Station? station}) =>
+      (super.noSuchMethod(
+          Invocation.method(#driverCancelStationSelection, [],
+              {#driver: driver, #station: station}),
+          returnValue: Future<dynamic>.value()) as _i3.Future<dynamic>);
+  @override
+  _i3.Future<dynamic> driverPickupPassengers(
+          {_i7.AppUser? driver, _i4.Station? station}) =>
+      (super.noSuchMethod(
+          Invocation.method(#driverPickupPassengers, [],
+              {#driver: driver, #station: station}),
+          returnValue: Future<dynamic>.value()) as _i3.Future<dynamic>);
 }

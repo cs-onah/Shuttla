@@ -1,31 +1,44 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
+import 'package:shuttla/core/blocs/station_cubit.dart';
 import 'package:shuttla/core/data_models/station.dart';
 import 'package:shuttla/core/services/station_service.dart';
 
 import 'station_service_test.mocks.dart';
 
-@GenerateMocks([Station])
+@GenerateMocks([StationService])
 void main(){
-
-  StationService sut;
-  CollectionReference stationCollection;
+  late StationCubit sut;
+  late StationService stationService;
 
   setUp(() async{
-    sut = StationService();
-    await Firebase.initializeApp();
+    stationService = MockStationService();
+    sut = StationCubit(stationService);
   });
 
   group("getStation", (){
-    Station testData = MockStation();
-    testData.approachingDrivers = [];
-    test("testData is constant", (){
-      expect(testData, testData);
+    // Set getStation() to return [sampleStations]
+    setUp((){
+      when(stationService.getStation())
+        .thenAnswer((realInvocation) async => sampleStations);
     });
 
+    test("testData is constant", () async {
+      await sut.getStations();
+
+      // check that getStation() depends on [StationService]
+      verify(stationService.getStation()).called(1);
+      // check if stations stored in bloc is same as sampleStations
+      expectLater(sut.stations, sampleStations);
+      // check if LoadedState is returned after service call
+      expectLater(sut.state, isA<LoadedStationState>());
+    });
   });
-
-
 }
+
+class MockStation extends Mock implements Station {}
+
+final List<Station> sampleStations = [MockStation(), MockStation()];
+
+
