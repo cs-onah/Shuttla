@@ -9,6 +9,7 @@ import 'station_service_test.mocks.dart';
 
 @GenerateMocks([StationService])
 void main(){
+
   late StationCubit sut;
   late StationService stationService;
 
@@ -24,7 +25,7 @@ void main(){
         .thenAnswer((realInvocation) async => sampleStations);
     });
 
-    test("testData is constant", () async {
+    test("List<Station> is fetched from StationService & Presented", () async {
       await sut.getStations();
 
       // check that getStation() depends on [StationService]
