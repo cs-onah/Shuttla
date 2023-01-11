@@ -61,7 +61,7 @@ class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState>
     on<PassengerJoinSuccessfulEvent>(
       (event, emit) {
         selectedStation = event.station;
-        return emit(PassengerWaitingState());
+        return emit(PassengerWaitingState(event.station));
       },
     );
 
@@ -109,9 +109,11 @@ class PassengerHomeBloc extends Bloc<PassengerHomeEvent, PassengerHomeState>
         print("station data changed");
 
         ///Check if New driver is assigned to station
-        if (selectedStation!.approachingDrivers.length <
-            stationUpdate.approachingDrivers.length) {
+        if (selectedStation!.approachingDrivers.map((e) => e.userData.userId) !=
+            stationUpdate.approachingDrivers.map((e) => e.userData.userId)) {
           print("New driver coming");
+          // Start listening for driver location
+          add(PassengerJoinSuccessfulEvent(stationUpdate));
         }
 
         /// Add Event to update UI
@@ -189,7 +191,10 @@ class PassengerErrorState extends PassengerHomeState {
   PassengerErrorState(this.errorMessage);
 }
 
-class PassengerWaitingState extends PassengerHomeState {}
+class PassengerWaitingState extends PassengerHomeState {
+  final Station station;
+  PassengerWaitingState(this.station);
+}
 
 class PassengerPickupState extends PassengerHomeState {
   final Station station;

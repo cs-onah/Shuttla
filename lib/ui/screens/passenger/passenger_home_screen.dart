@@ -4,6 +4,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:shuttla/constants/route_names.dart';
 import 'package:shuttla/core/blocs/authentication_bloc.dart';
+import 'package:shuttla/core/blocs/driver_home_bloc.dart';
 import 'package:shuttla/core/blocs/passenger_home_bloc.dart';
 import 'package:shuttla/core/data_models/app_user.dart';
 import 'package:shuttla/core/data_models/station.dart';
@@ -38,21 +39,24 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> with UiKit {
               onDrawerChanged: (bool)=> setState(() {}),
               body: Stack(
                 children: [
-                  GoogleMap(
-                    initialCameraPosition:
-                        CameraPosition(target: LatLng(5.377232, 7.000225), zoom: 16),
-                    myLocationButtonEnabled: false,
-                    compassEnabled: false,
-                    zoomControlsEnabled: false,
-                    tiltGesturesEnabled: false,
-                    mapType: MapType.normal,
-                    onMapCreated: (GoogleMapController controller) {
-                      homeModel.map = controller;
-                      homeModel.startLocationStream();
-                    },
-                    markers: homeModel.mapMarkers,
-                    circles: {},
-                    polylines: {},
+                  Container(
+                    color: Colors.grey[200],
+                    child: GoogleMap(
+                      initialCameraPosition:
+                          CameraPosition(target: LatLng(5.377232, 7.000225), zoom: 16),
+                      myLocationButtonEnabled: false,
+                      compassEnabled: false,
+                      zoomControlsEnabled: false,
+                      tiltGesturesEnabled: false,
+                      mapType: MapType.normal,
+                      onMapCreated: (GoogleMapController controller) {
+                        homeModel.map = controller;
+                        homeModel.startLocationStream();
+                      },
+                      markers: homeModel.mapMarkers,
+                      circles: {},
+                      polylines: {},
+                    ),
                   ),
 
                   //Header
@@ -70,7 +74,7 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> with UiKit {
                           future: authBloc.currentUser(),
                           builder: (BuildContext context,
                               AsyncSnapshot<AppUser?> snapshot) {
-                            if (!snapshot.hasData) return Container();
+                            if (!snapshot.hasData) return SizedBox.shrink();
                             return GestureDetector(
                               onTap: () => Scaffold.of(context).openDrawer(),
                               child: ConstrainedBox(
@@ -114,11 +118,12 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> with UiKit {
                         }
 
                         if (state is PassengerWaitingState){
-                          homeModel.listenToApproachingDrivers(passengerBloc.selectedStation!);
+                          homeModel.listenToApproachingDrivers(state.station);
                         }
 
                         if (state is PassengerStationDetailState && state.showUI) {
                           homeModel.listenToApproachingDrivers(state.station);
+                          Navigator.of(context).popUntil((route) => route.isFirst);
                           showModalBottomSheet(
                             context: context,
                             useRootNavigator: true,
@@ -138,8 +143,8 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> with UiKit {
                           homeModel.startLocationStream();
                         }
                       },
-                      listenWhen: (oldState, newState) =>
-                          oldState.runtimeType != newState.runtimeType,
+                      listenWhen: (oldState, newState) => !(oldState is PassengerStationDetailState
+                          && newState is PassengerStationDetailState),
                       buildWhen: (oldState, newState) =>
                           newState is PassengerWaitingState ||
                           newState is PassengerIdleState ||
@@ -266,6 +271,7 @@ class PassengerPickupCompleteFragment extends StatelessWidget {
               text: "KEEP WAITING",
               backgroundColor: Colors.red,
               onPressed: () {
+                context.read<HomeViewmodel>().cancelApproachingDriverSubscriptions();
                 context
                     .read<PassengerHomeBloc>()
                     .setupStationAndJoinWait(station);
