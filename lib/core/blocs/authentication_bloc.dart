@@ -55,10 +55,8 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
         );
         return emit(AuthAuthenticatedState(data));
       } on FirebaseAuthException catch (e) {
-        print(e.toString());
         return emit(AuthErrorState(LogInWithEmailAndPasswordFailure.fromCode(e.code).message));
       } catch (error) {
-        print(error.toString());
         return emit(AuthErrorState(error));
       }
     });

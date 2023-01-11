@@ -129,7 +129,6 @@ class HomeViewmodel extends ChangeNotifier {
 
   List<AppUser> approachingDrivers = [];
   void listenToApproachingDrivers(Station selectedStation) async {
-    print("here");
     //Check if driver number changed
     if (selectedStation.approachingDrivers.length == approachingDrivers.length)
       return;
