@@ -59,6 +59,7 @@ class _CreateStationScreenState extends State<CreateStationScreen> with UiKit {
         backgroundColor: Colors.grey[100],
         appBar: AppBar(
           title: Text("Create Station"),
+          backgroundColor: Theme.of(context).primaryColor,
         ),
         body: ListView(
           padding: EdgeInsets.all(16),
@@ -145,6 +146,7 @@ class _CreateStationScreenState extends State<CreateStationScreen> with UiKit {
             SizedBox(height: 30),
             BoxButton.rounded(
               text: isEdit ? "SAVE" : "Create",
+              backgroundColor: Colors.purple,
               onPressedWithNotifier: (notifier) async {
                 print(isEdit);
                 if (selectedLocation == null)

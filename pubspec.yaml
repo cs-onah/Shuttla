@@ -34,6 +34,7 @@ dependencies:
   flutter_svg: 1.0.0
   flutter_polyline_points: ^1.0.0
   flutter_dotenv: ^5.0.2
+  permission_handler: 8.0.1
 
   # Firebase services
   firebase_core: 1.0.0
