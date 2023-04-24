@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>569028400149-chnuq2fha0gsoe4hnldvvmnqd097is8i.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.569028400149-chnuq2fha0gsoe4hnldvvmnqd097is8i</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>569028400149-fkua6og5q0158405edaanjmjnd320i8q.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCup2KOEsS5M1rD-pVXN-di3qbrjBuZ2zI</string>
+	<key>GCM_SENDER_ID</key>
+	<string>569028400149</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.shuttla</string>
+	<key>PROJECT_ID</key>
+	<string>shuttla</string>
+	<key>STORAGE_BUCKET</key>
+	<string>shuttla.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:569028400149:ios:475f6f708134ad7865ea1c</string>
+</dict>
+</plist>
